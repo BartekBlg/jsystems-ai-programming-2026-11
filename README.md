@@ -1,3 +1,22 @@
+# UPDATES !!!
+
+## Po pierwszym dniu (23.11)
+
+**Kod i repozytorium**
+- `main` zostaje punktem startowym kursu (materiały, historie czatu, poprawki).
+- Swoją aplikację rozwijasz na VM w gałęzi `feat/moja-aplikacja` ([instrukcja startu, slajd 9](https://devpowers.com/szkolenia/jsystems/ai-programming-2026-11/Prezentacja_01_Start_kursu.html#9)). Nowe materiały pobierzesz z `main` poleceniem `git pull origin main`.
+
+**Podsumowanie i czat**
+- [Podsumowanie dnia 1](course-materials/zoom-summary-chat-history/day-1-summary.md): modele i rankingi, Vibe Coding, pierwsze kroki z Claude Code, zadania zaplanowane, tokeny.
+- [Historia czatu z dnia 1](course-materials/zoom-summary-chat-history/day-1-chat-history.md) ze wszystkimi linkami z zajęć.
+- [Indeks kursu](course-materials/Course%20INDEX%20-%20AI%20in%20Programming.md): pojęcia, narzędzia, dokumentacja, badania i osoby warte śledzenia.
+
+**Na rano w dniu 2**
+- Sprawdź, czy Twoje zadanie zaplanowane uruchomiło się około 6:00.
+- Przygotuj wynik swojej aplikacji lub gry z Arena.ai do pokazania.
+
+---
+
 # AI dla programistów - od pomysłu do MVP (JSystems)
 
 **Materiały szkoleniowe: [devpowers.com/szkolenia/jsystems/ai-programming-2026-11](https://devpowers.com/szkolenia/jsystems/ai-programming-2026-11/)**
