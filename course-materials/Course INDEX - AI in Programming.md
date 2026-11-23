@@ -28,6 +28,10 @@ Trener: Łukasz Matuszewski · [LinkedIn](https://www.linkedin.com/in/lukaszmatu
 - **Open Source LLMs** are very close to top models:
   - GLM-5.3 and GLM-5.3-Flash (z.ai), Kimi K3 (Moonshot), MiMo 1.6 (Xiaomi - great and very cheap), Minimax M3, DeepSeek v4 Pro - best OSS models are all from China (updated 02.10.2026)
   - Best OSS for consumer hardware: Google [Gemma 4](https://ollama.com/library/gemma4), [Qwen 3.6](https://ollama.com/library/qwen3.6)
+  - **Leading small open-weight coding models for consumer hardware (checked 2026-11-23):**
+    - **[Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B)** (Alibaba) - dense 27B, Apache 2.0. [Arena WebDev](https://arena.ai/leaderboard/code/webdev/models/qwen3.8-27b-ebux): #45 (1,590).
+    - **[Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini)** (Thinking Machines Lab, released 2026-11-20) - MoE with 26.4B total and 3.4B active parameters (5.4B effective per token with looping), Apache 2.0, text and image input, up to 1M tokens of context, and a roughly 20 GB checkpoint (mixed NVFP4/MXFP8). Runs in llama.cpp (GGUF), vLLM and SGLang, and in Ollama and Exo on Apple silicon. [Arena WebDev](https://arena.ai/leaderboard/code/webdev/models/inkling-2-mini-ez3a): #55 (1,557) in the 2026-11-22 snapshot.
+    - **Local hardware:** Aim for about 32 GB of VRAM or at least 32 GB of unified memory for quantized runs (e.g. an Apple silicon Mac mini or Mac Studio, NVIDIA DGX Spark, or a 32 GB consumer GPU). Memory use depends on quantization and context length. [Qwen Ollama build](https://ollama.com/library/qwen3.8:27b)
   - could be used also with Claude Code: [Ollama](https://docs.ollama.com/integrations/claude-code), [vLLM](https://docs.vllm.ai/en/latest/serving/integrations/claude_code/) (good concurrency for scaling), [LocalAI](https://localai.io/integrations/index.html#claude-code)
   - **Local backend protocols (checked 2026-10-16):** Claude Code uses Anthropic Messages; Codex requires OpenAI Responses (`wire_api = "chat"` was removed). Native endpoints and translation through Ollama, vLLM, LiteLLM, claude-code-router, OpenRouter or LM Studio, with private-inference caveats and agent configs: [routing research](Research/local-llm-routing-messages-vs-responses-2026-10-16.md).
   - **Tiny and local models as agent workers** (verified 2026-10-01): LFM2.5-350M (219 MB) handles extraction and simple tool calls; 8 GB laptop = `gemma4:e2b` or LFM2.5-350M, 16 GB = `gemma4:e4b` / `gemma4:12b` / `lfm2.5:8b`; run them as workers with `ollama launch claude` or `codex --oss` - sizes, benchmarks, configs: [local-models-as-agent-workers.md](Research/local-models-as-agent-workers.md)
@@ -166,6 +170,7 @@ How AI changes developer careers - key insights from the 2026 future-of-work res
 #### 🐦 X.com
 
 - [Andrej Karpathy](https://x.com/karpathy) — ex-OpenAI, Data Science
+- [Mira Murati](https://x.com/miramurati) - CEO and co-founder of Thinking Machines Lab (Inkling models), ex-CTO of OpenAI.
 - [Paul Rohan](https://x.com/rohanpaul_ai) — Data science, AI deep dive, news
 - [Tibo](https://x.com/thsottiaux) — OpenAI, Codex team; announces Codex rate-limit resets a few hours ahead ("Saint Tibo the token giver")
 - [Petter Steinberger](https://x.com/steipete) — OpenClaw founder
@@ -282,6 +287,7 @@ How AI changes developer careers - key insights from the 2026 future-of-work res
 - LMArena (agent vs agent fights based on [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system)):
   - [Agent Leaderboard](https://arena.ai/leaderboard/agent)
   - [WebDev Leaderboard](https://arena.ai/leaderboard/code/webdev)
+  - [WebDev Leaderboard (open-weight filter)](https://arena.ai/leaderboard/code/webdev?license=open-source)
   - [Search Leaderboard](https://arena.ai/leaderboard/search)
 - Design Arena Elo (agent vs agent fights in UI, Game Dev, etc.): [Design Arena](https://www.designarena.ai/leaderboard)
 - Software Engineering Benchmarks:
@@ -408,6 +414,7 @@ How AI changes developer careers - key insights from the 2026 future-of-work res
 - **Banked resets are granted, not bought** (model releases, incidents; redeem within about a month): Codex, and Claude since the Opus 5.5 release (end of 09.2026); paid options = Claude usage credits, Codex paid instant reset
 - **Strategy**: burn the weekly allowance to zero first, then apply the reset (effectively 2x for that week)
 - **Cheaper models as workers**: GPT-6 Luna, local LFM2.5 / Gemma 4 / Qwen 3.6, Chinese APIs (MiniMax, Kimi, DeepSeek, MiMo)
+  - For coding workers with about 32 GB of VRAM or unified memory, see Qwen3.8-27B and Inkling-2-Mini under [Trends](#trends-20252026-and-what-to-expect-next) (checked 2026-11-23).
 - **Skills that cut tokens:** [ponytail](https://github.com/dietrichgebert/ponytail) (write as little code as possible) and [caveman](https://github.com/JuliusBrussee/caveman) ([SKILL.md](https://github.com/JuliusBrussee/caveman/blob/main/skills/caveman/SKILL.md), terse agent output)
 - **Prompt caching** (cached input is much cheaper; keep stable instructions and context at the start of the prompt): [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching), [Anthropic](https://docs.claude.com/en/docs/build-with-claude/prompt-caching)
 - Full numbers (Codex 5h ranges per model), auto-continue, how to save the allowance, sources: [token-optimization-limits-resets.md](Research/token-optimization-limits-resets.md)
