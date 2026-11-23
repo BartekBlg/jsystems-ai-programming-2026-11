@@ -28,7 +28,7 @@ Trener: Łukasz Matuszewski · [LinkedIn](https://www.linkedin.com/in/lukaszmatu
 - **Open Source LLMs** are very close to top models:
   - GLM-5.3 and GLM-5.3-Flash (z.ai), Kimi K3 (Moonshot), MiMo 1.6 (Xiaomi - great and very cheap), Minimax M3, DeepSeek v4 Pro - best OSS models are all from China (updated 02.10.2026)
   - Best OSS for consumer hardware: Google [Gemma 4](https://ollama.com/library/gemma4), [Qwen 3.6](https://ollama.com/library/qwen3.6)
-  - **Leading small open-weight coding models for consumer hardware (checked 2026-11-23):**
+  - **Best small open-weight coding models for consumer hardware (checked 2026-11-23; Arena ranks below are among all models, including proprietary ones):**
     - **[Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B)** (Alibaba) - dense 27B, Apache 2.0. [Arena WebDev](https://arena.ai/leaderboard/code/webdev/models/qwen3.8-27b-ebux): #45 (1,590).
     - **[Inkling-2-Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini)** (Thinking Machines Lab, released 2026-11-20) - MoE with 26.4B total and 3.4B active parameters (5.4B effective per token with looping), Apache 2.0, text and image input, up to 1M tokens of context, and a roughly 20 GB checkpoint (mixed NVFP4/MXFP8). Runs in llama.cpp (GGUF), vLLM and SGLang, and in Ollama and Exo on Apple silicon. [Arena WebDev](https://arena.ai/leaderboard/code/webdev/models/inkling-2-mini-ez3a): #55 (1,557) in the 2026-11-22 snapshot.
     - **Local hardware:** Aim for about 32 GB of VRAM or at least 32 GB of unified memory for quantized runs (e.g. an Apple silicon Mac mini or Mac Studio, NVIDIA DGX Spark, or a 32 GB consumer GPU). Memory use depends on quantization and context length. [Qwen Ollama build](https://ollama.com/library/qwen3.8:27b)
