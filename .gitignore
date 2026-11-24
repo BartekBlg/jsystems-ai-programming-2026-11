@@ -9,8 +9,11 @@ build/
 !.env.example
 secrets
 .DS_Store
-# Project skills in .agents/skills/ and skills-lock.json are committed: skills built
-# in class must reach the repository. .claude/skills/ holds the CLI's links to them.
+# Installed Agent Skills are not committed. skills-lock.json is committed as the
+# source of truth for which skills are used and at which commit; restore them with
+# `npx skills install` (add --frozen-lockfile to fail instead of changing the lock).
+# .claude/skills/ holds the CLI's links to them.
+.agents/skills/
 .claude/skills/
 __pycache__/
 *.pyc
