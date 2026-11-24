@@ -1,5 +1,17 @@
 # UPDATES !!!
 
+## Po drugim dniu (24.11)
+
+**Kod i repozytorium**
+- `main` zostaje punktem startowym kursu: materiały, historie czatu i poprawki.
+- Zrób fork (`gh repo fork --remote`) i rozwijaj aplikację w swojej gałęzi `app-implementation`, nie w `main`. Nowe materiały pobierzesz poleceniem `git pull upstream main`, a potem `git merge main` w gałęzi aplikacji.
+- [PR #5](https://github.com/LucasMatuszewski/jsystems-ai-programming-2026-11/pull/5) w gałęzi `research/polish-language-in-llms`: raport "polski vs angielski w LLM" (Markdown i interaktywny HTML, PL i EN), skill `evidence-research` i plik `skills-lock.json`.
+
+**Podsumowanie i czat**
+- [Podsumowanie dnia 2](course-materials/zoom-summary-chat-history/day-2-summary.md): research z subagentami, GitHub CLI i tokeny PAT, fork i tożsamość Git, Skills (tworzenie, instalacja, bezpieczeństwo), `/context`, statusline, PRD i ADR.
+- [Historia czatu z dnia 2](course-materials/zoom-summary-chat-history/day-2-chat-history.md) ze wszystkimi linkami, poleceniami i promptami z zajęć.
+- [Skrypt statusline](course-materials/agent-configs/claude/statusline.sh) do skopiowania do `~/.claude/`.
+
 ## Po pierwszym dniu (23.11)
 
 **Kod i repozytorium**
