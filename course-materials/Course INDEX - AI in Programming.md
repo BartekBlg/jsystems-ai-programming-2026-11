@@ -25,7 +25,13 @@ Trener: Łukasz Matuszewski · [LinkedIn](https://www.linkedin.com/in/lukaszmatu
 - **Async Codding Agents in Cloud & on Mobile**
 - CLI tools, Automation (Auto Review, Auto Mode, Schedules/Rutines, Loops), YOLO in container/cloud or local device (e.g. mac mini, Nvidia DGX Spark, AMD Strix Halo)
 - Huge jump in quality of **Opus 4.5+**, GPT 5.4 and Gemini 3
-- **Open Source LLMs** are very close to top models:
+- **AI solved a Millennium Prize problem (20.11.2026):** mathematician Levent Alpöge, working with Claude, released a proof of the Riemann Hypothesis (extended to the Generalized Riemann Hypothesis) as a 17-million-line Lean library: [announcement note (PDF)](https://alpo.ge/remark.pdf). On 21.11.2026 the Lean FRO and the Mathlib Initiative certified that the statement and the proof are correct: [Lean verification of the Riemann Hypothesis](https://leanprover-community.github.io/blog/posts/riemann-hypothesis/). Commentary: [Terence Tao](https://terrytao.wordpress.com/2026/11/20/unforced-euler-singularity-unforced-navier-stokes-singularity-and-the-generalized-riemann-hypothesis/), [verification files by Andrew Sutherland (MIT)](https://math.mit.edu/~drew/grh/). What the hypothesis is (video in Polish): [Hipoteza Riemanna](https://www.youtube.com/watch?v=ptibpKiT-QM)
+  - Machine-checked, but human understanding and peer review of the proof will take time (checked 2026-11-24).
+  - Superhuman results in a narrow, formally verifiable domain are not AGI: generality across open-ended tasks is a separate axis ([Levels of AGI, Google DeepMind](https://arxiv.org/abs/2311.02462)). OpenAI's pretraining chart under [Research data](#research-data-on-ai-coding) already marks "Solved a Millennium Prize math problem" as a capability level.
+- **Open-weight LLMs** are cheap and strong on public benchmarks, but the gap to frontier models is widening again (Nov 2026):
+  - [If you like Open Models, I'm sorry - Theo (t3.gg), 22.11.2026](https://www.youtube.com/watch?v=B2rFx4Fy1us): frontier models pulled ahead in agentic work (long-horizon coherence, task decomposition, subagents); closed labs make distillation harder (degraded reasoning traces, Codex encrypts subagent prompts), grow compute faster than export-limited Chinese labs, and speed up their own R&D with AI (see METR below). Partly opinion and private telemetry; the two data points below are checkable.
+  - [Artificial Analysis Intelligence Index v5](https://artificialanalysis.ai/articles/artificial-analysis-intelligence-index-v5) (27.10.2026, more held-out evaluations): the open-weights gap widened from 3 to 12 points.
+  - [MaxxBench](https://unlap.ai/maxxbench/): small edits to DeepSWE tasks expose benchmark overfitting (details under [LLM benchmarks](#llm-benchmarks-best-models)).
   - GLM-5.3 and GLM-5.3-Flash (z.ai), Kimi K3 (Moonshot), MiMo 1.6 (Xiaomi - great and very cheap), Minimax M3, DeepSeek v4 Pro - best OSS models are all from China (updated 02.10.2026)
   - **Best small open-weight coding models for consumer hardware (checked 2026-11-23; Arena ranks below are among all models, including proprietary ones):**
     - **[Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B)** (Alibaba) - dense 27B, Apache 2.0. [Arena WebDev](https://arena.ai/leaderboard/code/webdev/models/qwen3.8-27b-ebux): #45 (1,590).
@@ -88,6 +94,14 @@ How AI changes developer careers - key insights from the 2026 future-of-work res
 
 ### Research data on AI Coding:
 
+- **METR, 05.11.2026 - AI speeds up AI research at Anthropic:** [Independent Assessment of AI R&D Acceleration at Anthropic in October 2026](https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/#executive-summary)
+  - Model capability (AECI, Anthropic's version of the Epoch Capabilities Index) grows **1.9x faster** than before October 2025 (+29 vs +15 points per year; 95% CI 1.5x-2.8x, plausible range 1.3x-3x). METR attributes about **80%** of the acceleration to AI-assisted R&D, not to more training compute.
+  - Caveats: Anthropic redacted much of the evidence; staff self-reported uplift (about 1.2x for Claude 3.7 Sonnet to about 12x for internal Model 4) is weak evidence.
+  - ![METR: AECI of Anthropic models 2024-2026, trend after October 2025 grows 1.9x faster](Research/images/metr-2026-11-anthropic-aeci-acceleration.png)
+- **OpenAI, 22.11.2026 - Perplexity and Intelligence** by Jakub Pachocki, OpenAI Chief Scientist: [essay](https://openai.com/index/perplexity-and-intelligence/), [post on X](https://x.com/merettm/status/2124549218995949967)
+  - First public chart of OpenAI base-model log-perplexity (how well the model predicts the next token of OpenAI's internal codebase; lower is better) with capability levels: fluent conversation (GPT-3.5), benefits from thinking (GPT-4), useful coder, cybersecurity expert, solved a Millennium Prize math problem (GPT-6.2 Astra). An internal model is already below that level.
+  - Proposes shared industry limits based on perplexity and other measurements, with progress beyond them gated on understanding AI behavior.
+  - ![OpenAI: base model log-perplexity from GPT-3.5 to GPT-6.2 Astra and an internal model, with capability levels](Research/images/openai-2026-11-base-model-log-perplexity.jpg)
 - Knowledge base with research data: [NotebookLM](https://notebooklm.google.com/notebook/ae14d724-0256-482a-85b8-95fca9ba1c11)
 - **Stanford** research on ROI of AI code (from 07.2025):
   - YT talk 12.2025 [Can you prove AI ROI in Software Eng? (Stanford 120k Devs Study) – Yegor Denisov-Blanch, Stanford - YouTube](https://www.youtube.com/watch?v=JvosMkuNxF8)
@@ -190,6 +204,7 @@ How AI changes developer careers - key insights from the 2026 future-of-work res
 - [Ania Kubów](https://www.youtube.com/@aniakubow) — po angielsku, ale Polka z Google, Amazon i Microsoft — często wrzuca coś o AI
 - [Przeprogramowani](https://www.youtube.com/@Przeprogramowani) — rzadko wrzucają (i nie zawsze się z nimi zgadzam), ale są newsy AI
 - [Michał Sadowski (Brand24)](https://www.youtube.com/@Michal.Sadowski) — biznes, SaaS, AI, startupy, rzadko wrzuca | [X.com](https://x.com/sadek)
+- [Remek Kinas](https://x.com/KinasRemek) — współtwórca Bielika, autor modeli decyzyjnych [Basal Omni](https://github.com/rkinas/basal) (X.com)
 - [Tomasz Karwatka](https://x.com/tomik99) — często o AI i biznesie, eCommerce (X.com)
 - [Maciej Dobrodziej](https://www.linkedin.com/in/maciejdobrodziej/) — AI w Wideo (bardzo dobre jakościowo) (LinkedIn)
   - [Smok Wawelski](https://www.linkedin.com/feed/update/urn:li:activity:7337045944347037696)
@@ -293,6 +308,9 @@ How AI changes developer careers - key insights from the 2026 future-of-work res
 - Software Engineering Benchmarks:
   - **DeepSWE Bench** (Datacurve, v1 2026-05-26, v1.1 2026-06-14, leaderboard refreshed 2026-09-22): [DeepSWE Bench](https://deepswe.datacurve.ai/), [intro post](https://deepswe.datacurve.ai/blog/deepswe), [v1.1 changes](https://deepswe.datacurve.ai/blog/deepswe-v1-1)
     - contamination-free long-horizon tasks, all models in one harness (mini-swe-agent); top v1.1: gpt-6-astra, gemini-3.8-flash, claude-opus-5 at 74% - details: [benchmarks-deepswe-harness-vs-model.md](Research/benchmarks-deepswe-harness-vs-model.md#deepswe-bench)
+  - **MaxxBench** (unLAP, Gavin and Justin Lo, 11.2026): [MaxxBench](https://unlap.ai/maxxbench/), [why MaxxBench](https://maxxbench.unlap.ai/research/why-maxxbench/), [source](https://github.com/unlap-labs/maxxbench)
+    - 89 DeepSWE tasks with small requirement or starter-code edits (median reference patch grows by 17 lines) to catch benchmark overfitting ("benchmaxxing"). Claude Opus 5.5 led at 76.4%; on the paired tasks Gemini 3.8 Flash dropped 25.9 points, GPT-5.6 Luna 23.9 and GLM-5.3 14.9 (checked 2026-11-24).
+    - Lesson: test models on your own slightly changed tasks, not only on public leaderboards.
   - SWE Bench: [SWE-bench Leaderboards](https://www.swebench.com/)
 - **Harness vs model - you buy a harness + model, not just a model** (same model scores differently in different harnesses):
   - e.g. one harness config change moved SWE-bench Verified from 28% to 49% with unchanged weights; Terminal-Bench ranks model + agent pairs - evidence and papers: [benchmarks-deepswe-harness-vs-model.md](Research/benchmarks-deepswe-harness-vs-model.md#harness-vs-model)
