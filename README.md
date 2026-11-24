@@ -12,6 +12,13 @@
 - [Historia czatu z dnia 2](course-materials/zoom-summary-chat-history/day-2-chat-history.md) ze wszystkimi linkami, poleceniami i promptami z zajęć.
 - [Skrypt statusline](course-materials/agent-configs/claude/statusline.sh) do skopiowania do `~/.claude/`.
 
+**Odpowiedzi na pytania grupy i nowe materiały**
+- [Azure DevOps z agentami](course-materials/cicd-headless/azure-devops/README.md): `az boards` i `az repos` zamiast `gh`/`glab`, PAT i tokeny Entra, serwer MCP Azure DevOps oraz pipeline z recenzją PR przez Claude Code.
+- [Cache przy zmianie modelu i effort](course-materials/Research/prompt-caching-model-switch-and-effort-2026-11-24.md): każdy model ma własny cache, co zmiana effort robi z cache i jak sprawdzić trafienia.
+- [Artefakty Claude: przechowywanie, udostępnianie i własność](course-materials/Research/claude-artifacts-retention-ownership-2026-11-24.md). Pobierz ważne artefakty przed usunięciem kont kursowych.
+- [Indeks kursu](course-materials/Course%20INDEX%20-%20AI%20in%20Programming.md): badanie METR o przyspieszeniu prac nad AI w Anthropic, wykres OpenAI "Perplexity and Intelligence", dowód hipotezy Riemanna z Claude, rosnąca luka modeli open-weight i MaxxBench.
+- [Menedżery agentów](course-materials/Research/agent-managers-and-remote-agents.md): Herdr z aplikacją desktopową i mobilną, GitKraken Kepler, Delta od twórców Zed.
+
 ## Po pierwszym dniu (23.11)
 
 **Kod i repozytorium**
