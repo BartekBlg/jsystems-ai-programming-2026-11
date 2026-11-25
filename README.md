@@ -13,6 +13,7 @@
 - [Skrypt statusline](course-materials/agent-configs/claude/statusline.sh) do skopiowania do `~/.claude/`.
 
 **Odpowiedzi na pytania grupy i nowe materiały**
+- [Pytania i odpowiedzi](https://devpowers.com/szkolenia/jsystems/ai-programming-2026-11/pytania.html): krótkie odpowiedzi na Wasze pytania (Azure DevOps, artefakty Claude, cache przy zmianie modelu) i inne częste pytania.
 - [Azure DevOps z agentami](course-materials/cicd-headless/azure-devops/README.md): `az boards` i `az repos` zamiast `gh`/`glab`, PAT i tokeny Entra, serwer MCP Azure DevOps oraz pipeline z recenzją PR przez Claude Code.
 - [Cache przy zmianie modelu i effort](course-materials/Research/prompt-caching-model-switch-and-effort-2026-11-24.md): każdy model ma własny cache, co zmiana effort robi z cache i jak sprawdzić trafienia.
 - [Artefakty Claude: przechowywanie, udostępnianie i własność](course-materials/Research/claude-artifacts-retention-ownership-2026-11-24.md). Pobierz ważne artefakty przed usunięciem kont kursowych.
