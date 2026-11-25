@@ -10,6 +10,10 @@
 - [Podsumowanie dnia 3](course-materials/zoom-summary-chat-history/day-3-summary.md): recenzja PR przez Codex, design system, skróty Claude Code (`/btw`, `/fork`, `/rewind`, `Ctrl+G` z edytorem Micro), Spec-Driven Development, PRD, ADR i plan z `/goal`, AG-UI, OpenRouter i modele decyzyjne, prompt caching, Context7, OpenCode.
 - [Historia czatu z dnia 3](course-materials/zoom-summary-chat-history/day-3-chat-history.md) ze wszystkimi linkami, poleceniami i promptami z zajęć.
 
+**Poprawiony prompt planu**
+- [Plan z subagentami i mapą zależności](course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map.md) planuje teraz całą aplikację z PRD i ADR, a nie jeden fragment. Dodaje przegląd spójności dokumentów, testy E2E i manualne bez mocków, briefy w `docs/plans/.briefs/` usuwane po realizacji planu oraz delegowanie przez OpenCode w trybie headless.
+- Pod promptem są kroki poprawek planu i prompt do stworzenia własnego skilla do planowania. [Wersja z Haiku i OpenCode z Luna 6](course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map-LUNA.md) to prompt użyty na zajęciach.
+
 **Na rano w dniu 4**
 - Dokończ plan swojej aplikacji i sprawdź spójność planu, PRD, ADR i `AGENTS.md`.
 
