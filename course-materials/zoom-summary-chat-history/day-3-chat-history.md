@@ -219,7 +219,7 @@ Wiadomości publiczne w kolejności chronologicznej. Reakcje oznaczają zliczeni
 - **13:50 — Łukasz Matuszewski:** Research agent:  
   https://docs.perplexity.ai/docs/getting-started/integrations/mcp-server
 
-- **13:59 — Łukasz Matuszewski:** Contex7 - wyszukiwanie RAG / Baza wiedzy dla agentów  
+- **13:59 — Łukasz Matuszewski:** Context7 - wyszukiwanie RAG / Baza wiedzy dla agentów  
   na dokumentacji i kodzie aplikacji (publicznych i prywatnych)
 
 - **13:59 — Łukasz Matuszewski:** Gotowiec prosty custom Backend z RAG prywatnym:  
@@ -386,7 +386,7 @@ Wiadomości publiczne w kolejności chronologicznej. Reakcje oznaczają zliczeni
   Czy na pewno nie robi mocków dla E2E i Manual QA? Dla unit/integracyjnych mocki w oparciu o realne wywołania endpointów, a nie docs.  
   Zrobić przegląd spójności docs: Plan, ADR, PRD, AGENTS.md - usunąć ewentualne sprzeczności lub niejednoznaczności  
   Poprawić plan aby był od razu na całość najlepiej (software factory). Ale może być również na fragmenty.  
-  Omówić co powstało w PRD, ADR, Planie - które elementy są ważne imho, np. UML mermeid, problem który rozwiązuje aplikacja, grupa odbiorców, skala aplikacji (mała firma, internal app, PoC, enterprise, global startup), specyfika firmy (np. regulated sectors: gov/finance/mil/med itp.)  
+  Omówić co powstało w PRD, ADR, Planie - które elementy są ważne imho, np. UML Mermaid, problem który rozwiązuje aplikacja, grupa odbiorców, skala aplikacji (mała firma, internal app, PoC, enterprise, global startup), specyfika firmy (np. regulated sectors: gov/finance/mil/med itp.)  
   może być npm zamiast pnpm w razie czego.  
   jak działa `/goal` + ewentualnie monitor na wznowienie po limicie  
   omówić instrukcje AGENTS.md (poziomy: organizacja, user w chmurze, user lokalnie, projekt root, projekt module/foldery)  
