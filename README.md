@@ -16,6 +16,7 @@
 
 **Na rano w dniu 4**
 - Dokończ plan swojej aplikacji i sprawdź spójność planu, PRD, ADR i `AGENTS.md`.
+- Dodaj do `AGENTS.md` regułę: dokumentację bibliotek i narzędzi agent sprawdza najpierw w Context7 (`ctx7`) i w pomocy CLI (np. `gh --help`), a wyszukiwarki używa tylko awaryjnie, bo zużywa znacznie więcej tokenów. Research domyślnie deleguje do subagentów lub agentów CLI.
 
 ## Po drugim dniu (24.11)
 
