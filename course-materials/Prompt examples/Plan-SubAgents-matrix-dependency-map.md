@@ -1,4 +1,4 @@
-# Implementation plan for the whole application from the PRD and ADRs
+# Implementation plan for the whole application from the PRD and ADRs (Claude Code + OpenCode)
 
 Create a reviewable implementation plan to implement the whole application (PoC or MVP) defined by the approved PRD and ADRs. One plan contains every phase and detail needed to deliver it fully, so a capable agent can implement it autonomously with good specs and answers to its questions. Do not implement it or launch agents yet. Follow the applicable AGENTS.md and use the approved PRD, ADRs and design guidance in this application's repository. Ask for their paths only when they are missing or ambiguous; teaching examples in course-materials are not project requirements.
 
@@ -13,11 +13,11 @@ Use small verified phases and one authoritative dependency matrix:
 
 Give each row a bounded deliverable, acceptance evidence and commit boundary, and define a Definition of Done for the whole plan. Plan a failing behavioral test before implementation, integration checks after dependent components, manual runtime verification, an independent review and a pull request for each finished phase or for the whole application, as the repository's policy prefers. End-to-end and manual tests use the real application, its endpoints and any external, LLM or decision-model calls, never mocks. When unit or integration tests mock external endpoints or APIs, base those mocks on real recorded calls, not on documentation. Use the application's actual commands. A green build alone does not prove startup or the user flow. State the critical path, shared-file hotspots, failure/rollback handling and a smaller fallback if time, tools or model access run out. Track execution status in the plan's Status column. When the repository uses GitHub Issues, check your access during planning; after I approve the plan, create one issue per task and use the same issue ID in the plan and in your task list.
 
-The strong orchestrator makes architectural decisions, resolves contradictions, prepares briefs and accepts results. Prefer cheap small workers for bounded implementation and test-writing, chosen from what is actually available here, for example:
-- Claude Code subagents on Haiku;
-- OpenCode in headless mode (`opencode run`), with one of its free built-in models or a provider added with /connect, such as OpenRouter;
-- Codex with a small model or GitHub Copilot with the cheapest suitable model, only where the organization provides them; check the model picker and current pricing instead of assuming an old list.
-Assign each row to a named worker and model and say why. Record the chosen model, provider and budget constraint; escalate when evidence shows the task exceeds the worker's ability. When you delegate to a CLI agent, add a short note to the plan on how to run it headless: the command, the model flag, how the brief is passed, how permissions are granted and where the output is logged. Review and final acceptance stay with a capable model and the human.
+Claude Opus 5.5 is the orchestrator: it makes architectural decisions, resolves contradictions, prepares briefs, accepts results and decides which worker and model each row gets. Workers:
+- Claude Code subagents on Sonnet 5.5 for tasks that need more judgment, such as integration or harder refactors;
+- Claude Code subagents on Haiku 5.5 for simple bounded implementation and test-writing;
+- OpenCode in headless mode (`opencode run`) for cheap bounded tasks outside the Claude usage limits, with GPT-6 Luna through OpenRouter (`openrouter/openai/gpt-6-luna`) or one of OpenCode's free built-in models.
+Record per row the worker, the model and why; escalate when evidence shows the task exceeds the worker's ability. When you delegate to OpenCode, add a short note to the plan on how to run it headless: the command, the model flag, how the brief is passed, how permissions are granted and where the output is logged. Review and final acceptance stay with a capable model and the human.
 
 Recommend ad hoc subagents by default for a one-off task: an exact brief matters more than a new role file. Use short custom definitions only for a recurring role with reusable tool restrictions or expertise. Existing named roles may be reused after inspecting them, without assuming their model or permissions suit this task. Verify the active harness supports the requested agent mechanism; otherwise execute the same matrix sequentially with one agent. Do not manufacture custom roles merely to match a tutorial.
 
@@ -32,6 +32,8 @@ Finish with the saved plan link, unresolved decisions, the first bounded task an
 Copy the prompt above. Use the sections below once the draft plan is ready.
 
 ## Exercise: correct the plan, create a planning skill, then implement
+
+The same steps apply to the [Codex version](Plan-SubAgents-matrix-dependency-map-CODEX.md) of this prompt.
 
 Work through these steps in order, in the same session that wrote the plan.
 
@@ -67,7 +69,7 @@ Optional external example for comparison: [write-implementation-plan, public PR 
 ## OpenCode in headless mode
 
 ```bash
-opencode run -m <provider>/<model> -f docs/.agent-briefs/<plan-name>-<brief-name>.md "Do the task described in the attached brief." </dev/null 2>&1 | tee .agent-logs/<plan-name>-<brief-name>.log
+opencode run -m openrouter/openai/gpt-6-luna -f docs/.agent-briefs/<plan-name>-<brief-name>.md "Do the task described in the attached brief." </dev/null 2>&1 | tee .agent-logs/<plan-name>-<brief-name>.log
 ```
 
-`opencode models` lists the model IDs: the free `opencode/...` models work right after installation, and `openrouter/...` models appear after `/connect` with an OpenRouter key. Add `.agent-logs/` to `.gitignore`. A headless run cannot answer permission prompts, so allow the needed tools in the OpenCode configuration; `--auto` approves every permission that is not explicitly denied, so use it only in a sandbox you trust. `--format json` gives machine-readable output, and `-c` or `-s <id>` continues a session.
+`opencode models` lists the model IDs: `openrouter/...` models appear after `/connect` with an OpenRouter key, and the free `opencode/...` models work right after installation. Add `.agent-logs/` to `.gitignore`. A headless run cannot answer permission prompts, so allow the needed tools in the OpenCode configuration; `--auto` approves every permission that is not explicitly denied, so use it only in a sandbox you trust. `--format json` gives machine-readable output, and `-c` or `-s <id>` continues a session.

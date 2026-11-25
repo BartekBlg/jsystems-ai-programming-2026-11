@@ -12,7 +12,7 @@
 
 **Poprawiony prompt planu**
 - [Plan z subagentami i mapą zależności](course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map.md) planuje teraz całą aplikację z PRD i ADR, tak aby silny model mógł ją zbudować samodzielnie z `/goal`; nadal możesz realizować ją etapami. Dodaje przegląd spójności dokumentów, testy E2E i manualne bez mocków, briefy agentów w `docs/.agent-briefs/` usuwane po realizacji planu oraz delegowanie przez OpenCode w trybie headless.
-- Pod promptem są kroki poprawek planu i prompt do stworzenia własnego skilla do planowania. [Wersja z Haiku i OpenCode z Luna 6](course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map-LUNA.md) to prompt użyty na zajęciach.
+- Prompt ma dwie wersje: [Claude Code](course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map.md) (Opus 5.5 jako orkiestrator, subagenci Sonnet 5.5 i Haiku 5.5) oraz [Codex](course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map-CODEX.md) (GPT-6.2 Sol jako orkiestrator, subagenci GPT-6 Luna i GPT-6.1 Terra). Obie delegują też tanie zadania do OpenCode. Pod promptem w wersji Claude Code są kroki poprawek planu i prompt do stworzenia własnego skilla do planowania.
 
 **Na rano w dniu 4**
 - Dokończ plan swojej aplikacji i sprawdź spójność planu, PRD, ADR i `AGENTS.md`.
