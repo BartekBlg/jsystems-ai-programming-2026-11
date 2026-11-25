@@ -94,6 +94,29 @@ claude mcp add --transport http ado-remote https://mcp.dev.azure.com/YOUR_ORG \
   --client-id YOUR_ENTRA_APP_CLIENT_ID --callback-port 3118
 ```
 
+## Built-in option: Copilot code review in Azure Repos
+
+Azure Repos has its own AI reviewer, so you may not need a pipeline at all. GitHub Copilot posts comments and suggested changes on the changed lines of a PR. Checked 2026-11-25. [Get started with Copilot code review](https://learn.microsoft.com/en-us/azure/devops/repos/git/copilot-code-reviews?view=azure-devops) · [Review instructions](https://learn.microsoft.com/en-us/azure/devops/repos/git/configure-copilot-code-review-instructions?view=azure-devops) · [Troubleshooting and FAQ](https://learn.microsoft.com/en-us/azure/devops/repos/git/copilot-code-reviews-faq?view=azure-devops)
+
+- **Turn it on at three levels.** A Project Collection Administrator allows it in **Organization settings > Repos > Repositories**, a Project Administrator enables it per project, and a repository owner per repository (each level has **Enable all**). GitHub Copilot then appears in the PR **Reviewers** list. Git repos only, no TFVC.
+- **Request or automate.** By default you select **Request** next to GitHub Copilot, optionally with a different effort level. For automatic reviews add the branch policy **Automatically request Copilot code review** on each target branch. New commits are not re-reviewed automatically: select **Request** again.
+- **Effort level.** The project sets a default effort and decides whether repositories can override it. Higher effort reads more context and costs more.
+- **Advisory only.** Copilot always leaves a Comment review. It never approves or requests changes, does not satisfy required-reviewer policies, does not block merging, and does not read replies to its comments.
+- **Limits.** The PR must be active and mergeable without conflicts, the repository 10 GB or less, and the PR 100 changed files and 100 changes or fewer. One completed review per merge commit; concurrency 1 per PR, 2 per user, 5 per organization.
+- **Billing.** Reviews are billed to the Azure subscription linked to the organization in GitHub AI credits (1 credit = $0.01), as the **GitHub Copilot for AzDO** meter in Azure Cost Management. Costs appear up to 48 hours later. Set a budget alert; it notifies but does not stop reviews. Try it on one or two repositories first.
+- **Review instructions.** Repository rules live in `.github/copilot-instructions.md` or `.azuredevops/copilot-instructions.md`; path-scoped rules in `instructions/*.instructions.md` with `applyTo` front matter (files without `applyTo` are skipped). Organization and project instructions are set in Azure DevOps settings, and all levels apply together. Copilot reads instruction files from the PR's **target branch**, so changes to them work only after merge.
+
+```markdown
+---
+applyTo: "**/*.ts,**/*.tsx"
+---
+## TypeScript review rules
+- Flag hardcoded credentials, tokens and connection strings.
+- Avoid `any`; prefer `unknown` or a specific type.
+```
+
+**Which one to use.** Copilot code review needs no pipeline, secrets or maintenance, but it is billed per review, comments only, and its model and limits are set by Microsoft. The pipeline below runs Claude Code (or Codex) on your own account and model, and its prompt, output and triggers are yours to change (the sample runs `claude --bare` with tools off in an empty folder, so it reads no `AGENTS.md`/`CLAUDE.md`; put your review rules in the prompt), but you maintain it and protect the secret. Both can run on the same PR.
+
 ## Automated PR review with Azure Pipelines
 
 1. Create a pipeline that points to [azure-pipelines-agent-review.yml](azure-pipelines-agent-review.yml). On the target branch, add an automatic **Build validation** policy for that pipeline. Open a non-draft PR to trigger it.
