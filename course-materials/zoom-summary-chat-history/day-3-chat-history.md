@@ -152,7 +152,7 @@ Wiadomości publiczne w kolejności chronologicznej. Reakcje oznaczają zliczeni
 
 - **12:10 — M.2:** przerywa
 
-- **12:11 — Łukasz Matuszewski:** Przerwa 5 minut do około 11:16, zrobię restart pełen
+- **12:11 — Łukasz Matuszewski:** Przerwa 5 minut do około 12:16, zrobię restart pełen
 
 - **12:20 — M.Ś.:** tak
 

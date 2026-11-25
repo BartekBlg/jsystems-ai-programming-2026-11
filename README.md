@@ -1,5 +1,18 @@
 # UPDATES !!!
 
+## Po trzecim dniu (25.11)
+
+**Kod i repozytorium**
+- `main` zostaje punktem startowym kursu; aplikację rozwijasz w swojej gałęzi `app-implementation`.
+- [PR #6](https://github.com/LucasMatuszewski/jsystems-ai-programming-2026-11/pull/6) w gałęzi `design-system`: design system DevPowers zrobiony skillem `create-design-system`.
+
+**Podsumowanie i czat**
+- [Podsumowanie dnia 3](course-materials/zoom-summary-chat-history/day-3-summary.md): recenzja PR przez Codex, design system, skróty Claude Code (`/btw`, `/fork`, `/rewind`, `Ctrl+G` z edytorem Micro), Spec-Driven Development, PRD, ADR i plan z `/goal`, AG-UI, OpenRouter i modele decyzyjne, prompt caching, Context7, OpenCode.
+- [Historia czatu z dnia 3](course-materials/zoom-summary-chat-history/day-3-chat-history.md) ze wszystkimi linkami, poleceniami i promptami z zajęć.
+
+**Na rano w dniu 4**
+- Dokończ plan swojej aplikacji i sprawdź spójność planu, PRD, ADR i `AGENTS.md`.
+
 ## Po drugim dniu (24.11)
 
 **Kod i repozytorium**
