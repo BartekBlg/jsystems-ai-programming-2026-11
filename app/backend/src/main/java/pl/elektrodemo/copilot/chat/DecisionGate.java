@@ -35,17 +35,32 @@ public final class DecisionGate {
             return forbidden ? new GateOutcome.Suppressed() : new GateOutcome.Forward(delta);
         }
         buffer.append(delta);
-        int newline = buffer.indexOf("\n");
+        int lead = firstNonWhitespace();
+        if (lead < 0) {
+            // Only blank text so far: keep buffering, but never indefinitely.
+            return buffer.length() > WINDOW ? decide("") : new GateOutcome.Buffering();
+        }
+        int newline = buffer.indexOf("\n", lead);
         if (newline >= 0) {
-            return decide(buffer.substring(0, newline));
+            return decide(buffer.substring(lead, newline));
         }
-        if (buffer.length() > WINDOW) {
-            return decide(buffer.substring(0, safeCut(WINDOW)));
+        int available = buffer.length() - lead;
+        if (available > WINDOW) {
+            return decide(buffer.substring(lead, lead + safeCut(lead, WINDOW)));
         }
-        if (buffer.length() == WINDOW && !Character.isHighSurrogate(buffer.charAt(WINDOW - 1))) {
-            return decide(buffer.toString());
+        if (available == WINDOW && !Character.isHighSurrogate(buffer.charAt(buffer.length() - 1))) {
+            return decide(buffer.substring(lead));
         }
         return new GateOutcome.Buffering();
+    }
+
+    private int firstNonWhitespace() {
+        for (int i = 0; i < buffer.length(); i++) {
+            if (!Character.isWhitespace(buffer.charAt(i))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /** Ends the stream: decides on whatever is buffered if no decision was taken yet. */
@@ -53,7 +68,7 @@ public final class DecisionGate {
         if (decided) {
             return forbidden ? new GateOutcome.Suppressed() : new GateOutcome.Forward("");
         }
-        return decide(buffer.toString());
+        return decide(buffer.toString().stripLeading());
     }
 
     /** Returns and clears the text buffered before the decision, so the caller can forward it. */
@@ -63,8 +78,8 @@ public final class DecisionGate {
         return text;
     }
 
-    private int safeCut(int length) {
-        return Character.isHighSurrogate(buffer.charAt(length - 1)) ? length - 1 : length;
+    private int safeCut(int lead, int length) {
+        return Character.isHighSurrogate(buffer.charAt(lead + length - 1)) ? length - 1 : length;
     }
 
     private GateOutcome decide(String head) {

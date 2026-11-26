@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
@@ -133,6 +134,28 @@ class CaseSignerTest {
         CaseContextDto back = spring.readValue(reordered, CaseContextDto.class);
 
         assertThat(back).isEqualTo(original);
+        assertThat(signer.verify(back, signature)).isTrue();
+    }
+
+    @Test
+    void jsRoundTripWithIntegralDoublesInPrescreenStillVerifies() throws Exception {
+        CaseContextDto base = CaseContextFixtures.returnCase();
+        ObjectNode prescreen = tools.jackson.databind.node.JsonNodeFactory.instance.objectNode();
+        prescreen.put("confidence", 1.0);
+        prescreen.putObject("consistencySignals").put("other", 0.0).put("p", 0.85);
+        CaseContextDto original = new CaseContextDto(base.contextVersion(), base.caseType(), base.form(),
+                base.submittedAt(), base.assessment(), base.assessmentSource(), prescreen, null, base.ruleFacts(),
+                base.decision());
+        String signature = signer.sign(original);
+
+        JsonMapper spring = CaseContextFixtures.springLikeMapper();
+        String fromServer = spring.writeValueAsString(original);
+        assertThat(fromServer).contains("\"confidence\":1.0");
+        // Browser JSON.parse + JSON.stringify writes integral numbers without a fraction.
+        String browser = fromServer.replace("\"confidence\":1.0", "\"confidence\":1")
+                .replace("\"other\":0.0", "\"other\":0");
+        CaseContextDto back = spring.readValue(browser, CaseContextDto.class);
+
         assertThat(signer.verify(back, signature)).isTrue();
     }
 

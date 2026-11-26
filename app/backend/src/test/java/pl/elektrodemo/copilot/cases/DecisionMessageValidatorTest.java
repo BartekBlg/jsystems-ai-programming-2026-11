@@ -38,6 +38,11 @@ class DecisionMessageValidatorTest {
                 citation, "TEST");
     }
 
+    private static RuleResult c1Rules() {
+        return new RuleResult(900, ReturnWindowStatus.NOT_APPLICABLE, true, EnumSet.of(DecisionCategory.REJECTED),
+                "upłynął 2-letni okres odpowiedzialności sprzedawcy", Set.of(), "", "C1");
+    }
+
     private static RuleResult accepted() {
         return rules(EnumSet.of(DecisionCategory.ACCEPTED), null, null, Set.of());
     }
@@ -361,6 +366,105 @@ class DecisionMessageValidatorTest {
                     rules(EnumSet.of(DecisionCategory.ESCALATED), null, null, Set.of()), CaseType.COMPLAINT);
 
             assertThat(result.valid()).isFalse();
+        }
+    }
+
+    @Nested
+    class CitationInJustification {
+
+        @Test
+        void citationOnlyInNextStepsIsRejected() {
+            String message = validMessage().replace("Zgodnie z §2 ust. 1 regulaminu.", "Zgodnie z regulaminem.")
+                    .replace("Odeślij urządzenie.", "Odeślij urządzenie (§6).");
+
+            ValidationResult result = validator.validate(new DecisionDraft(DecisionCategory.ACCEPTED, message),
+                    accepted(), CaseType.RETURN);
+
+            assertThat(result.valid()).isFalse();
+            assertThat(result.problems()).anyMatch(p -> p.contains("§N"));
+        }
+
+        @Test
+        void citationInJustificationIsAccepted() {
+            ValidationResult result = validator.validate(new DecisionDraft(DecisionCategory.ACCEPTED, validMessage()),
+                    accepted(), CaseType.RETURN);
+
+            assertThat(result.valid()).isTrue();
+        }
+
+        @Test
+        void section5OnlyInPhotoSectionDoesNotSatisfyRejection() {
+            String message = validMessage().replace("Przyjęte.", "Odrzucone.")
+                    .replace("Zgodnie z §2 ust. 1 regulaminu.", "Zgodnie z §2 ust. 1 regulaminu.")
+                    .replace("Urządzenie jest czyste.", "Urządzenie jest czyste (§5).");
+
+            ValidationResult result = validator.validate(new DecisionDraft(DecisionCategory.REJECTED, message),
+                    acceptedRejectable(), CaseType.RETURN);
+
+            assertThat(result.valid()).isFalse();
+            assertThat(result.problems()).anyMatch(p -> p.contains("§5"));
+        }
+    }
+
+    @Nested
+    class C1ManufacturerWarranty {
+
+        private static final String REASON = "upłynął 2-letni okres odpowiedzialności sprzedawcy";
+
+        private String c1Message(String steps) {
+            return String.join("\n\n", GREETING, "## Decyzja\nOdrzucone. Reklamacja jest po terminie.",
+                    "## Uzasadnienie\nZgodnie z §2 ust. 3: " + REASON + ".", SEE_SECTION, "## Kolejne kroki\n" + steps);
+        }
+
+        @Test
+        void c1WithoutWarrantySuggestionIsRejected() {
+            ValidationResult result = validator.validate(
+                    new DecisionDraft(DecisionCategory.REJECTED, c1Message("Dziękujemy za zgłoszenie.")), c1Rules(),
+                    CaseType.COMPLAINT);
+
+            assertThat(result.valid()).isFalse();
+            assertThat(result.problems()).contains("Brak wskazania gwarancji producenta");
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"Skontaktuj się z serwisem gwarancyjnym producenta.",
+                "Sprawdź, czy obowiązuje gwarancja producenta.", "Możesz skorzystać z gwarancji producenta.",
+                "Skontaktuj się z PRODUCENTEM w sprawie GWARANCJI.",
+                "Zwróć się do producenta, który może udzielić pomocy w ramach serwisu gwarancyjnym."})
+        void c1WithWarrantySuggestionIsAccepted(String steps) {
+            ValidationResult result = validator.validate(
+                    new DecisionDraft(DecisionCategory.REJECTED, c1Message(steps)), c1Rules(), CaseType.COMPLAINT);
+
+            assertThat(result.problems()).isEmpty();
+        }
+
+        @Test
+        void warrantyAloneWithoutManufacturerIsRejected() {
+            ValidationResult result = validator.validate(
+                    new DecisionDraft(DecisionCategory.REJECTED, c1Message("Sprawdź gwarancję.")), c1Rules(),
+                    CaseType.COMPLAINT);
+
+            assertThat(result.problems()).contains("Brak wskazania gwarancji producenta");
+        }
+
+        @Test
+        void mutatedCapturedComplaintDecisionAsC1MissingWarrantyIsRejected() {
+            DecisionDraft draft = DecisionCaptures.load("decision-complaint-ok");
+            String mutated = draft.message().replace("## Decyzja\nPrzekazane do specjalisty.", "## Decyzja\nOdrzucone.")
+                    .replace("Zgodnie z §4 ust. 2", "Zgodnie z §2 ust. 3: " + REASON + ", a także z §4 ust. 2");
+
+            ValidationResult result = validator.validate(new DecisionDraft(DecisionCategory.REJECTED, mutated),
+                    c1Rules(), CaseType.COMPLAINT);
+
+            assertThat(result.problems()).containsExactly("Brak wskazania gwarancji producenta");
+        }
+
+        @Test
+        void nonC1RulesDoNotRequireWarranty() {
+            ValidationResult result = validator.validate(new DecisionDraft(DecisionCategory.ACCEPTED, validMessage()),
+                    accepted(), CaseType.COMPLAINT);
+
+            assertThat(result.valid()).isTrue();
         }
     }
 }

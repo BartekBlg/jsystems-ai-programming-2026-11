@@ -26,6 +26,10 @@ import org.mockito.stubbing.Answer;
 import org.springframework.core.io.DefaultResourceLoader;
 import pl.elektrodemo.copilot.cases.AssessmentSource;
 import pl.elektrodemo.copilot.cases.CaseType;
+import pl.elektrodemo.copilot.cases.Confidence;
+import pl.elektrodemo.copilot.cases.ComplaintImageAssessment;
+import pl.elektrodemo.copilot.cases.ProbableCause;
+import pl.elektrodemo.copilot.cases.PolicyRuleEngine;
 import pl.elektrodemo.copilot.cases.DecisionCategory;
 import pl.elektrodemo.copilot.cases.EquipmentCategory;
 import pl.elektrodemo.copilot.cases.ReturnWindowStatus;
@@ -171,6 +175,25 @@ class ChatServiceTest {
         assertThat(out.deltaText()).isEqualTo(String.join("", plain));
         assertThat(out.last()).isEqualTo("done:MORE_INFO_NEEDED");
         assertThat(prompts(2).get(1).correctiveNote()).isEqualTo(FORBIDDEN_NOTE);
+    }
+
+    @Test
+    void c1ContextNeverEmitsAcceptedDecisionRegeneratesThenErrorsIfRepeated() {
+        CaseContextDto c1 = c1Context();
+        List<String> accepted = deltas("chat-decision-update.derived-accepted.sse");
+
+        replayInOrder(accepted, plain);
+        Recorder first = new Recorder();
+        service.stream(request(c1, history()), first);
+        assertThat(first.kinds()).doesNotContain("decision", "error");
+        assertThat(first.deltaText()).isEqualTo(String.join("", plain)).doesNotContain("Przyjęte");
+        assertThat(first.last()).isEqualTo("done:REJECTED");
+
+        org.mockito.Mockito.reset(llm);
+        replayInOrder(accepted, accepted);
+        Recorder second = new Recorder();
+        service.stream(request(c1, history()), second);
+        assertThat(second.events).containsExactly("error:LLM_FAILED");
     }
 
     @Test
@@ -363,6 +386,21 @@ class ChatServiceTest {
                         Set.of(DecisionCategory.ESCALATED, DecisionCategory.MORE_INFO_NEEDED), "", chatForbidden, "",
                         "R5"),
                 new DecisionRef(decision));
+    }
+
+    /** Complaint older than two years; rule facts come from the real engine (C1). */
+    private CaseContextDto c1Context() {
+        // manufacturing defect: no damage cause, so only the C1 rule can forbid ACCEPTED in chat
+        ComplaintImageAssessment defect = new ComplaintImageAssessment(true, null, true, "defekt", "obudowa",
+                ProbableCause.MANUFACTURING_DEFECT, "uzasadnienie", "opis", Confidence.HIGH);
+        RuleResult c1 = new PolicyRuleEngine().evaluate(CaseType.COMPLAINT, LocalDate.of(2020, 1, 1),
+                OffsetDateTime.parse("2026-11-26T10:00:00+01:00"), defect);
+        assertThat(c1.appliedRule()).isEqualTo("C1");
+        return new CaseContextDto(2, CaseType.COMPLAINT,
+                new CaseFormDto(CaseType.COMPLAINT, EquipmentCategory.SMARTPHONE, "Smartfon testowy",
+                        LocalDate.of(2020, 1, 1), ""),
+                OffsetDateTime.parse("2026-11-26T10:00:00+01:00"), defect,
+                AssessmentSource.LLM, null, null, c1, new DecisionRef(DecisionCategory.REJECTED));
     }
 
     private static CaseContextDto withDecision(CaseContextDto c, DecisionCategory category) {

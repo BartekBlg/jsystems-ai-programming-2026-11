@@ -86,9 +86,14 @@ public class PrescreenQuestionCatalog {
         String state = "Rodzaj zgłoszenia: " + form.caseType().polishLabel() + ". Kategoria: "
                 + form.category().polishLabel() + ". Data zgłoszenia: " + submissionDate + ". Data zakupu: "
                 + form.purchaseDate() + ".";
-        String modelAndReason = "<model_name>" + nullToEmpty(form.modelName()) + "</model_name>\n" + TAG_GUARD
-                + "\n<customer_reason>" + nullToEmpty(form.reason()) + "</customer_reason>";
+        String modelAndReason = "<model_name>" + escape(nullToEmpty(form.modelName())) + "</model_name>\n" + TAG_GUARD
+                + "\n<customer_reason>" + escape(nullToEmpty(form.reason())) + "</customer_reason>";
         return List.of(state, modelAndReason, imagePart(jpeg));
+    }
+
+    /** Entity escaping keeps customer text from closing the delimiter tags (same rule as the decision prompt). */
+    private static String escape(String text) {
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     private static Question noul(String instructions) {

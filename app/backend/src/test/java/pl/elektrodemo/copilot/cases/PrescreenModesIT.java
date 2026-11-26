@@ -233,6 +233,40 @@ class PrescreenModesIT {
         }
     }
 
+    /** Lower threshold so the captured laptop answers (device_category confidence 1, i.e. an integral double) pass. */
+    @Nested
+    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    @TestPropertySource(properties = {"app.decisions.mode=gated", "app.decisions.confidence-threshold=0.3"})
+    class GatedJsRoundTrip extends Base {
+
+        @Test
+        void contextRoundTrippedThroughJavaScriptStillVerifies() throws Exception {
+            stubA("a-complaint-laptop-1");
+            stubB("b-return");
+            stubDecisionLlm("decision-complaint-ok");
+
+            String form = ModesSupport.MAPPER.writeValueAsString(Map.of("caseType", "COMPLAINT", "category",
+                    "LAPTOP", "modelName", DEVICE_MODEL, "purchaseDate",
+                    ModesSupport.recentPurchase().toString(), "reason", COMPLAINT_REASON));
+            String assessment = api.postAssessment(port, form, "laptop-2.webp", ModesSupport.image("laptop-2.webp"))
+                    .body();
+            assertThat(assessment).contains("\"confidence\":1.0");
+            // The browser stores the response with JSON.parse and sends it back with JSON.stringify.
+            Process node = new ProcessBuilder("node", "-e",
+                    "process.stdout.write(JSON.stringify(JSON.parse(require('fs').readFileSync(0,'utf8'))))")
+                    .redirectErrorStream(true).start();
+            node.getOutputStream().write(assessment.getBytes(StandardCharsets.UTF_8));
+            node.getOutputStream().close();
+            String roundTripped = new String(node.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            assertThat(node.waitFor()).isZero();
+            assertThat(roundTripped).doesNotContain("\"confidence\":1.0");
+
+            HttpResponse<String> response = api.postJson(port, ModesSupport.DECISIONS, roundTripped);
+
+            assertThat(response.statusCode()).isEqualTo(200);
+        }
+    }
+
     @Nested
     @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
     @TestPropertySource(properties = "app.decisions.mode=gated")

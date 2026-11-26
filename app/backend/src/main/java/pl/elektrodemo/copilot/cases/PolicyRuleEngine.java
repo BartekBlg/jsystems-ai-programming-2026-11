@@ -93,8 +93,11 @@ public class PolicyRuleEngine {
         ReturnWindowStatus window = ReturnWindowStatus.NOT_APPLICABLE;
 
         if (submittedDate.isAfter(purchaseDate.plusYears(2))) {
+            // complaint-policy.md section 2.3: expiry depends on the purchase date only, so no chat message
+            // (for example a later delivery date) can change the outcome away from REJECTED.
             return new RuleResult(days, window, true, EnumSet.of(DecisionCategory.REJECTED), LIABILITY_EXPIRED_REASON,
-                    chatForbidden, "", "C1");
+                    EnumSet.of(DecisionCategory.ACCEPTED, DecisionCategory.ESCALATED,
+                            DecisionCategory.MORE_INFO_NEEDED), "", "C1");
         }
         if (!a.photoSufficient()) {
             return new RuleResult(days, window, false, EnumSet.of(DecisionCategory.MORE_INFO_NEEDED), "",

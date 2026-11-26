@@ -22,6 +22,7 @@ public class DecisionMessageValidator {
     private static final List<String> HEADINGS = List.of(
             "Decyzja", "Uzasadnienie", "Co widać na zdjęciu", "Kolejne kroki");
     private static final Pattern DECISION_HEADING = heading("Decyzja");
+    private static final Pattern JUSTIFICATION_HEADING = heading("Uzasadnienie");
     private static final Pattern ANY_HEADING = Pattern.compile("(?m)^##\\s");
     private static final Pattern PARAGRAPH_SIGN = Pattern.compile("§\\s?\\d+");
     private static final List<String> DISCLAIMER_MARKERS = List.of(
@@ -42,7 +43,8 @@ public class DecisionMessageValidator {
         if (category != null && !decisionSection(raw).contains(category.polishLabel())) {
             problems.add("decision label missing from ## Decyzja: " + category.polishLabel());
         }
-        if (!PARAGRAPH_SIGN.matcher(raw).find()) {
+        String justification = section(raw, JUSTIFICATION_HEADING);
+        if (!PARAGRAPH_SIGN.matcher(justification).find()) {
             problems.add("missing paragraph citation (§N)");
         }
         String required = rules.requiredReasonText();
@@ -51,8 +53,11 @@ public class DecisionMessageValidator {
         }
         String citation = rules.rejectionRequiresCitation();
         if (category == DecisionCategory.REJECTED && citation != null && !citation.isBlank()
-                && !Pattern.compile(Pattern.quote(citation) + "(?!\\d)").matcher(raw).find()) {
+                && !Pattern.compile(Pattern.quote(citation) + "(?!\\d)").matcher(justification).find()) {
             problems.add("rejection requires citation " + citation);
+        }
+        if ("C1".equals(rules.appliedRule()) && !mentionsManufacturerWarranty(raw)) {
+            problems.add("Brak wskazania gwarancji producenta");
         }
 
         return new ValidationResult(problems.isEmpty(), problems, normalize(raw, type));
@@ -75,8 +80,18 @@ public class DecisionMessageValidator {
         }
     }
 
+    /** ADR-002 3.3 C1 row: the next step is the manufacturer's warranty (any Polish inflection). */
+    private static boolean mentionsManufacturerWarranty(String raw) {
+        String lower = raw.toLowerCase(Locale.ROOT);
+        return (lower.contains("gwarancj") || lower.contains("gwarancyjn")) && lower.contains("producent");
+    }
+
     private static String decisionSection(String raw) {
-        Matcher start = DECISION_HEADING.matcher(raw);
+        return section(raw, DECISION_HEADING);
+    }
+
+    private static String section(String raw, Pattern headingPattern) {
+        Matcher start = headingPattern.matcher(raw);
         if (!start.find()) {
             return "";
         }

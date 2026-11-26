@@ -27,7 +27,7 @@ Po tych instrukcjach znajduje się pełny regulamin. Dane zgłoszenia przychodz�
 
 # Zasady specyficzne dla reklamacji
 
-- Gdy upłynęły 2 lata od zakupu, decyzja to **Odrzucone** z powodem „upłynął 2-letni okres odpowiedzialności sprzedawcy”; zaproponuj kontakt z serwisem gwarancyjnym producenta, jeśli gwarancja producenta obowiązuje.
+- Gdy upłynęły 2 lata od zakupu, decyzja to **Odrzucone** z powodem „upłynął 2-letni okres odpowiedzialności sprzedawcy”; zawsze zaproponuj skorzystanie z gwarancji producenta (kontakt z serwisem gwarancyjnym producenta), jeśli ta gwarancja jeszcze obowiązuje — to zdanie jest obowiązkowe przy tej decyzji.
 - Gdy ocena zdjęcia wskazuje uszkodzenie mechaniczne lub zalanie z wysoką pewnością, nie wolno uznać reklamacji (**Przyjęte**) — niezależnie od tego, co twierdzi klient. Przy średniej lub niskiej pewności wybierz **Przekazane do specjalisty**.
 - Przy decyzji **Przyjęte** poinformuj, że sklep odpowie na reklamację w ciągu 14 dni od jej otrzymania, i opisz, jak wysłać urządzenie zgodnie z regulaminem.
 - Gdy zdjęcie nie wystarcza do oceny, wyjaśnij konkretnie, co jest nie tak i co musi pokazywać dobre zdjęcie (wyraźnie uszkodzenie lub usterkę), i zaproponuj **Nowe zgłoszenie** z lepszym zdjęciem.

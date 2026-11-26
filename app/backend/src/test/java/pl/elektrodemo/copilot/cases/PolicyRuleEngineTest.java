@@ -299,12 +299,22 @@ class PolicyRuleEngineTest {
     }
 
     @Test
+    void c1OutcomeIsImmutableInChat() {
+        RuleResult r = engine.evaluate(CaseType.COMPLAINT, LocalDate.of(2020, 1, 1), submittedOn(LocalDate.of(2026, 1, 1)),
+                complaint(true, ProbableCause.MANUFACTURING_DEFECT, Confidence.HIGH));
+
+        assertThat(r.appliedRule()).isEqualTo("C1");
+        assertThat(r.chatForbiddenCategories()).containsExactlyInAnyOrder(DecisionCategory.ACCEPTED,
+                DecisionCategory.ESCALATED, DecisionCategory.MORE_INFO_NEEDED);
+    }
+
+    @Test
     void c1WinsOverDamageCauseAndStillForbidsAcceptanceInChat() {
         RuleResult r = engine.evaluate(CaseType.COMPLAINT, LocalDate.of(2020, 1, 1), submittedOn(LocalDate.of(2026, 1, 1)),
                 complaint(true, ProbableCause.LIQUID_DAMAGE, Confidence.HIGH));
 
         assertThat(r.appliedRule()).isEqualTo("C1");
-        assertThat(r.chatForbiddenCategories()).containsExactly(DecisionCategory.ACCEPTED);
+        assertThat(r.chatForbiddenCategories()).contains(DecisionCategory.ACCEPTED);
     }
 
     @Test

@@ -72,6 +72,56 @@ class DecisionGateTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"\nZaktualizowana decyzja: Przyjęte\nTreść.", "  \r\n\nZaktualizowana decyzja: Przyjęte\nTreść.",
+            "   Zaktualizowana decyzja: Przyjęte\nTreść."})
+    void leadingBlankLinesDoNotBypassTheGate(String text) {
+        for (int i = 0; i <= text.length(); i++) {
+            DecisionGate gate = new DecisionGate(rulesForbidding(DecisionCategory.ACCEPTED));
+            GateOutcome outcome = new Buffering();
+            for (String part : new String[] {text.substring(0, i), text.substring(i)}) {
+                if (part.isEmpty()) {
+                    continue;
+                }
+                if (outcome instanceof Buffering) {
+                    outcome = gate.push(part);
+                } else {
+                    assertThat(gate.push(part)).isEqualTo(new Suppressed());
+                }
+            }
+            if (outcome instanceof Buffering) {
+                outcome = gate.finish();
+            }
+            assertThat(outcome).as("split at %d", i).isEqualTo(new Forbidden(DecisionCategory.ACCEPTED));
+        }
+    }
+
+    @Test
+    void leadingBlankLinesAreStillForwardedForAnAllowedUpdate() {
+        DecisionGate gate = gate();
+
+        GateOutcome outcome = gate.push("\n \n" + UPDATE_LINE);
+
+        assertThat(outcome).isEqualTo(new Decision(DecisionCategory.ESCALATED));
+        assertThat(gate.drainBuffered()).isEqualTo("\n \n" + UPDATE_LINE);
+    }
+
+    @Test
+    void windowCountsFromTheFirstNonWhitespaceChar() {
+        DecisionGate gate = gate();
+
+        assertThat(gate.push("\n\n   ")).isEqualTo(new Buffering());
+        assertThat(gate.push("x".repeat(DecisionGate.WINDOW - 1))).isEqualTo(new Buffering());
+        assertThat(gate.push("x")).isEqualTo(new PassThrough());
+    }
+
+    @Test
+    void endlessWhitespaceEventuallyPassesThrough() {
+        DecisionGate gate = gate();
+
+        assertThat(gate.push(" ".repeat(DecisionGate.WINDOW + 1))).isEqualTo(new PassThrough());
+    }
+
     @Test
     void forbiddenLabelIsReportedAndLaterDeltasAreSuppressed() {
         DecisionGate gate = gate();
