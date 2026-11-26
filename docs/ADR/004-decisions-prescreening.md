@@ -74,7 +74,7 @@ Facts verified on 2026-11-25:
 | Component | Responsibility |
 |---|---|
 | `DecisionsClient` | The only class that calls `/api/alpha/decisions`. It uses Spring `RestClient` and the same OpenRouter key, with a 6 s timeout. It sends `model` = `DECISIONS_MODEL` (default `typesafe/jev-1.14`). It maps HTTP and JSON errors to `PrescreenUnavailableException`. Before calling, it checks the Jev image bounds (§3.2): an image outside them is not sent and the result is `UNAVAILABLE` (`IMAGE_OUT_OF_BOUNDS`). |
-| `PrescreenQuestionCatalog` | Builds the question maps for request A (photo), split into return and complaint variants, and for request B (consistency). The instructions are in Polish and the criteria texts are versioned (`catalogVersion`). |
+| `PrescreenQuestionCatalog` | Builds the question maps for request A (photo), split into return and complaint variants, and for request B (consistency). The instructions and criteria are in English (as in §3.2–§3.3 and the T04b Jev captures; the state text stays Polish) and are versioned (`catalogVersion`). |
 | `PrescreenService` | Runs A and B in parallel on virtual threads and normalizes the answers into `PrescreenResult`. It never throws to its caller: a failure produces `PrescreenResult.unavailable(reason)`. |
 | `ConfidenceGate` | Decides whether the result is `CONFIDENT` or `UNCERTAIN` (§3.4). Pure logic. |
 | `PrescreenAssessmentMapper` | Maps a `CONFIDENT` request-A result onto `ReturnImageAssessment` or `ComplaintImageAssessment` (ADR-000 §5). The Polish `visibleDescription` and `insufficiencyReason` are built from templates. Pure logic. |
