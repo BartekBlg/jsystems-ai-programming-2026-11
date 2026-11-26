@@ -121,7 +121,7 @@ Already executed by the orchestrator before this decision: T01, T03 (tests, `app
 | QA-B | Claude Sonnet | `gated` (CONFIDENT: phone-1 as COMPLAINT; UNCERTAIN: laptop-2 as RETURN) and `llm-only` (return + complaint); `prescreen.gated` log events with `visionLlmSkipped` | 8092–8093 | T35b |
 | QA-C | Claude Sonnet | ADR-005 D10 error paths: invalid key → AC-41; 1 ms vision timeout → AC-41; chat failure + Ponów by instance swap → AC-42; `429`; Decisions 404 → AC-49 fail-open | 8094–8096 | T35b |
 | QA-D | Claude Haiku | `PrescreenEvaluationIT` (`@Tag("eval")`, real Jev + vision LLM) → `docs/qa/hsdc-poc/prescreen-eval.md` | none (no UI) | backend only |
-| Human | the user | OpenRouter activity count for the key before and after the QA session | — | — |
+| Human | the user | ~~OpenRouter activity count for the key before and after the QA session~~ — **declined by the user (2026-11-26)**; proof of real calls relies on app-log evidence (`llm.usage` lines with OpenRouter `gen-…` request ids per step, `prescreen.*` events), `jar tf` without test doubles and the empty interception grep; `/api/v1/key` usage is not usable because the key is BYOK | — | — |
 | Consolidation | orchestrator | `docs/qa/hsdc-poc/report.md`, brand acceptance, defects → `T42-fix-n` rows | — | QA-A..D |
 
 Every QA agent stops the `java` process itself (not only its shell wrapper) — lesson from an orphaned T26b instance.
