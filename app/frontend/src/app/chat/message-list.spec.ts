@@ -106,4 +106,47 @@ describe('MessageListComponent', () => {
       (item) => item.textContent?.trim() === LABELS.newCase,
     )).toBe(false);
   });
+
+  describe('scroll position', () => {
+    const CLIENT_HEIGHT = 300;
+
+    /** jsdom has no layout: derive scrollHeight from rendered nodes and clamp scrollTop like a browser. */
+    function stubLayout(viewport: HTMLElement): void {
+      let top = 0;
+      const maxTop = () => Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+      Object.defineProperty(viewport, 'clientHeight', { configurable: true, get: () => CLIENT_HEIGHT });
+      Object.defineProperty(viewport, 'scrollHeight', {
+        configurable: true,
+        get: () => 100 * viewport.querySelectorAll('.message-content, .message-content h2, .message-content p, .message-content li').length,
+      });
+      Object.defineProperty(viewport, 'scrollTop', {
+        configurable: true,
+        get: () => Math.min(top, maxTop()),
+        set: (value: number) => {
+          top = Math.min(value, maxTop());
+        },
+      });
+    }
+
+    it('scrolls to the latest message after restored messages render (reload)', async () => {
+      const first = await recordedMessage('decision-return-ok');
+      const second = await recordedMessage('decision-return-more-info');
+      const restored = TestBed.createComponent(MessageListComponent);
+      const viewport = (restored.nativeElement as HTMLElement).querySelector('.message-list') as HTMLElement;
+      stubLayout(viewport);
+      store.messages.set([
+        first.message,
+        { ...second.message, id: 'm2' },
+        { ...first.message, id: 'm3' },
+        { ...second.message, id: 'm4' },
+      ]);
+      restored.detectChanges();
+      await restored.whenStable();
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await restored.whenStable();
+
+      expect(viewport.scrollHeight).toBeGreaterThan(CLIENT_HEIGHT);
+      expect(viewport.scrollTop).toBe(viewport.scrollHeight - viewport.clientHeight);
+    });
+  });
 });

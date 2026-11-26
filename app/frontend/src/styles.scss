@@ -6,6 +6,12 @@ html {
   @include theme.base();
   @include theme.brand-overrides();
   @include brand.tokens();
+  // Sticky header (76px, taller when wrapped at 360px) plus breathing room for scrolled-into-view fields.
+  scroll-padding-top: 96px;
+
+  @media (max-width: 480px) {
+    scroll-padding-top: 130px;
+  }
 }
 
 @include brand.global();

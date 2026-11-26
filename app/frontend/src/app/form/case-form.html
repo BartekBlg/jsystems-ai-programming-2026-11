@@ -30,7 +30,7 @@
       }
     </div>
 
-    <mat-form-field appearance="outline" class="full">
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
       <mat-label>{{ labels.category }}</mat-label>
       <mat-select formControlName="category">
         @for (key of categories; track key) {
@@ -42,7 +42,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full">
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
       <mat-label>{{ labels.modelName }}</mat-label>
       <input
         matInput
@@ -55,7 +55,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full">
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
       <mat-label>{{ labels.purchaseDate }}</mat-label>
       <input
         matInput
@@ -70,7 +70,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full">
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
       <mat-label>{{ reasonLabel() }}</mat-label>
       <textarea
         matInput

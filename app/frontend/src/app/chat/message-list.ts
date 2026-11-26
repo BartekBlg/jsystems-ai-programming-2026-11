@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Injector, afterNextRender, effect, inject, output, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
 import { CaseStore } from '../core/case-store';
@@ -20,6 +20,7 @@ export class MessageListComponent {
   readonly newCaseRequested = output<void>();
   protected readonly retryingIds = signal(new Set<string>());
   private readonly viewport = viewChild<ElementRef<HTMLElement>>('viewport');
+  private readonly injector = inject(Injector);
   private shouldFollow = true;
 
   constructor() {
@@ -27,7 +28,7 @@ export class MessageListComponent {
       this.store.messages().map((message) => message.text).join('\u0000');
       this.store.streaming();
       if (this.shouldFollow) {
-        queueMicrotask(() => this.scrollToBottom());
+        this.scheduleScrollToBottom();
       }
     });
   }
@@ -53,6 +54,20 @@ export class MessageListComponent {
 
   protected isRetrying(message: ChatMessage): boolean {
     return this.retryingIds().has(message.id);
+  }
+
+  /** Markdown and images lay out after the first render, so scroll again on the next frames. */
+  private scheduleScrollToBottom(): void {
+    afterNextRender(
+      () => {
+        this.scrollToBottom();
+        requestAnimationFrame(() => {
+          this.scrollToBottom();
+          requestAnimationFrame(() => this.scrollToBottom());
+        });
+      },
+      { injector: this.injector },
+    );
   }
 
   private scrollToBottom(): void {

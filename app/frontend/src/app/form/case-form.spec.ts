@@ -104,6 +104,14 @@ describe('CaseFormComponent', () => {
       expect(names).toEqual(FIELD_ORDER);
     });
 
+    it('lets every form field subscript grow so long errors wrap instead of clipping', () => {
+      const fields = Array.from(fixture.nativeElement.querySelectorAll('mat-form-field') as NodeListOf<HTMLElement>);
+      expect(fields.length).toBeGreaterThanOrEqual(4);
+      for (const field of fields) {
+        expect(field.querySelector('.mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-subscript-dynamic-size')).not.toBeNull();
+      }
+    });
+
     it('has no case type checked and no category selected by default', () => {
       expect(el('input[type="radio"]:checked')).toBeNull();
       expect(control('caseType').value).toBeNull();
