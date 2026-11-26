@@ -20,9 +20,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoResourceFoundException(
             NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Nie znaleziono zasobu.");
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(ErrorCode.NOT_FOUND.status(), ErrorCode.NOT_FOUND.detail());
         problem.setTitle("Not Found");
-        problem.setProperty("code", "NOT_FOUND");
+        problem.setProperty("code", ErrorCode.NOT_FOUND.name());
         return handleExceptionInternal(ex, problem, headers, HttpStatus.NOT_FOUND, request);
     }
 }

@@ -30,3 +30,33 @@ management:
     web:
       exposure:
         include: health
+
+# T05 shared contracts: env bindings (ADR-000 §7)
+llm:
+  api-key: ${OPENROUTER_API_KEY:}
+  base-url: ${OPENROUTER_BASE_URL:https://openrouter.ai/api/v1}
+  model: ${LLM_MODEL:openai/gpt-6-luna}
+  vision-model: ${LLM_VISION_MODEL:openai/gpt-6-luna}
+  decision-reasoning-effort: ${LLM_DECISION_REASONING_EFFORT:medium}
+  chat-reasoning-effort: ${LLM_CHAT_REASONING_EFFORT:low}
+  timeouts:
+    vision: 26s
+    decision: 34s
+    chat-first-token: 30s
+    chat-total: 90s
+  max-output-tokens:
+    vision: 4000
+    decision: 8000
+    chat: 4000
+
+app:
+  case-signing-key: ${CASE_SIGNING_KEY:}
+  rate-limit:
+    cases-per-hour: ${RATE_LIMIT_CASES_PER_HOUR:10}
+    chat-per-hour: ${RATE_LIMIT_CHAT_PER_HOUR:60}
+  decisions:
+    mode: ${DECISIONS_MODE:shadow}
+    model: ${DECISIONS_MODEL:openai/gpt-6-luna-decisions}
+    url: ${DECISIONS_URL:https://openrouter.ai/api/alpha/decisions}
+    confidence-threshold: ${DECISIONS_CONFIDENCE_THRESHOLD:0.80}
+    timeout: 6s
