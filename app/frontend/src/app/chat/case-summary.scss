@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.summary-panel {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 20px;
+  background: var(--surface-raised, #fff);
+  border: 3px solid var(--on-surface, #101820);
+  border-radius: 10px;
+  box-shadow: 6px 6px 0 var(--on-surface, #101820);
+}
+
+h2,
+h3 {
+  margin: 0 0 12px;
+  font-family: 'Bangers', 'Atkinson Hyperlegible', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+h2 {
+  font-size: 1.65rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+.summary-fields {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.summary-fields > div {
+  min-width: 0;
+}
+
+dt {
+  color: var(--muted, #4c5b66);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.summary-reason p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.reason--truncated {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.reason-toggle {
+  padding: 0;
+  color: var(--surface-strong, #004581);
+}
+
+.photo-section,
+.decision-section {
+  margin-top: 20px;
+}
+
+.photo-button {
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid var(--on-surface, #101820);
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 var(--on-surface, #101820);
+}
+
+.photo-button img {
+  display: block;
+  width: min(100%, 280px);
+  max-height: 220px;
+  object-fit: contain;
+}
+
+.decision-badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 6px 10px;
+  overflow-wrap: anywhere;
+  border: 2px solid var(--on-surface, #101820);
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.decision-badge--accepted {
+  color: #fff;
+  background: var(--positive, #167a3e);
+}
+
+.decision-badge--rejected {
+  color: var(--on-accent, #fff);
+  background: var(--accent, #d30f10);
+}
+
+.decision-badge--more-info-needed {
+  color: var(--on-accent-warm, #101820);
+  background: var(--accent-warm, #ffd447);
+}
+
+.decision-badge--escalated {
+  color: var(--on-surface-strong, #fff);
+  background: var(--surface-strong, #004581);
+}

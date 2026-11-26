@@ -1,0 +1,43 @@
+<section class="progress-screen">
+  @if (store.progress().error) {
+    <div class="progress-error" role="alert">
+      <p>{{ errorMessage() }}</p>
+      <div class="actions">
+        @if (store.errorCode() === 'INVALID_CASE_SIGNATURE') {
+          <button mat-flat-button type="button" class="primary" (click)="store.newCase()">
+            {{ labels.newCase }}
+          </button>
+        } @else {
+          <button mat-flat-button type="button" class="primary" (click)="store.retry()">
+            {{ labels.progress.retry }}
+          </button>
+        }
+        <button mat-stroked-button type="button" (click)="store.backToForm()">
+          {{ labels.progress.backToForm }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <ol class="progress-steps">
+      @for (step of [
+        { label: labels.progress.analysing, status: store.progress().assessment },
+        { label: labels.progress.deciding, status: store.progress().decision },
+      ]; track step.label) {
+        <li class="progress-step" [class]="'progress-step progress-step--' + step.status">
+          <span class="step-icon" aria-hidden="true">
+            @if (step.status === 'running') {
+              <mat-progress-spinner mode="indeterminate" diameter="24" />
+            } @else if (step.status === 'done') {
+              <span class="check">✓</span>
+            } @else {
+              <span class="waiting">○</span>
+            }
+          </span>
+          <span class="step-label">{{ step.label }}</span>
+          <span class="visually-hidden">{{ statusLabel(step.status) }}</span>
+        </li>
+      }
+    </ol>
+    <p class="progress-note">{{ labels.progress.note }}</p>
+  }
+</section>

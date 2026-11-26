@@ -1,0 +1,143 @@
+:host {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+}
+
+.message-list {
+  display: flex;
+  min-height: 240px;
+  max-height: min(66vh, 760px);
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+  padding: 4px 8px 8px 4px;
+  overscroll-behavior: contain;
+}
+
+.message {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: min(86%, 720px);
+  min-width: 0;
+  padding: 12px 14px;
+  border: 3px solid var(--on-surface, #101820);
+  box-shadow: 4px 4px 0 var(--on-surface, #101820);
+  overflow-wrap: anywhere;
+}
+
+.message--agent {
+  align-self: flex-start;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--chat-agent, #d9ecff);
+}
+
+.message--client {
+  align-self: flex-end;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--chat-client, #fff1b8);
+}
+
+.message-speaker {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted, #4c5b66);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.message-content {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.message-content :first-child {
+  margin-top: 0;
+}
+
+.message-content :last-child {
+  margin-bottom: 0;
+}
+
+.failed-message {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  color: var(--accent, #d30f10);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.failed-message button {
+  min-width: 0;
+}
+
+.inline-new-case {
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.new-case-button {
+  --mdc-filled-button-container-color: var(--accent, #d30f10);
+  --mdc-filled-button-label-text-color: var(--on-accent, #fff);
+  max-width: 100%;
+  white-space: normal;
+}
+
+.typing-indicator {
+  display: flex;
+  align-self: flex-start;
+  gap: 5px;
+  padding: 14px 16px;
+  border: 3px solid var(--on-surface, #101820);
+  border-radius: 14px 14px 14px 4px;
+  background: var(--chat-agent, #d9ecff);
+}
+
+.typing-indicator span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--on-surface, #101820);
+  animation: typing 1s infinite ease-in-out alternate;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 160ms;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 320ms;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes typing {
+  to {
+    opacity: 0.3;
+    transform: translateY(-3px);
+  }
+}
+
+@media (max-width: 480px) {
+  .message-list {
+    max-height: none;
+    min-height: 180px;
+  }
+
+  .message {
+    max-width: 94%;
+  }
+}

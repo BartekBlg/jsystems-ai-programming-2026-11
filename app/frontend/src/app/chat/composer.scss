@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.composer {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+  background: var(--surface-raised, #fff);
+  border: 3px solid var(--on-surface, #101820);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--on-surface, #101820);
+}
+
+label {
+  font-weight: 700;
+}
+
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  max-height: 144px;
+  padding: 10px;
+  resize: none;
+  color: var(--on-surface, #101820);
+  background: var(--surface-raised, #fff);
+  border: 3px solid var(--on-surface, #101820);
+  border-radius: 8px;
+  font: inherit;
+  overflow-wrap: anywhere;
+}
+
+textarea:focus-visible {
+  outline: 0;
+  box-shadow: 4px 4px 0 var(--on-surface, #101820);
+}
+
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.character-counter {
+  margin: 0 auto 0 0;
+  color: var(--muted, #4c5b66);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.send-button {
+  --mdc-filled-button-container-color: var(--accent, #d30f10);
+  --mdc-filled-button-label-text-color: var(--on-accent, #fff);
+}
+
+@media (max-width: 480px) {
+  .composer {
+    padding: 8px;
+  }
+}
