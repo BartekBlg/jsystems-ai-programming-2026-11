@@ -6,6 +6,7 @@ export const LABELS = {
   productName: 'Copilot serwisowy',
   demoNote: 'Wersja demonstracyjna — przykładowy regulamin fikcyjnego sklepu. Decyzja jest wstępna.',
   newCase: 'Nowe zgłoszenie',
+  loading: 'Ładowanie…',
 
   form: {
     title: 'Zgłoś zwrot lub reklamację',

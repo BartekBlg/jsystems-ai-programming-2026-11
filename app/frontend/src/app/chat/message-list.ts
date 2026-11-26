@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, output, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
 import { CaseStore } from '../core/case-store';
 import { LABELS } from '../core/labels';
 import { ChatMessage } from '../core/models';
@@ -8,6 +8,7 @@ import { ChatMessage } from '../core/models';
 @Component({
   selector: 'app-message-list',
   imports: [MatButtonModule, MarkdownModule],
+  providers: [provideMarkdown()],
   templateUrl: './message-list.html',
   styleUrl: './message-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

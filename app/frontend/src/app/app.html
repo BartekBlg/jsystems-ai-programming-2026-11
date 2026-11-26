@@ -15,20 +15,32 @@
 <main class="app-main">
   @switch (store.screen()) {
     @case ('form') {
-      <app-case-form
-        [initialDraft]="store.formDraft()"
-        [initialPhoto]="store.photo()"
-        [submitting]="store.screen() === 'progress'"
-        [interruptedNotice]="store.interruptedNotice()"
-        [serverFieldErrors]="store.fieldErrors()"
-        (submitted)="submit($event)"
-      />
+      @defer (when store.screen() === 'form') {
+        <app-case-form
+          [initialDraft]="store.formDraft()"
+          [initialPhoto]="store.photo()"
+          [submitting]="store.screen() === 'progress'"
+          [interruptedNotice]="store.interruptedNotice()"
+          [serverFieldErrors]="store.fieldErrors()"
+          (submitted)="submit($event)"
+        />
+      } @placeholder {
+        <p class="screen-loading" role="status">{{ labels.loading }}</p>
+      }
     }
     @case ('progress') {
-      <app-progress-screen />
+      @defer (when store.screen() === 'progress') {
+        <app-progress-screen />
+      } @placeholder {
+        <p class="screen-loading" role="status">{{ labels.loading }}</p>
+      }
     }
     @case ('chat') {
-      <app-chat-screen />
+      @defer (when store.screen() === 'chat') {
+        <app-chat-screen />
+      } @placeholder {
+        <p class="screen-loading" role="status">{{ labels.loading }}</p>
+      }
     }
   }
 </main>

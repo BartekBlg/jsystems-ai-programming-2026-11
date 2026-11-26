@@ -1,9 +1,7 @@
-import { ChangeDetectionStrategy, Component, effect, inject, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, effect, inject, untracked } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChatScreenComponent } from './chat/chat-screen';
-import { ConfirmNewCaseDialogComponent } from './chat/confirm-new-case.dialog';
 import { CaseStore } from './core/case-store';
 import { LABELS } from './core/labels';
 import { CaseForm } from './core/models';
@@ -20,7 +18,7 @@ import { ProgressScreenComponent } from './progress/progress-screen';
 export class App {
   protected readonly labels = LABELS;
   protected readonly store = inject(CaseStore);
-  private readonly dialog = inject(MatDialog);
+  private readonly injector = inject(Injector);
   private readonly snackBar = inject(MatSnackBar);
 
   constructor() {
@@ -36,7 +34,9 @@ export class App {
     void this.store.submit(event.form, event.photo);
   }
 
-  protected openNewCaseDialog(): void {
-    this.dialog.open(ConfirmNewCaseDialogComponent, { maxWidth: 'calc(100vw - 32px)' });
+  protected async openNewCaseDialog(): Promise<void> {
+    const { ConfirmNewCaseDialogComponent } = await import('./chat/confirm-new-case.dialog');
+    const { MatDialog } = await import('@angular/material/dialog');
+    this.injector.get(MatDialog).open(ConfirmNewCaseDialogComponent, { maxWidth: 'calc(100vw - 32px)' });
   }
 }

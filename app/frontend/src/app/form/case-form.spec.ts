@@ -1,7 +1,8 @@
 import { AbstractControl, NgControl } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { providePlDateAdapter } from '../core/pl-date-adapter';
 import { CASE_TYPE_LABELS, LABELS } from '../core/labels';
 import { FormDraft } from '../core/models';
 import { CaseFormComponent } from './case-form';
@@ -32,7 +33,7 @@ describe('CaseFormComponent', () => {
     globalThis.URL.revokeObjectURL = vi.fn();
     await TestBed.configureTestingModule({
       imports: [CaseFormComponent],
-      providers: [provideNativeDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }],
+      providers: [providePlDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }],
     }).compileComponents();
     fixture = TestBed.createComponent(CaseFormComponent);
     fixture.detectChanges();
@@ -175,6 +176,29 @@ describe('CaseFormComponent', () => {
       expect(control('reason').valid).toBe(false);
       control('caseType').setValue('RETURN');
       expect(control('reason').valid).toBe(true);
+    });
+
+    function typeDate(value: string): void {
+      const input = el('input[formControlName="purchaseDate"]') as HTMLInputElement;
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      control('purchaseDate').markAsTouched();
+      fixture.detectChanges();
+    }
+
+    it('accepts a typed Polish date 21.11.2026 without a parse error', () => {
+      typeDate('21.11.2026');
+      expect(control('purchaseDate').value).toEqual(new Date(2026, 10, 21));
+      expect(control('purchaseDate').errors?.['matDatepickerParse']).toBeUndefined();
+      expect(control('purchaseDate').valid).toBe(true);
+    });
+
+    it('shows the future-date error for tomorrow typed as DD.MM.YYYY', () => {
+      const t = new Date();
+      t.setDate(t.getDate() + 1);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      typeDate(`${pad(t.getDate())}.${pad(t.getMonth() + 1)}.${t.getFullYear()}`);
+      expect(text()).toContain(LABELS.errors.purchaseDateFuture);
     });
 
     it('a future purchase date (tomorrow) shows purchaseDateFuture; today is valid', () => {
