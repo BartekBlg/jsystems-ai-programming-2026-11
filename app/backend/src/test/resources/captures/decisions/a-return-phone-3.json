@@ -1,0 +1,105 @@
+{
+  "status" : 200,
+  "headers" : {
+    ":status" : [ "200" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a608754858c05b17-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 11:12:27 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=14,cfOrigin;dur=0,cfWorker;dur=237" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-dec-1795691546-cfvX79UEQ2V0IgdrGxlK" ],
+    "x-provider-name" : [ "TypeSafe" ]
+  },
+  "body" : {
+    "model" : "typesafe/jev-1.14-20261014",
+    "answers" : {
+      "photo_usable" : {
+        "type" : "noul",
+        "noul" : 0.83
+      },
+      "shows_declared_category" : {
+        "type" : "noul",
+        "noul" : 0.93
+      },
+      "device_category" : {
+        "type" : "choice",
+        "choice" : "smartphone",
+        "probabilities" : {
+          "laptop" : 0,
+          "smartphone" : 1,
+          "tablet" : 0,
+          "monitor" : 0,
+          "headphones" : 0,
+          "smartwatch" : 0,
+          "game_console" : 0,
+          "camera" : 0,
+          "other_device" : 0,
+          "no_device" : 0
+        },
+        "confidence" : 1
+      },
+      "visible_damage" : {
+        "type" : "noul",
+        "noul" : 0.06
+      },
+      "use_scratches" : {
+        "type" : "noul",
+        "noul" : 0.13
+      },
+      "use_dirt" : {
+        "type" : "noul",
+        "noul" : 0.26
+      },
+      "use_wear" : {
+        "type" : "noul",
+        "noul" : 0.12
+      },
+      "missing_protective_film" : {
+        "type" : "noul",
+        "noul" : 0.56
+      },
+      "missing_accessories" : {
+        "type" : "noul",
+        "noul" : 0.52
+      },
+      "condition" : {
+        "type" : "score",
+        "score" : 0.66,
+        "legend" : {
+          "0" : "new, unused",
+          "1" : "like new",
+          "2" : "light signs of use",
+          "3" : "clear wear",
+          "4" : "damaged"
+        },
+        "probabilities" : {
+          "0" : 0.62,
+          "1" : 0.23,
+          "2" : 0.07,
+          "3" : 0.04,
+          "4" : 0.04
+        },
+        "confidence" : 0.46
+      }
+    },
+    "usage" : {
+      "input_tokens" : 1271,
+      "output_tokens" : 267,
+      "cost" : 0,
+      "is_byok" : true,
+      "cost_details" : {
+        "upstream_inference_cost" : 5.3382E-5,
+        "upstream_inference_prompt_cost" : 5.3382E-5,
+        "upstream_inference_completions_cost" : 0
+      }
+    },
+    "id" : "gen-dec-1795691546-cfvX79UEQ2V0IgdrGxlK",
+    "provider" : "TypeSafe"
+  }
+}

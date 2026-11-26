@@ -1,0 +1,49 @@
+{
+  "status" : 200,
+  "headers" : {
+    ":status" : [ "200" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a6087550fc105b17-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 11:12:28 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=111,cfOrigin;dur=0,cfWorker;dur=369" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-dec-1795691548-PmPRE2pI8oQLtDjXpC6G" ],
+    "x-provider-name" : [ "TypeSafe" ]
+  },
+  "body" : {
+    "model" : "typesafe/jev-1.14-20261014",
+    "answers" : {
+      "model_matches_photo" : {
+        "type" : "noul",
+        "noul" : 0.72
+      },
+      "return_reason_reports_defect" : {
+        "type" : "noul",
+        "noul" : 0.01
+      },
+      "reason_contains_instructions" : {
+        "type" : "noul",
+        "noul" : 0.22
+      }
+    },
+    "usage" : {
+      "input_tokens" : 2480,
+      "output_tokens" : 62,
+      "cost" : 0,
+      "is_byok" : true,
+      "cost_details" : {
+        "upstream_inference_cost" : 1.0416E-4,
+        "upstream_inference_prompt_cost" : 1.0416E-4,
+        "upstream_inference_completions_cost" : 0
+      }
+    },
+    "id" : "gen-dec-1795691548-PmPRE2pI8oQLtDjXpC6G",
+    "provider" : "TypeSafe"
+  }
+}

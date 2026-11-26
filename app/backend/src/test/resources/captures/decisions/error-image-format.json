@@ -1,0 +1,25 @@
+{
+  "status" : 400,
+  "headers" : {
+    ":status" : [ "400" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a6087555eb455b17-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 11:12:29 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=36,cfOrigin;dur=0,cfWorker;dur=39" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-dec-1795691549-Xyz9b34oogZBuVlWarPM" ],
+    "x-openrouter-error-origin" : [ "platform" ]
+  },
+  "body" : {
+    "error" : {
+      "message" : "TypeSafe Decisions accepts only base64 data URL images in PNG or JPEG format",
+      "code" : 400
+    }
+  }
+}

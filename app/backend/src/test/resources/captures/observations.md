@@ -1,6 +1,6 @@
 ### Key usage and cost
 
-- The key is used BYOK: `GET /api/v1/key` `usage` stays at the same value (OpenRouter-billed cost 0). Real spend is in each response's `usage.cost_details.upstream_inference_cost` (sum over all non-stream captures about 0.0041 USD, each stream about 0.0004 USD), total well below 0.01 USD.
+- The key is used BYOK: `GET /api/v1/key` `usage` stays at the same value (OpenRouter-billed cost 0; unchanged also across the T04b Jev run). Real spend is in each response's `usage.cost_details.upstream_inference_cost` (sum over all non-stream captures about 0.0041 USD, each stream about 0.0004 USD), total well below 0.01 USD.
 
 ### Did OpenRouter honor `instructions`? YES
 
@@ -22,12 +22,25 @@
 - `responses/error-401` and `chat-invalid-key`: HTTP 401 `{"error":{"message":"User not found.","code":401}}`.
 - `responses/error-429`: MISSING (not provokable safely).
 
-### Decisions API: NOT CAPTURED (blocked upstream)
+### Decisions API (TypeSafe Jev 1.14, T04b, 2026-11-26)
 
-- Every valid request to `POST /api/alpha/decisions` (A, B, 10+2 calls) returned HTTP 401 with `error.message` = "HTTP 401: {... The OpenAI account associated with this API key has been deactivated ... code account_deactivated ...}" and `x-openrouter-error-origin: client`. The same key works on `/responses` (also BYOK), so the OpenAI account behind the Decisions model route rejects the call. No success response shape (`answers`, `noul`, `probabilities`, `confidence`, `score`, `legend`, `usage`) could be captured; none was invented.
-- Real findings from the 400 capture (`decisions/error-400`): validation happens before auth; question `type` is a discriminated union of `noul | choice | score | box`; error body is `{"error":{"message":"<zod issues JSON string>","code":400},"user_id":"<redacted>"}`.
-- Doc-derived (unverified) shapes, per OpenRouter docs: noul `{type, noul, confidence}`, choice `{type, choice, probabilities, confidence}`, score `{type, score (continuous), probabilities (string keys), confidence}` plus `legend` in the quickstart; refusal `{type:"refusal"}`; `usage{input_tokens, output_tokens, cost}`. The request `criteria` for choice is an object key -> description, for score an array (level order), as used in `decisions/*.request.json`.
-- Consequence: the gate labels for T41 cannot be computed; all image x case rows are NOT_CAPTURED. To be repeated when the key or account issue is fixed (delete `decisions/*` and rerun the tool; existing files are skipped unless `-Dcapture.force=true`).
+15 real calls (10 request A, 2 request B, 3 error probes); 12 returned 200, 3 were the expected errors. Unchanged from the first attempt: validation runs before auth (400 without a valid key needed). The old Luna route's 401 `account_deactivated` is gone.
+
+- **Model and provider.** Sent `model: "typesafe/jev-1.14"`; every 200 echoes `model: "typesafe/jev-1.14-20261014"` (dated snapshot) and `provider: "TypeSafe"` (first-party). Errors carry neither.
+- **Answer shapes (96 answers, 0 refusals).**
+  - `noul`: `{type, noul}` only. It has **no `confidence` field** in any of the captured noul answers (ADR-004 §2/§3.4 claim one; the documented fallback `max(p, 1-p)` is therefore what applies). Values have 2 decimals (e.g. 0.77).
+  - `choice`: `{type, choice, probabilities (all options, sum 1), confidence}`; often hard 1/0.
+  - `score`: `{type, score (continuous, e.g. 3.95), legend {"0": level text, ...} (present, echoes the criteria), probabilities (string keys "0".."N-1"), confidence}`.
+  - Top level: `{model, answers, usage, id, provider}`; `usage = {input_tokens, output_tokens, cost, is_byok, cost_details.upstream_inference_cost...}`. `usage.cost` is 0 (BYOK), the real cost is `cost_details.upstream_inference_cost` (about 0.0003 USD per image call, 0.0015 USD for all 12 successful calls). Input tokens about 6.9k per image call.
+- **Latency (12 successful calls).** min 229 ms, median 308 ms, max 597 ms (largest image laptop-1, 1482x1536). Far below the 6 s budget. Errors: 32 ms (400), 90 ms (400 image format), 171 ms (401).
+- **Refusals.** None among the 96 answers.
+- **Confidence behaviour.** Jev is confident (>= 0.80) on `choice` questions, but `noul` questions often sit at 0.55-0.80 (`max(p, 1-p)`) and `score` conditions are frequently low, so see the generated gate table: only phone-1 complaint is CONFIDENT, the rest UNCERTAIN. Typical blockers: `photo_usable` 0.70-0.78 and the `use_*`/`missing_*` return questions. The 0.80 threshold is likely too strict for noul and should be tuned in shadow mode (ADR-004 6.4).
+- **Errors.**
+  - `error-400` (invalid question type): `{"error":{"message":"<zod issues JSON string>","code":400},"user_id":"<redacted>"}`; discriminator options `noul|choice|score|box`.
+  - `error-401` (invalid key): `{"error":{"message":"User not found.","code":401}}`.
+  - `error-image-format` (original laptop-2.webp as `data:image/webp`): HTTP 400 `{"error":{"message":"TypeSafe Decisions accepts only base64 data URL images in PNG or JPEG format","code":400}}`.
+- **Image bounds.** All five downscaled JPEGs satisfied the Jev bounds (dimensions logged in each meta): laptop-1 1482x1536, laptop-2 863x843, phone-1 900x1200, phone-2 387x516, phone-3 449x445. The bounds-violation, 413 and refusal paths were not captured (no image generated to provoke them; no refusal occurred).
+- **Request B.** Injection guard sentence appended to every B question. The model_name/reason text does not influence A. B answers are plain noul (e.g. b-return: `return_reason_reports_defect` 0.01 for "Zmieniłem zdanie...", `reason_contains_instructions` 0.22; b-complaint: `description_matches_photo` 0.04, `model_matches_photo` 0.01 for a Samsung S24 label on phone-2).
 
 ### Other notes
 

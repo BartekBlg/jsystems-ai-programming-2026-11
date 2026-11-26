@@ -1,0 +1,85 @@
+{
+  "model" : "typesafe/jev-1.14",
+  "questions" : {
+    "photo_usable" : {
+      "type" : "noul",
+      "instructions" : "The photo is sharp and well lit, and shows the device clearly enough to judge its physical condition."
+    },
+    "shows_declared_category" : {
+      "type" : "noul",
+      "instructions" : "The photo shows a device of the declared category."
+    },
+    "device_category" : {
+      "type" : "choice",
+      "instructions" : "Which device category is shown.",
+      "criteria" : {
+        "laptop" : "laptop",
+        "smartphone" : "smartphone",
+        "tablet" : "tablet",
+        "monitor" : "monitor",
+        "headphones" : "headphones",
+        "smartwatch" : "smartwatch",
+        "game_console" : "game console",
+        "camera" : "camera",
+        "other_device" : "other device",
+        "no_device" : "no device"
+      }
+    },
+    "visible_damage" : {
+      "type" : "noul",
+      "instructions" : "The device has visible physical damage (crack, dent, break, burn, liquid marks); ignore packaging and shadows."
+    },
+    "condition" : {
+      "type" : "score",
+      "instructions" : "Overall condition.",
+      "criteria" : [ "new, unused", "like new", "light signs of use", "clear wear", "damaged" ]
+    },
+    "damage_cause" : {
+      "type" : "choice",
+      "instructions" : "Most probable cause of the visible damage or defect.",
+      "criteria" : {
+        "manufacturing_defect" : "manufacturing defect",
+        "normal_wear" : "normal wear",
+        "mechanical_damage" : "mechanical damage",
+        "liquid_damage" : "liquid damage",
+        "unknown" : "unknown",
+        "no_damage_visible" : "no damage visible"
+      }
+    },
+    "damage_type" : {
+      "type" : "choice",
+      "instructions" : "Type of the visible damage.",
+      "criteria" : {
+        "screen_crack" : "screen crack",
+        "housing_crack_or_dent" : "housing crack or dent",
+        "scratches" : "scratches",
+        "liquid_marks" : "liquid marks",
+        "burn_or_swelling" : "burn or swelling",
+        "missing_or_broken_part" : "missing or broken part",
+        "display_defect" : "display defect",
+        "none_visible" : "none visible",
+        "other" : "other"
+      }
+    },
+    "damage_location" : {
+      "type" : "choice",
+      "instructions" : "Where the damage is.",
+      "criteria" : {
+        "screen" : "screen",
+        "housing" : "housing",
+        "keyboard_or_buttons" : "keyboard or buttons",
+        "ports" : "ports",
+        "back_cover" : "back cover",
+        "camera_or_lens" : "camera or lens",
+        "other" : "other",
+        "none" : "none"
+      }
+    }
+  },
+  "state" : [ "Zgłoszona kategoria sprzętu: Smartfon. Rodzaj zgłoszenia: Reklamacja.", {
+    "type" : "image_url",
+    "image_url" : {
+      "url" : "<data:image/jpeg;base64 omitted, 59867 chars>"
+    }
+  } ]
+}

@@ -62,7 +62,7 @@ Facts verified on 2026-11-25:
   - Images: **only `image/png` and `image/jpeg`** (anything else, including animated PNG, is a `400`). Each side **256–1,568 px**, total 78,400–2,458,624 px (below → `400`, above → `413`); each decoded image ≤ 16 MiB; request body ≤ 32 MiB. **EXIF orientation is not applied** by Jev. The backend sends its downscaled JPEG (ADR-001 §3.4: EXIF-rotated, longer side ≤ 1,536 px, so the upper bounds always hold).
   - Image parts: `{"type":"image_url","image_url":{"url":"data:image/jpeg;base64,…"}}` anywhere in `state` (the top-level array placement used here is valid); a top-level `assets` map also exists and is not used.
   - Every request with an image runs in TypeSafe's long-context mode, which the docs describe as slower and less accurate than the default text mode. Latency is not published; the 6 s timeout is kept and is checked by the T04 captures and the evaluation suite.
-  - Each answer carries `confidence`, including `noul` (example: `noul` 0.0412 → `confidence` 0.9588). Jev is not an LLM and returns no reasoning text.
+  - `choice` and `score` answers carry `confidence`. **`noul` answers do not** in practice: all 36 captured Jev 1.14 `noul` answers (T04b, 2026-11-26) are `{type, noul}` only, with two-decimal probabilities, although the guide's example shows a `confidence`. `score` answers include `legend`; a `score` can report `confidence: 0` with a flat distribution. No refusals occurred in 96 captured answers. Captured latency 229–597 ms per image request (median 308 ms). `usage.cost` is 0 for this BYOK key; `cost_details.upstream_inference_cost` holds the real cost (about $0.0003 per image call). Jev is not an LLM and returns no reasoning text.
 - **Calibration.** The OpenRouter docs say "calibrated probability distributions" but give no method or threshold guidance. The 0.80 threshold is therefore a PoC assumption, validated in `shadow` mode (Decision 6.4).
 
 ---
@@ -134,7 +134,7 @@ Request B results **never** feed the `ImageAssessment`, the gate or the vision L
 
 - The confidence of each answer is defined as:
   - `choice` and `score`: the `confidence` field;
-  - `noul`: the `confidence` field returned by Jev; if it is absent, `max(p, 1 − p)` (the two agree on the documented example: `noul` 0.0412 → `confidence` 0.9588);
+  - `noul`: the `confidence` field if present, otherwise `max(p, 1 − p)`. Jev 1.14 omits the field for `noul` in every capture, so `max(p, 1 − p)` is what applies;
   - refusal, missing answer or unexpected type: `0` (fail closed).
 - A result is `CONFIDENT` only if **all** request-A questions for the case type have confidence ≥ `DECISIONS_CONFIDENCE_THRESHOLD` (default `0.80`) and both of these hold:
   - `photo_usable` and `shows_declared_category` are both `true` (p ≥ 0.5), or both `false`. A confident "photo not usable" is a valid result and maps to `photoSufficient = false`.
@@ -295,7 +295,7 @@ The browser API (ADR-001 §5) is unchanged apart from the new signed `caseContex
 **Context:** The user asked to replace `openai/gpt-6-luna-decisions` with TypeSafe Jev, pinned to version 1.14. In addition, the T04 captures showed that every Luna Decisions request with the project key failed with a real `401 account_deactivated`, because OpenAI models are routed through a deactivated BYOK OpenAI account; Jev is served by TypeSafe and does not use that account.
 **Decision:** `DECISIONS_MODEL` defaults to the exact slug `typesafe/jev-1.14`. The request and response objects (`DecisionsRequest`, `DecisionsResponse`) keep the OpenRouter map-based shape, with these Jev-specific rules:
 - images are sent only as EXIF-rotated JPEG data URLs inside `state`, and only when they are within 256–1,568 px per side and 78,400–2,458,624 px in total; otherwise pre-screening is skipped (`UNAVAILABLE`, `IMAGE_OUT_OF_BOUNDS`);
-- `noul` confidence uses Jev's `confidence` field (fallback `max(p, 1 − p)`);
+- `noul` confidence uses a `confidence` field when present, otherwise `max(p, 1 − p)` (Jev 1.14 omits it, so the fallback applies);
 - `score` is read as a continuous value; the level used by the mapper is the argmax of `probabilities`;
 - request-B instructions carry the guide's injection guard;
 - the alias `~typesafe/jev-latest` is not used; the echoed snapshot id is logged;
@@ -308,7 +308,8 @@ The question catalog (ids, types, criteria), the gate, the modes and fail-open a
 - Upscaling small images to Jev's minimum: invents detail and could bias the answers.
 - The `assets` map: equivalent for one image, and an unreferenced asset is a `400`.
 **Consequences:**
-- (+) Pre-screening is callable with the project key; lower input price; `noul` answers come with an explicit confidence.
+- (+) Pre-screening is callable with the project key (12/12 captured requests returned 200, median latency 308 ms); lower input price.
+- (-) With `noul` confidence = `max(p, 1 − p)`, many photo answers fall between 0.55 and 0.78, so with the 0.80 threshold only 1 of 10 captured image × case-type combinations is `CONFIDENT` (phone-1 as a complaint). `gated` mode will rarely skip the vision LLM until the threshold is re-tuned from shadow-mode data (§6.4).
 - (-) Image requests run in Jev's long-context mode, which the vendor calls slower and less accurate; the 6 s timeout and the 0.80 threshold must be re-validated by captures and the evaluation suite. Very small photos skip pre-screening.
 - (-) The earlier Luna Decisions captures are obsolete; T04 re-captures requests A and B with Jev before T24 writes stubs.
 **Review trigger:** A new Jev version, a captured latency that misses the 6 s budget, or shadow-mode agreement below the §3.8 criterion.
@@ -460,7 +461,7 @@ sequenceDiagram
 | Signed context | Integration | Tampered `prescreen` confidence | `401 INVALID_CASE_SIGNATURE` | — |
 | Shadow logging | Integration (log capture) | `shadow` run | One `prescreen.shadow` event with agreement booleans and no text content | LLM failure: no comparison event, warning logged |
 | Jev image bounds | Unit | Downscaled JPEG 1536×1152; 300×200; 255×600; 280×280 (78,400 px); 279×280 | Sent / sent / skipped (`IMAGE_OUT_OF_BOUNDS`) / sent / skipped | No upscaling; gate gets `UNAVAILABLE` and the LLM path runs |
-| Jev answer parsing | Unit (captures) | Captured Jev `noul`, `choice`, `score` answers | `noul` confidence from the field (fallback `max(p,1−p)` when absent); `score` level = argmax of `probabilities`; dated `model` id logged | Unknown fields (`is_byok`, `cost_details`) ignored |
+| Jev answer parsing | Unit (captures) | Captured Jev `noul`, `choice`, `score` answers | `noul` confidence `max(p,1−p)` (Jev 1.14 sends no field; a field, if ever present, takes precedence); `score` level = argmax of `probabilities`; dated `model` id logged | Unknown fields (`is_byok`, `cost_details`) ignored |
 | Contract with alpha API | Integration (captures) | Captured A and B responses | DTO parsing succeeds; unknown fields ignored | Refusal answers in a capture, if obtainable |
 | Evaluation | Manual (`@Tag("eval")`, real API) | `assets/example-images/*` × both case types | `target/prescreen-eval.md` with gate, agreement, latency, cost | Not part of `verify` |
 
