@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface, #fff9eb);
+  border-bottom: 3px solid var(--ink, #101820);
+}
+
+.app-header__inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  font-family: 'Bangers', 'Atkinson Hyperlegible', sans-serif;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--accent, #d30f10);
+  min-width: 158px;
+}
+
+.product-name {
+  font-weight: 700;
+}
+
+.demo-note {
+  margin: 0;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 14px;
+  background: var(--accent-warm, #ffc72c);
+  border-bottom: 3px solid var(--ink, #101820);
+}
+
+.app-main {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
