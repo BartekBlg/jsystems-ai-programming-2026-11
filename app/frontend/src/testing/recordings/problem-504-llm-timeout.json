@@ -1,0 +1,18 @@
+{
+  "status": 504,
+  "headers": {
+    "connection": "keep-alive",
+    "content-type": "application/problem+json",
+    "date": "Thu, 26 Nov 2026 12:58:12 GMT",
+    "keep-alive": "timeout=60",
+    "transfer-encoding": "chunked"
+  },
+  "body": {
+    "type": "about:blank",
+    "title": "Gateway Timeout",
+    "status": 504,
+    "detail": "Nie udało się przygotować decyzji. Spróbuj ponownie za chwilę.",
+    "code": "LLM_TIMEOUT",
+    "instance": "/api/cases/assessments"
+  }
+}

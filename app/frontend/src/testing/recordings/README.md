@@ -19,7 +19,7 @@ Never edit these files; re-record instead. Model outputs vary between runs.
 | problem-413-too-large | 413 | PHOTO_TOO_LARGE |
 | problem-429 | 429 | RATE_LIMITED (instance with RATE_LIMIT_CASES_PER_HOUR=1) |
 | problem-502-llm-failed | 502 | LLM_FAILED (invalid-key instance) |
-| problem-504-llm-timeout | NOT RECORDED | the 1 ms vision timeout override did not produce a 504, see `_unreproduced/README.md` |
+| problem-504-llm-timeout | 504 | LLM_TIMEOUT, recorded at commit b3e58d2 (valid key, `--llm.timeouts.vision=1ms`, DECISIONS_MODE=llm-only); earlier failed attempts are in `_unreproduced/README.md` |
 | chat-plain.sse | 200 | `delta` events, then `done` |
 | chat-decision-update.sse | 200 | `decision` (ESCALATED) first, then `delta`s, `done` |
 | chat-error.sse | 200 | `event: error` `LLM_FAILED` (invalid-key instance, same signing key) |
