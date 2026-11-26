@@ -4,9 +4,31 @@
       <span class="wordmark">{{ labels.brandWordmark }}</span>
       <span class="product-name">{{ labels.productName }}</span>
     </div>
+    @if (store.screen() === 'chat') {
+      <button mat-flat-button type="button" class="new-case" (click)="openNewCaseDialog()">
+        {{ labels.newCase }}
+      </button>
+    }
   </div>
 </header>
 <p class="demo-note" role="note">{{ labels.demoNote }}</p>
 <main class="app-main">
-  <!-- Screens (form / progress / chat) are wired in T35. -->
+  @switch (store.screen()) {
+    @case ('form') {
+      <app-case-form
+        [initialDraft]="store.formDraft()"
+        [initialPhoto]="store.photo()"
+        [submitting]="store.screen() === 'progress'"
+        [interruptedNotice]="store.interruptedNotice()"
+        [serverFieldErrors]="store.fieldErrors()"
+        (submitted)="submit($event)"
+      />
+    }
+    @case ('progress') {
+      <app-progress-screen />
+    }
+    @case ('chat') {
+      <app-chat-screen />
+    }
+  }
 </main>

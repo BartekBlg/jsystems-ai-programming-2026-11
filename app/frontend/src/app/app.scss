@@ -46,7 +46,7 @@
   padding: 8px 16px;
   text-align: center;
   font-size: 14px;
-  background: var(--accent-warm, #ffc72c);
+  background: var(--accent-warm, #ffd447);
   border-bottom: 3px solid var(--ink, #101820);
 }
 
@@ -54,4 +54,15 @@
   max-width: 1140px;
   margin: 0 auto;
   padding: 24px 16px 48px;
+}
+
+.new-case {
+  flex: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .app-header__inner {
+    flex-wrap: wrap;
+  }
 }
