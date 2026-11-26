@@ -1,0 +1,59 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 2051 chars, sha256 2b21543f617ccb4c>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "Oceń zdjęcie zgodnie z instrukcją. Kategoria sprzętu: Laptop."
+    }, {
+      "type" : "input_image",
+      "image_url" : "<data:image/jpeg;base64 omitted, 287219 chars>"
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "low"
+  },
+  "max_output_tokens" : 4000,
+  "text" : {
+    "format" : {
+      "type" : "json_schema",
+      "name" : "return_image_assessment",
+      "strict" : true,
+      "schema" : {
+        "type" : "object",
+        "properties" : {
+          "photoSufficient" : {
+            "type" : "boolean"
+          },
+          "insufficiencyReason" : {
+            "type" : "string"
+          },
+          "damageVisible" : {
+            "type" : "boolean"
+          },
+          "signsOfUse" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "SCRATCHES", "DIRT", "WEAR", "MISSING_PROTECTIVE_FILM", "MISSING_ACCESSORIES" ]
+            }
+          },
+          "resellableAsNew" : {
+            "type" : "boolean"
+          },
+          "visibleDescription" : {
+            "type" : "string"
+          },
+          "confidence" : {
+            "type" : "string",
+            "enum" : [ "HIGH", "MEDIUM", "LOW" ]
+          }
+        },
+        "required" : [ "photoSufficient", "insufficiencyReason", "damageVisible", "signsOfUse", "resellableAsNew", "visibleDescription", "confidence" ],
+        "additionalProperties" : false
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 7972 chars, sha256 afc42220a6f34b5f>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "# Dane zgłoszenia\n\nRodzaj zgłoszenia: Zwrot\nKategoria sprzętu: Laptop\nModel urządzenia: <model_urzadzenia>Lenovo ThinkPad T14 Gen 4</model_urzadzenia>\nData zakupu: 2026-11-06\nData zgłoszenia: 2026-11-26\nPowód: <opis_klienta></opis_klienta>\nOcena zdjęcia (JSON): {\"photoSufficient\":true,\"insufficiencyReason\":\"\",\"damageVisible\":false,\"signsOfUse\":[\"WEAR\"],\"resellableAsNew\":false,\"visibleDescription\":\"Otwarty laptop Lenovo ThinkPad. Ekran jest włączony, a klawiatura, touchpad i obudowa są widoczne. Na powierzchni obudowy i klawiaturze widać lekkie ślady zużycia; nie widać pęknięć ani innych wyraźnych uszkodzeń.\",\"confidence\":\"MEDIUM\"}\n\n## Fakty wyliczone przez system\nDni od zakupu: 20\nDozwolone kategorie: MORE_INFO_NEEDED\n"
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "medium"
+  },
+  "max_output_tokens" : 8000,
+  "text" : {
+    "format" : {
+      "type" : "json_schema",
+      "name" : "decision_draft",
+      "strict" : true,
+      "schema" : {
+        "type" : "object",
+        "properties" : {
+          "category" : {
+            "type" : "string",
+            "enum" : [ "ACCEPTED", "REJECTED", "MORE_INFO_NEEDED", "ESCALATED" ]
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "category", "message" ],
+        "additionalProperties" : false
+      }
+    }
+  }
+}

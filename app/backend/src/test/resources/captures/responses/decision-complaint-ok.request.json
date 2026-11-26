@@ -1,0 +1,37 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 8255 chars, sha256 9b9b2e864dbd0feb>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "# Dane zgłoszenia\n\nRodzaj zgłoszenia: Reklamacja\nKategoria sprzętu: Smartfon\nModel urządzenia: <model_urzadzenia>Samsung Galaxy S24</model_urzadzenia>\nData zakupu: 2026-05-26\nData zgłoszenia: 2026-11-26\nPowód: <opis_klienta>Ekran ma uszkodzenie, problem pojawił się po kilku tygodniach używania.</opis_klienta>\nOcena zdjęcia (JSON): {\"photoSufficient\":true,\"insufficiencyReason\":\"\",\"defectVisible\":true,\"defectType\":\"Pęknięty ekran z uszkodzeniem wyświetlacza\",\"defectLocation\":\"Górna część ekranu, szczególnie lewy górny róg; uszkodzenie i przebarwiony pas biegną przez środek\",\"probableCause\":\"MECHANICAL_DAMAGE\",\"causeReasoning\":\"Widoczne są liczne pęknięcia szkła oraz duże czarne i kolorowe ślady na wyświetlaczu. Obraz wskazuje na uszkodzenie mechaniczne, choć na zdjęciu nie widać jego konkretnego źródła.\",\"visibleDescription\":\"Smartfon jest włączony, ale jego ekran jest mocno popękany. W górnej części widać liczne pęknięcia, a przez ekran biegną duże czarne obszary oraz wąski zielono-fioletowy pas; część wyświetlanych informacji jest zasłonięta.\",\"confidence\":\"MEDIUM\"}\n\n## Fakty wyliczone przez system\nDni od zakupu: 184\nDozwolone kategorie: ESCALATED\n"
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "medium"
+  },
+  "max_output_tokens" : 8000,
+  "text" : {
+    "format" : {
+      "type" : "json_schema",
+      "name" : "decision_draft",
+      "strict" : true,
+      "schema" : {
+        "type" : "object",
+        "properties" : {
+          "category" : {
+            "type" : "string",
+            "enum" : [ "ACCEPTED", "REJECTED", "MORE_INFO_NEEDED", "ESCALATED" ]
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "category", "message" ],
+        "additionalProperties" : false
+      }
+    }
+  }
+}

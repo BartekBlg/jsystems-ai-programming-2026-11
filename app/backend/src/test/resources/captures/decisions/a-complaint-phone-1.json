@@ -1,0 +1,25 @@
+{
+  "status" : 401,
+  "headers" : {
+    ":status" : [ "401" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a608195aef4e3350-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 10:09:41 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=17,cfOrigin;dur=0,cfWorker;dur=56" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-dec-1795687781-mGtJmK1tatsPhT1BuViS" ],
+    "x-openrouter-error-origin" : [ "client" ]
+  },
+  "body" : {
+    "error" : {
+      "message" : "HTTP 401: {\n  \"error\": {\n    \"message\": \"The OpenAI account associated with this API key has been deactivated. If you are the developer for this OpenAI app, please check your email for more information. If you are seeing this error while using another app or site, please reach out to them for more help.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"account_deactivated\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+      "code" : 401
+    }
+  }
+}

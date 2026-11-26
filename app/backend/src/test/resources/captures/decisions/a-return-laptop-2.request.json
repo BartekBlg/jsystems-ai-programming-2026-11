@@ -1,0 +1,64 @@
+{
+  "model" : "openai/gpt-6-luna-decisions",
+  "questions" : {
+    "photo_usable" : {
+      "type" : "noul",
+      "instructions" : "The photo is sharp and well lit, and shows the device clearly enough to judge its physical condition."
+    },
+    "shows_declared_category" : {
+      "type" : "noul",
+      "instructions" : "The photo shows a device of the declared category."
+    },
+    "device_category" : {
+      "type" : "choice",
+      "instructions" : "Which device category is shown.",
+      "criteria" : {
+        "laptop" : "laptop",
+        "smartphone" : "smartphone",
+        "tablet" : "tablet",
+        "monitor" : "monitor",
+        "headphones" : "headphones",
+        "smartwatch" : "smartwatch",
+        "game_console" : "game console",
+        "camera" : "camera",
+        "other_device" : "other device",
+        "no_device" : "no device"
+      }
+    },
+    "visible_damage" : {
+      "type" : "noul",
+      "instructions" : "The device has visible physical damage (crack, dent, break, burn, liquid marks); ignore packaging and shadows."
+    },
+    "use_scratches" : {
+      "type" : "noul",
+      "instructions" : "Visible scratches on the device."
+    },
+    "use_dirt" : {
+      "type" : "noul",
+      "instructions" : "Visible dirt, fingerprints or stains on the device."
+    },
+    "use_wear" : {
+      "type" : "noul",
+      "instructions" : "Visible wear (worn keys, rubbed paint, polished areas)."
+    },
+    "missing_protective_film" : {
+      "type" : "noul",
+      "instructions" : "A factory protective film is visibly missing where one is normally present (only if this can be judged)."
+    },
+    "missing_accessories" : {
+      "type" : "noul",
+      "instructions" : "Accessories that normally belong in the photographed set are visibly missing (only if this can be judged)."
+    },
+    "condition" : {
+      "type" : "score",
+      "instructions" : "Overall condition.",
+      "criteria" : [ "new, unused", "like new", "light signs of use", "clear wear", "damaged" ]
+    }
+  },
+  "state" : [ "Zgłoszona kategoria sprzętu: Laptop. Rodzaj zgłoszenia: Zwrot.", {
+    "type" : "image_url",
+    "image_url" : {
+      "url" : "<data:image/jpeg;base64 omitted, 287219 chars>"
+    }
+  } ]
+}

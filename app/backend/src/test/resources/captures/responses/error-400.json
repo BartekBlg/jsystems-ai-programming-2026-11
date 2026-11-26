@@ -1,0 +1,27 @@
+{
+  "status" : 400,
+  "headers" : {
+    ":status" : [ "400" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a6081944fb573350-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 10:09:38 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=3,cfOrigin;dur=0,cfWorker;dur=9" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-openrouter-release" : [ "api;6974da3e-2d30-4253-9b9d-763143ceef81" ]
+  },
+  "body" : {
+    "error" : {
+      "code" : "invalid_prompt",
+      "message" : "Invalid Responses API request"
+    },
+    "metadata" : {
+      "raw" : "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"max\",\n      \"xhigh\",\n      \"high\",\n      \"medium\",\n      \"low\",\n      \"minimal\",\n      \"none\"\n    ],\n    \"path\": [\n      \"reasoning\",\n      \"effort\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"max\\\"|\\\"xhigh\\\"|\\\"high\\\"|\\\"medium\\\"|\\\"low\\\"|\\\"minimal\\\"|\\\"none\\\"\"\n  }\n]"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 7075 chars, sha256 eaed58e78ba94775>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "# Dane zgłoszenia\n\nRodzaj zgłoszenia: Zwrot\nKategoria sprzętu: Laptop\nModel urządzenia: <model_urzadzenia>Lenovo ThinkPad T14 Gen 4</model_urzadzenia>\nData zakupu: 2026-11-06\nData zgłoszenia: 2026-11-26\nPowód: <opis_klienta></opis_klienta>\nOcena zdjęcia (JSON): {\"photoSufficient\":true,\"insufficiencyReason\":\"\",\"damageVisible\":false,\"signsOfUse\":[\"WEAR\"],\"resellableAsNew\":false,\"visibleDescription\":\"Otwarty laptop Lenovo ThinkPad. Ekran jest włączony, a klawiatura, touchpad i obudowa są widoczne. Na powierzchni obudowy i klawiaturze widać lekkie ślady zużycia; nie widać pęknięć ani innych wyraźnych uszkodzeń.\",\"confidence\":\"MEDIUM\"}\n\n## Fakty wyliczone przez system\nDni od zakupu: 20\nDozwolone kategorie: MORE_INFO_NEEDED\nAktualna decyzja: Potrzebne dodatkowe informacje\nNiedozwolone w rozmowie: Odrzucone\n"
+    } ]
+  }, {
+    "type" : "message",
+    "role" : "assistant",
+    "id" : "msg_0",
+    "status" : "completed",
+    "content" : [ {
+      "type" : "output_text",
+      "text" : "Dzień dobry, dziękujemy za zgłoszenie.\n\n## Decyzja\nPotrzebne dodatkowe informacje. Podaj proszę datę dostawy laptopa.\n\n## Uzasadnienie\nOd daty zakupu minęło 20 dni, a termin zwrotu liczy się od dnia dostawy. Zgodnie z §3 ust. 1–2 potrzebujemy daty dostawy, aby ocenić, czy zgłoszenie mieści się w terminie określonym w §2 ust. 1. Widoczne ślady zużycia nie odbierają prawa do zwrotu; mogą jednak wpłynąć na zmniejszenie wartości towaru, które oceni specjalista po otrzymaniu urządzenia (§4 ust. 2–3).\n\n## Co widać na zdjęciu\nLaptop jest otwarty, ekran włączony, a klawiatura, touchpad i obudowa są widoczne. Nie widać wyraźnych uszkodzeń, natomiast na obudowie i klawiaturze są lekkie ślady zużycia.\n\n## Kolejne kroki\nOdpowiedz, podając datę dostawy laptopa. Jeśli termin zwrotu zostanie potwierdzony, zapakuj urządzenie wraz z akcesoriami i dowodem zakupu oraz odeślij je zgodnie z §6. Bezpośredni koszt odesłania ponosisz Ty."
+    } ]
+  }, {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "Urządzenie zostało dostarczone 3 dni temu."
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "low"
+  },
+  "max_output_tokens" : 4000,
+  "stream" : true
+}
