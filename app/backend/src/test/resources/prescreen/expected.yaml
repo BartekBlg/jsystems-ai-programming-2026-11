@@ -1,0 +1,46 @@
+images:
+  laptop-1.png:
+    return:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+    complaint:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+  laptop-2.webp:
+    return:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+    complaint:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+  phone-1.jpg:
+    return:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+    complaint:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+  phone-2.jpeg:
+    return:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+    complaint:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+  phone-3.jpeg:
+    return:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
+    complaint:
+      photoSufficient: TODO
+      damageVisible: TODO
+      probableCause: TODO
