@@ -1,26 +1,26 @@
 import { test, expect, TEXT } from './fixtures';
-import { DECISION_BADGE, RETURN_LAPTOP, fillForm, submitCase } from './support/flows';
+import { AGENT_MESSAGE, RETURN_LAPTOP, badgeText, expandSummary, fillForm, submitCase } from './support/flows';
 
 test.describe('Odświeżenie i nowe zgłoszenie (AC-38, AC-39, AC-40)', () => {
-  test.fixme(true, 'T35b: the UI shell wiring (form -> progress -> chat) is not in place yet; enabled by T41b.');
-
   test('AC-38: odświeżenie czatu zachowuje podsumowanie i wiadomości w tej samej kolejności', async ({ page }) => {
     await submitCase(page, RETURN_LAPTOP);
-    const agentBefore = await page.locator('[data-testid="agent-message"]').allInnerTexts();
-    const badge = await page.getByText(DECISION_BADGE).first().innerText();
+    const agentBefore = await page.locator(AGENT_MESSAGE).allInnerTexts();
+    const badge = await badgeText(page);
     await page.reload();
-    await expect(page.getByText(TEXT.chat.summaryTitle)).toBeVisible();
+    await expect(page.getByText(TEXT.chat.summaryTitle).first()).toBeVisible();
+    await expect(page.locator(AGENT_MESSAGE).first()).toBeVisible();
+    await expandSummary(page);
     await expect(page.getByText(RETURN_LAPTOP.model, { exact: true }).first()).toBeVisible();
-    expect(await page.getByText(DECISION_BADGE).first().innerText()).toBe(badge);
-    expect(await page.locator('[data-testid="agent-message"]').allInnerTexts()).toEqual(agentBefore);
+    expect(await badgeText(page)).toBe(badge);
+    expect(await page.locator(AGENT_MESSAGE).allInnerTexts()).toEqual(agentBefore);
   });
 
   test('AC-39: Nowe zgłoszenie pyta o potwierdzenie; anulowanie zostawia rozmowę, potwierdzenie czyści formularz', async ({ page }) => {
     await submitCase(page, RETURN_LAPTOP);
     await page.getByRole('button', { name: TEXT.newCase }).first().click();
     await expect(page.getByText('Rozpocząć nowe zgłoszenie? Bieżąca rozmowa zostanie usunięta.')).toBeVisible();
-    await page.getByRole('button', { name: 'Anuluj' }).click();
-    await expect(page.getByText(TEXT.chat.summaryTitle)).toBeVisible();
+    await page.getByRole('button', { name: 'Anuluj', exact: true }).click();
+    await expect(page.getByText(TEXT.chat.summaryTitle).first()).toBeVisible();
 
     await page.getByRole('button', { name: TEXT.newCase }).first().click();
     await page.getByRole('button', { name: 'Rozpocznij nowe' }).click();
@@ -38,7 +38,7 @@ test.describe('Odświeżenie i nowe zgłoszenie (AC-38, AC-39, AC-40)', () => {
     await page.reload();
     await expect(page.getByText('Przetwarzanie zostało przerwane. Wyślij zgłoszenie ponownie.')).toBeVisible();
     await expect(page.getByLabel(TEXT.form.modelName)).toHaveValue(RETURN_LAPTOP.model);
-    await expect(page.getByText(TEXT.errors.photoRequired)).toBeHidden(); // shown only after a submit attempt
+    await expect(page.getByText(TEXT.errors.photoRequired, { exact: true })).toBeHidden(); // shown only after a submit attempt
     await expect(page.getByRole('button', { name: TEXT.form.choosePhoto })).toBeVisible(); // photo not restored
   });
 });

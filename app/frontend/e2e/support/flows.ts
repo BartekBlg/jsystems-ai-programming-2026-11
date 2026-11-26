@@ -33,10 +33,15 @@ export interface FormInput {
   photo: string;
 }
 
+export const AGENT_MESSAGE = 'article.message--agent';
+
 export async function fillForm(page: Page, input: FormInput): Promise<void> {
   expect(fs.existsSync(input.photo), `missing example photo ${input.photo}`).toBe(true);
   await page.getByRole('radio', { name: new RegExp(input.type) }).check();
-  await page.getByLabel(TEXT.form.category).click();
+  // Material select: click the combobox on its arrow side; the floating label/required marker overlays its middle.
+  const category = page.getByRole('combobox', { name: TEXT.form.category });
+  const box = (await category.boundingBox())!;
+  await category.click({ position: { x: box.width - 20, y: box.height / 2 } });
   await page.getByRole('option', { name: input.category, exact: true }).click();
   await page.getByLabel(TEXT.form.modelName).fill(input.model);
   await page.getByLabel(TEXT.form.purchaseDate).fill(purchaseDate(input.daysAgo));
@@ -51,8 +56,26 @@ export async function submitCase(page: Page, input: FormInput): Promise<void> {
   await page.goto('/');
   await fillForm(page, input);
   await page.getByRole('button', { name: TEXT.form.submit }).click();
-  await expect(page.getByText(TEXT.chat.summaryTitle)).toBeVisible({ timeout: FIRST_DECISION_TIMEOUT_MS });
-  await expect(page.getByText(DECISION_BADGE).first()).toBeVisible();
+  await waitForFirstDecision(page);
+}
+
+/** Waits for the chat screen with the first agent message (summary title is rendered twice at 360 px). */
+export async function waitForFirstDecision(page: Page): Promise<void> {
+  await expect(page.getByText(TEXT.chat.summaryTitle).first()).toBeVisible({ timeout: FIRST_DECISION_TIMEOUT_MS });
+  await expect(page.locator(AGENT_MESSAGE).first()).toBeVisible({ timeout: FIRST_DECISION_TIMEOUT_MS });
+  await expandSummary(page);
+  await expect(page.locator('.decision-badge').first()).toBeVisible({ timeout: FIRST_DECISION_TIMEOUT_MS });
+  await expect(page.locator('.decision-badge').first()).toHaveText(DECISION_BADGE);
+}
+
+/** On mobile the case summary is a collapsed accordion: open it. No-op on desktop. */
+export async function expandSummary(page: Page): Promise<void> {
+  const toggle = page.getByRole('button', { name: TEXT.chat.summaryTitle });
+  if ((await toggle.count()) > 0 && (await toggle.getAttribute('aria-expanded')) === 'false') await toggle.click();
+}
+
+export async function badgeText(page: Page): Promise<string> {
+  return (await page.locator('.decision-badge').first().innerText()).trim();
 }
 
 export async function sendChat(page: Page, text: string): Promise<void> {

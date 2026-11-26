@@ -15,6 +15,7 @@ export const TEXT = {
     removePhoto: 'Usuń',
     submit: 'Wyślij zgłoszenie',
   },
+  newCase: 'Nowe zgłoszenie',
   photoHint: {
     RETURN: 'Pokaż całe urządzenie, tak aby było widać, że nie jest uszkodzone ani używane.',
     COMPLAINT: 'Pokaż wyraźnie uszkodzenie lub usterkę.',
@@ -31,6 +32,8 @@ export const TEXT = {
     analysing: 'Analizujemy zdjęcie',
     deciding: 'Przygotowujemy decyzję',
     note: 'To może potrwać do minuty.',
+    retry: 'Spróbuj ponownie',
+    backToForm: 'Wróć do formularza',
   },
   chat: {
     summaryTitle: 'Twoje zgłoszenie',
@@ -38,18 +41,24 @@ export const TEXT = {
 } as const;
 
 type ConsoleGuard = { consoleGuard: void };
+type GuardOptions = {
+  /** Console messages a test deliberately provokes (e.g. the browser's own line for an expected 502); default none. */
+  expectedConsoleErrors: RegExp[];
+};
 
 /**
  * Auto fixture (TAC-003-06): records browser console errors/warnings and uncaught page errors
  * during each test and fails the test at teardown, listing them.
  */
-export const test = base.extend<ConsoleGuard>({
+export const test = base.extend<ConsoleGuard & GuardOptions>({
+  expectedConsoleErrors: [[], { option: true }],
   consoleGuard: [
-    async ({ page }, use) => {
+    async ({ page, expectedConsoleErrors }, use) => {
       const problems: string[] = [];
       page.on('console', (msg) => {
         if (msg.type() !== 'error' && msg.type() !== 'warning') return;
         const { url, lineNumber, columnNumber } = msg.location();
+        if (expectedConsoleErrors.some((re) => re.test(msg.text()))) return;
         problems.push(`console.${msg.type()}: ${msg.text()} (${url}:${lineNumber}:${columnNumber})`);
       });
       page.on('pageerror', (err) => problems.push(`pageerror: ${err.message}`));

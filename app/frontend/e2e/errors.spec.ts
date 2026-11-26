@@ -1,5 +1,5 @@
 import { test, expect, TEXT } from './fixtures';
-import { RETURN_LAPTOP, FIRST_DECISION_TIMEOUT_MS, fillForm } from './support/flows';
+import { RETURN_LAPTOP, FIRST_DECISION_TIMEOUT_MS, fillForm, waitForFirstDecision } from './support/flows';
 import { decisionsNotFound, invalidKey, visionTimeout1ms, type RealInstance } from './support/real-stack';
 
 /**
@@ -22,13 +22,13 @@ async function expectFailureScreen(page: import('@playwright/test').Page): Promi
   await expect(page.getByLabel(TEXT.form.modelName)).toHaveValue(RETURN_LAPTOP.model);
 }
 
-for (const [title, start] of [
-  ['nieprawidłowy klucz -> 502 LLM_FAILED (AC-41, AC-43)', () => invalidKey({ port: PORT })],
-  ['limit 1 ms dla kroku wizyjnego -> 504 LLM_TIMEOUT (AC-41)', () => visionTimeout1ms({ port: PORT })],
+for (const [title, status, start] of [
+  ['nieprawidłowy klucz -> 502 LLM_FAILED (AC-41, AC-43)', 502, () => invalidKey({ port: PORT })],
+  ['limit 1 ms dla kroku wizyjnego -> 504 LLM_TIMEOUT (AC-41)', 504, () => visionTimeout1ms({ port: PORT })],
 ] as const) {
   test.describe(`Błąd: ${title}`, () => {
-    test.fixme(true, 'T35b: the UI shell wiring (form -> progress -> chat) is not in place yet; enabled by T41b.');
-
+    // The browser itself logs "Failed to load resource ... status of <n>" for the HTTP error this test provokes; only that line is allowed.
+    test.use({ expectedConsoleErrors: [new RegExp(`Failed to load resource: the server responded with a status of ${status}`)] });
     let instance: RealInstance;
     test.beforeAll(async () => {
       instance = await start();
@@ -47,8 +47,6 @@ for (const [title, start] of [
 }
 
 test.describe('Pre-screening fail-open: ścieżka Decisions zwraca 404 (AC-49)', () => {
-  test.fixme(true, 'T35b: the UI shell wiring (form -> progress -> chat) is not in place yet; enabled by T41b.');
-
   let instance: RealInstance;
   test.beforeAll(async () => {
     instance = await decisionsNotFound({ port: PORT });
@@ -61,9 +59,10 @@ test.describe('Pre-screening fail-open: ścieżka Decisions zwraca 404 (AC-49)',
     await page.goto('/');
     await fillForm(page, RETURN_LAPTOP);
     await page.getByRole('button', { name: TEXT.form.submit }).click();
-    await expect(page.getByText(TEXT.chat.summaryTitle)).toBeVisible({ timeout: FIRST_DECISION_TIMEOUT_MS });
+    await waitForFirstDecision(page);
     await expect(page.getByText(FAILED)).toHaveCount(0);
     const log = (await import('./support/real-stack')).readLog(instance);
-    expect(log).toMatch(/prescreen/); // the failed pre-screen attempt is logged, the case continued via the vision LLM
+    expect(log).toMatch(/event=prescreen\.gated gate=UNCERTAIN reasons=\[HTTP_404\] visionLlmSkipped=false/);
+    expect(log).toMatch(/llm\.usage .*step=vision/); // the failed pre-screen attempt is logged, the case continued via the vision LLM
   });
 });
