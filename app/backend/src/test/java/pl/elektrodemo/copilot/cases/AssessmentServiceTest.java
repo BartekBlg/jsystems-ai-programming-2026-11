@@ -21,6 +21,20 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Set;
+import pl.elektrodemo.copilot.prescreen.ConfidenceGate;
+import pl.elektrodemo.copilot.prescreen.DecisionsClient;
+import pl.elektrodemo.copilot.prescreen.DecisionsResponse;
+import pl.elektrodemo.copilot.prescreen.PrescreenAssessmentMapper;
+import pl.elektrodemo.copilot.prescreen.PrescreenQuestionCatalog;
+import pl.elektrodemo.copilot.prescreen.PrescreenService;
+import pl.elektrodemo.copilot.prescreen.PrescreenUnavailableException;
+import pl.elektrodemo.copilot.prescreen.ShadowComparator;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.lenient;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -127,6 +141,126 @@ class AssessmentServiceTest {
 
         assertThatThrownBy(() -> service.assess(laptopReturnForm(), read("laptop-2.webp")))
                 .isInstanceOf(LlmTimeoutException.class);
+    }
+
+    // ------------------------------------------------------------ T25 modes (captures-only Decisions answers)
+
+    private static final JsonMapper MAPPER = JsonMapper.builder().build();
+
+    private AssessmentService modeService(String mode, DecisionsClient client) {
+        AppProperties props = new AppProperties(TEST_KEY, null,
+                new AppProperties.Decisions(mode, "typesafe/jev-1.14", "http://localhost/decisions", .8,
+                        java.time.Duration.ofSeconds(6)));
+        PrescreenService prescreen = new PrescreenService(client, new PrescreenQuestionCatalog(), new ConfidenceGate(),
+                props, CLOCK, MAPPER);
+        PrescreenAssessmentMapper mapper = new PrescreenAssessmentMapper(props);
+        return new AssessmentService(new ImageTypeDetector(), new ImageDownscaler(), CLOCK, llm, engine, signer,
+                prescreen, mapper, new ShadowComparator(mapper), props);
+    }
+
+    private static DecisionsResponse capture(String name) throws IOException {
+        JsonNode envelope = MAPPER.readTree(Files.readString(Path.of("src/test/resources/captures/decisions/" + name)));
+        return MAPPER.treeToValue(envelope.get("body"), DecisionsResponse.class);
+    }
+
+    private DecisionsClient clientServing(String a, String b) throws IOException {
+        DecisionsClient client = mock(DecisionsClient.class);
+        DecisionsResponse responseA = capture(a);
+        DecisionsResponse responseB = capture(b);
+        lenient().when(client.decide(any(), any())).thenAnswer(invocation -> {
+            java.util.Map<?, ?> questions = invocation.getArgument(0);
+            return questions.containsKey("photo_usable") ? responseA : responseB;
+        });
+        return client;
+    }
+
+    private static CaseFormDto phoneComplaintForm() {
+        return new CaseFormDto(CaseType.COMPLAINT, EquipmentCategory.SMARTPHONE, "Smartfon testowy",
+                LocalDate.of(2026, 11, 21), "Pęknięty ekran po upadku z biurka");
+    }
+
+    /** b-return.json (model match 0.72) is used because the captured b-complaint.json is a confident MODEL_MISMATCH. */
+    @Test
+    void gatedConfidentCaptureSkipsVisionLlmAndRulesApplyToMappedAssessment() throws IOException {
+        AssessmentService gated = modeService("gated", clientServing("a-complaint-phone-1.json", "b-return.json"));
+
+        CaseContextDto ctx = gated.assess(phoneComplaintForm(), read("phone-1.jpg")).caseContext();
+
+        verifyNoInteractions(llm);
+        assertThat(ctx.assessmentSource()).isEqualTo(AssessmentSource.DECISIONS);
+        assertThat(ctx.prescreen()).isNotNull();
+        assertThat(ctx.consistencySignals()).isNotNull();
+        assertThat(((ComplaintImageAssessment) ctx.assessment()).probableCause())
+                .isEqualTo(ProbableCause.MECHANICAL_DAMAGE);
+        assertThat(ctx.ruleFacts().allowedCategories()).doesNotContain(DecisionCategory.ACCEPTED);
+    }
+
+    @Test
+    void gatedUncertainPassesRequestASignalsOnlyAndKeepsPrescreen() throws IOException {
+        when(llm.assessImage(any(), any(), any(byte[].class), any())).thenReturn(CaptureFixtures.returnAssessmentOk());
+        AssessmentService gated = modeService("gated", clientServing("a-return-laptop-2.json", "b-return.json"));
+
+        CaseContextDto ctx = gated.assess(laptopReturnForm(), read("laptop-2.webp")).caseContext();
+
+        ArgumentCaptor<String> signals = ArgumentCaptor.forClass(String.class);
+        verify(llm).assessImage(eq(CaseType.RETURN), eq(EquipmentCategory.LAPTOP), any(byte[].class), signals.capture());
+        assertThat(signals.getValue()).startsWith("Wstępne sygnały do weryfikacji: ").contains("photo_usable=")
+                .contains("(prawdopodobieństwo 0.78)").doesNotContain("typesafe").doesNotContain("Lenovo")
+                .doesNotContain("model_matches_photo");
+        assertThat(ctx.assessmentSource()).isEqualTo(AssessmentSource.LLM);
+        assertThat(ctx.prescreen()).isNotNull();
+    }
+
+    @Test
+    void gatedUnavailableFailsOpenToPlainVisionLlm() throws IOException {
+        when(llm.assessImage(any(), any(), any(byte[].class), isNull())).thenReturn(CaptureFixtures.returnAssessmentOk());
+        DecisionsClient client = mock(DecisionsClient.class);
+        when(client.decide(any(), any())).thenThrow(new PrescreenUnavailableException("HTTP_503"));
+
+        CaseContextDto ctx = modeService("gated", client).assess(laptopReturnForm(), read("laptop-2.webp"))
+                .caseContext();
+
+        assertThat(ctx.assessmentSource()).isEqualTo(AssessmentSource.LLM);
+        assertThat(ctx.prescreen()).isNull();
+        assertThat(ctx.consistencySignals()).isNull();
+    }
+
+    @Test
+    void shadowKeepsLlmAssessmentWithoutSignalsToTheVisionLlm() throws IOException {
+        when(llm.assessImage(any(), any(), any(byte[].class), isNull())).thenReturn(CaptureFixtures.returnAssessmentOk());
+        AssessmentService shadow = modeService("shadow", clientServing("a-return-laptop-2.json", "b-return.json"));
+
+        CaseContextDto ctx = shadow.assess(laptopReturnForm(), read("laptop-2.webp")).caseContext();
+
+        assertThat(ctx.assessmentSource()).isEqualTo(AssessmentSource.LLM);
+        assertThat(ctx.assessment()).isEqualTo(CaptureFixtures.returnAssessmentOk());
+        assertThat(ctx.prescreen()).isNull();
+        assertThat(ctx.consistencySignals()).isNotNull();
+        verify(llm, times(1)).assessImage(any(), any(), any(byte[].class), isNull());
+    }
+
+    @Test
+    void shadowLlmFailurePropagatesAndPrescreenFailureIsIgnored() throws IOException {
+        DecisionsClient client = mock(DecisionsClient.class);
+        when(client.decide(any(), any())).thenThrow(new PrescreenUnavailableException("HTTP_503"));
+        when(llm.assessImage(any(), any(), any(byte[].class), any())).thenThrow(new LlmTimeoutException("timeout"));
+
+        assertThatThrownBy(() -> modeService("shadow", client).assess(laptopReturnForm(), read("laptop-2.webp")))
+                .isInstanceOf(LlmTimeoutException.class);
+    }
+
+    @Test
+    void llmOnlyModeNeverTouchesDecisions() throws IOException {
+        when(llm.assessImage(any(), any(), any(byte[].class), isNull())).thenReturn(CaptureFixtures.returnAssessmentOk());
+        DecisionsClient client = mock(DecisionsClient.class);
+
+        CaseContextDto ctx = modeService("llm-only", client).assess(laptopReturnForm(), read("laptop-2.webp"))
+                .caseContext();
+
+        verify(client, never()).decide(any(), any());
+        assertThat(ctx.assessmentSource()).isEqualTo(AssessmentSource.LLM);
+        assertThat(ctx.prescreen()).isNull();
+        assertThat(ctx.consistencySignals()).isNull();
     }
 
     private static byte[] read(String name) throws IOException {
