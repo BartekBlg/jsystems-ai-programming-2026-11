@@ -87,6 +87,13 @@ public class OpenAiSdkLlmGateway implements LlmGateway {
     @Override
     public ImageAssessment assessImage(CaseType caseType, EquipmentCategory category, byte[] jpeg,
             String preliminarySignals) {
+        return assessImage(caseType, category, jpeg, preliminarySignals, props.timeouts().vision());
+    }
+
+    /** {@code timeout} is the whole vision step budget; the retry rule (>= 10 s left) applies to it. */
+    @Override
+    public ImageAssessment assessImage(CaseType caseType, EquipmentCategory category, byte[] jpeg,
+            String preliminarySignals, Duration timeout) {
         List<ResponseInputContent> content = new ArrayList<>();
         content.add(text("Oceń zdjęcie zgodnie z instrukcją. Kategoria sprzętu: " + category.polishLabel() + "."));
         if (preliminarySignals != null) {
@@ -97,7 +104,7 @@ public class OpenAiSdkLlmGateway implements LlmGateway {
                 .detail(ResponseInputImage.Detail.AUTO).build()));
         Class<? extends ImageAssessment> type = caseType == CaseType.RETURN ? ReturnImageAssessment.class
                 : ComplaintImageAssessment.class;
-        return structured("vision", props.visionModel(), props.timeouts().vision(), type,
+        return structured("vision", props.visionModel(), timeout, type,
                 prompts.imageAssessment(caseType), List.of(userMessage(content)), "low", props.maxOutputTokens().vision());
     }
 
@@ -306,8 +313,14 @@ public class OpenAiSdkLlmGateway implements LlmGateway {
                 ResponseInputItem.Message.builder().role(ResponseInputItem.Message.Role.USER).content(content).build());
     }
 
+    /**
+     * OkHttp truncates call timeouts to whole milliseconds and treats 0 as "no timeout", so a sub-millisecond
+     * remainder of a step budget would silently disable the limit. Round up to a whole millisecond (min 1 ms).
+     */
     private static RequestOptions options(Duration timeout) {
-        return RequestOptions.builder().timeout(timeout).build();
+        long nanos = Math.max(1, timeout.toNanos());
+        Duration wholeMillis = Duration.ofMillis((nanos + 999_999) / 1_000_000);
+        return RequestOptions.builder().timeout(wholeMillis).build();
     }
 
     private static Duration min(Duration a, Duration b) {

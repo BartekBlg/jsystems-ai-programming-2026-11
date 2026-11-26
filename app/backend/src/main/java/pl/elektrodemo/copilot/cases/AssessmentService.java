@@ -1,6 +1,8 @@
 package pl.elektrodemo.copilot.cases;
 
 import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +31,7 @@ import pl.elektrodemo.copilot.image.ImageDownscaler;
 import pl.elektrodemo.copilot.image.ImageType;
 import pl.elektrodemo.copilot.image.ImageTypeDetector;
 import pl.elektrodemo.copilot.llm.LlmGateway;
+import pl.elektrodemo.copilot.llm.LlmProperties;
 import pl.elektrodemo.copilot.security.CaseSigner;
 import pl.elektrodemo.copilot.web.UnsupportedImageException;
 import pl.elektrodemo.copilot.web.dto.AssessmentResponse;
@@ -41,6 +44,8 @@ import pl.elektrodemo.copilot.web.validation.CaseFormNormalizer;
 public class AssessmentService {
 
     private static final int SIGNATURE_CONTEXT_VERSION = 1;
+    private static final Duration DEFAULT_VISION_BUDGET = Duration.ofSeconds(26);
+    private static final Duration MIN_VISION_BUDGET = Duration.ofSeconds(20);
     private static final Logger LOGGER = LoggerFactory.getLogger("prescreen");
 
     private final ImageTypeDetector typeDetector;
@@ -53,6 +58,7 @@ public class AssessmentService {
     private final PrescreenAssessmentMapper assessmentMapper;
     private final ShadowComparator shadowComparator;
     private final String mode;
+    private final Duration visionBudget;
 
     /** llm-only assembly (no pre-screen collaborators). */
     public AssessmentService(ImageTypeDetector typeDetector, ImageDownscaler downscaler, Clock clock,
@@ -60,11 +66,21 @@ public class AssessmentService {
         this(typeDetector, downscaler, clock, llmGateway, policyRuleEngine, caseSigner, null, null, null, null);
     }
 
-    @Autowired
     public AssessmentService(ImageTypeDetector typeDetector, ImageDownscaler downscaler, Clock clock,
             LlmGateway llmGateway, PolicyRuleEngine policyRuleEngine, CaseSigner caseSigner,
             PrescreenService prescreenService, PrescreenAssessmentMapper assessmentMapper,
             ShadowComparator shadowComparator, AppProperties properties) {
+        this(typeDetector, downscaler, clock, llmGateway, policyRuleEngine, caseSigner, prescreenService,
+                assessmentMapper, shadowComparator, properties, null);
+    }
+
+    @Autowired
+    public AssessmentService(ImageTypeDetector typeDetector, ImageDownscaler downscaler, Clock clock,
+            LlmGateway llmGateway, PolicyRuleEngine policyRuleEngine, CaseSigner caseSigner,
+            PrescreenService prescreenService, PrescreenAssessmentMapper assessmentMapper,
+            ShadowComparator shadowComparator, AppProperties properties, LlmProperties llmProperties) {
+        this.visionBudget = llmProperties == null || llmProperties.timeouts() == null ? DEFAULT_VISION_BUDGET
+                : llmProperties.timeouts().vision();
         this.typeDetector = typeDetector;
         this.downscaler = downscaler;
         this.clock = clock;
@@ -108,6 +124,14 @@ public class AssessmentService {
         return llmGateway.assessImage(form.caseType(), form.category(), jpeg, preliminarySignals);
     }
 
+    /** ADR-004 3.7 / AC-30: the vision step gets max(20 s, vision budget minus time spent in pre-screening). */
+    private ImageAssessment assessAfterPrescreen(CaseFormDto form, byte[] jpeg, String preliminarySignals,
+            Instant prescreenStart) {
+        Duration remaining = visionBudget.minus(Duration.between(prescreenStart, clock.instant()));
+        Duration timeout = remaining.compareTo(MIN_VISION_BUDGET) < 0 ? MIN_VISION_BUDGET : remaining;
+        return llmGateway.assessImage(form.caseType(), form.category(), jpeg, preliminarySignals, timeout);
+    }
+
     /** ADR-004 3.5 shadow: pre-screen runs in parallel, the vision LLM stays independent and authoritative. */
     private Outcome assessShadow(CaseFormDto form, byte[] jpeg) {
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
@@ -142,10 +166,11 @@ public class AssessmentService {
 
     /** ADR-004 3.5 gated: CONFIDENT skips the vision LLM; UNCERTAIN and UNAVAILABLE fail open to it. */
     private Outcome assessGated(CaseFormDto form, byte[] jpeg) {
+        Instant prescreenStart = clock.instant();
         PrescreenResult result = prescreenService.prescreen(form.caseType(), form.category(), form, jpeg);
         if (result.status() != PrescreenStatus.OK) {
             shadowComparator.gated(new GateResult(GateStatus.UNCERTAIN, result.gateReasons()), false);
-            return new Outcome(assessWithLlm(form, jpeg, null), AssessmentSource.LLM, null, null);
+            return new Outcome(assessAfterPrescreen(form, jpeg, null, prescreenStart), AssessmentSource.LLM, null, null);
         }
         GateResult gate = new GateResult(result.gate(), result.gateReasons());
         PrescreenContextNodes nodes = prescreenService.contextNodes(result);
@@ -156,14 +181,15 @@ public class AssessmentService {
                 mapped = assessmentMapper.map(form.caseType(), result);
             } catch (RuntimeException exception) {
                 shadowComparator.gated(new GateResult(GateStatus.UNCERTAIN, List.of("MAPPING_FAILED")), false);
-                return new Outcome(assessWithLlm(form, jpeg, null), AssessmentSource.LLM, null, signals);
+                return new Outcome(assessAfterPrescreen(form, jpeg, null, prescreenStart), AssessmentSource.LLM, null,
+                        signals);
             }
             shadowComparator.gated(gate, true);
             return new Outcome(mapped, AssessmentSource.DECISIONS, nodes.prescreen(), signals);
         }
         shadowComparator.gated(gate, false);
-        return new Outcome(assessWithLlm(form, jpeg, preliminarySignals(result.photoAnswers())), AssessmentSource.LLM,
-                nodes.prescreen(), signals);
+        return new Outcome(assessAfterPrescreen(form, jpeg, preliminarySignals(result.photoAnswers()), prescreenStart),
+                AssessmentSource.LLM, nodes.prescreen(), signals);
     }
 
     private JsonNode signalsOf(PrescreenResult result) {

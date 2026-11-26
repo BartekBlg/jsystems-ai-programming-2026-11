@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -52,6 +53,7 @@ import pl.elektrodemo.copilot.support.CaptureFixtures;
 import pl.elektrodemo.copilot.web.UnsupportedImageException;
 import pl.elektrodemo.copilot.web.dto.AssessmentResponse;
 import pl.elektrodemo.copilot.web.dto.CaseContextDto;
+import pl.elektrodemo.copilot.llm.LlmProperties;
 import pl.elektrodemo.copilot.web.dto.CaseFormDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -197,13 +199,15 @@ class AssessmentServiceTest {
 
     @Test
     void gatedUncertainPassesRequestASignalsOnlyAndKeepsPrescreen() throws IOException {
-        when(llm.assessImage(any(), any(), any(byte[].class), any())).thenReturn(CaptureFixtures.returnAssessmentOk());
+        when(llm.assessImage(any(), any(), any(byte[].class), any(), any(Duration.class)))
+                .thenReturn(CaptureFixtures.returnAssessmentOk());
         AssessmentService gated = modeService("gated", clientServing("a-return-laptop-2.json", "b-return.json"));
 
         CaseContextDto ctx = gated.assess(laptopReturnForm(), read("laptop-2.webp")).caseContext();
 
         ArgumentCaptor<String> signals = ArgumentCaptor.forClass(String.class);
-        verify(llm).assessImage(eq(CaseType.RETURN), eq(EquipmentCategory.LAPTOP), any(byte[].class), signals.capture());
+        verify(llm).assessImage(eq(CaseType.RETURN), eq(EquipmentCategory.LAPTOP), any(byte[].class), signals.capture(),
+                any(Duration.class));
         assertThat(signals.getValue()).startsWith("Wstępne sygnały do weryfikacji: ").contains("photo_usable=")
                 .contains("(prawdopodobieństwo 0.78)").doesNotContain("typesafe").doesNotContain("Lenovo")
                 .doesNotContain("model_matches_photo");
@@ -213,7 +217,7 @@ class AssessmentServiceTest {
 
     @Test
     void gatedUnavailableFailsOpenToPlainVisionLlm() throws IOException {
-        when(llm.assessImage(any(), any(), any(byte[].class), isNull())).thenReturn(CaptureFixtures.returnAssessmentOk());
+        when(llm.assessImage(any(), any(), any(byte[].class), isNull(), any(Duration.class))).thenReturn(CaptureFixtures.returnAssessmentOk());
         DecisionsClient client = mock(DecisionsClient.class);
         when(client.decide(any(), any())).thenThrow(new PrescreenUnavailableException("HTTP_503"));
 
@@ -223,6 +227,100 @@ class AssessmentServiceTest {
         assertThat(ctx.assessmentSource()).isEqualTo(AssessmentSource.LLM);
         assertThat(ctx.prescreen()).isNull();
         assertThat(ctx.consistencySignals()).isNull();
+    }
+
+    // ------------------------------------------------------------ T25-fix-1: vision budget after pre-screening
+
+    /** Test clock advanced by the simulated pre-screen; the service measures elapsed time through it. */
+    private static final class MutableClock extends Clock {
+        private Instant now = CLOCK.instant();
+
+        void advance(Duration d) {
+            now = now.plus(d);
+        }
+
+        @Override
+        public java.time.ZoneId getZone() {
+            return CLOCK.getZone();
+        }
+
+        @Override
+        public Clock withZone(java.time.ZoneId zone) {
+            return this;
+        }
+
+        @Override
+        public Instant instant() {
+            return now;
+        }
+    }
+
+    private AssessmentService gatedWithClock(MutableClock clock, DecisionsClient client) {
+        AppProperties props = new AppProperties(TEST_KEY, null,
+                new AppProperties.Decisions("gated", "typesafe/jev-1.14", "http://localhost/decisions", .8,
+                        Duration.ofSeconds(6)));
+        PrescreenService prescreen = new PrescreenService(client, new PrescreenQuestionCatalog(), new ConfidenceGate(),
+                props, CLOCK, MAPPER);
+        PrescreenAssessmentMapper mapper = new PrescreenAssessmentMapper(props);
+        LlmProperties llmProps = new LlmProperties("sk-test-fake", "http://localhost", "m", "v", "low", "low",
+                new LlmProperties.Timeouts(Duration.ofSeconds(26), Duration.ofSeconds(34), Duration.ofSeconds(30),
+                        Duration.ofSeconds(90)),
+                new LlmProperties.MaxOutputTokens(4000, 8000, 4000));
+        return new AssessmentService(new ImageTypeDetector(), new ImageDownscaler(), clock, llm, engine, signer,
+                prescreen, mapper, new ShadowComparator(mapper), props, llmProps);
+    }
+
+    private Duration visionTimeoutAfter(Duration prescreenTime, DecisionsClient serving) throws IOException {
+        MutableClock clock = new MutableClock();
+        DecisionsClient slow = mock(DecisionsClient.class);
+        java.util.concurrent.atomic.AtomicBoolean first = new java.util.concurrent.atomic.AtomicBoolean(true);
+        lenient().when(slow.decide(any(), any())).thenAnswer(invocation -> {
+            if (first.getAndSet(false)) {
+                clock.advance(prescreenTime);
+            }
+            return serving.decide(invocation.getArgument(0), invocation.getArgument(1));
+        });
+        when(llm.assessImage(any(), any(), any(byte[].class), any(), any(Duration.class)))
+                .thenReturn(CaptureFixtures.returnAssessmentOk());
+        gatedWithClock(clock, slow).assess(laptopReturnForm(), read("laptop-2.webp"));
+        ArgumentCaptor<Duration> timeout = ArgumentCaptor.forClass(Duration.class);
+        verify(llm).assessImage(any(), any(), any(byte[].class), any(), timeout.capture());
+        return timeout.getValue();
+    }
+
+    @Test
+    void gatedUnavailableAfterSixSecondPrescreenGivesVisionTheTwentySecondFloor() throws IOException {
+        DecisionsClient failing = mock(DecisionsClient.class);
+        when(failing.decide(any(), any())).thenThrow(new PrescreenUnavailableException("HTTP_503"));
+
+        assertThat(visionTimeoutAfter(Duration.ofSeconds(6), failing)).isEqualTo(Duration.ofSeconds(20));
+    }
+
+    @Test
+    void gatedUnavailableAfterNineSecondPrescreenStillGetsTheTwentySecondFloor() throws IOException {
+        DecisionsClient failing = mock(DecisionsClient.class);
+        when(failing.decide(any(), any())).thenThrow(new PrescreenUnavailableException("HTTP_503"));
+
+        assertThat(visionTimeoutAfter(Duration.ofSeconds(9), failing)).isEqualTo(Duration.ofSeconds(20));
+    }
+
+    @Test
+    void gatedUncertainAfterOneSecondPrescreenGivesVisionAboutTwentyFiveSeconds() throws IOException {
+        Duration timeout = visionTimeoutAfter(Duration.ofSeconds(1),
+                clientServing("a-return-laptop-2.json", "b-return.json"));
+
+        assertThat(timeout).isBetween(Duration.ofMillis(24_500), Duration.ofMillis(25_000));
+    }
+
+    @Test
+    void shadowKeepsTheOriginalFourArgumentVisionCall() throws IOException {
+        when(llm.assessImage(any(), any(), any(byte[].class), isNull())).thenReturn(CaptureFixtures.returnAssessmentOk());
+
+        modeService("shadow", clientServing("a-return-laptop-2.json", "b-return.json")).assess(laptopReturnForm(),
+                read("laptop-2.webp"));
+
+        verify(llm).assessImage(any(), any(), any(byte[].class), isNull());
+        verify(llm, never()).assessImage(any(), any(), any(byte[].class), any(), any(Duration.class));
     }
 
     @Test
