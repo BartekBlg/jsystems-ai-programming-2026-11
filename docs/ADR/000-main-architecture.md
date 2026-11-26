@@ -11,7 +11,7 @@ Area ADRs:
 | [`001-backend-api.md`](001-backend-api.md) | Spring Boot backend: project setup, REST/SSE API, validation, image processing, rate limiting, packaging |
 | [`002-llm-integration.md`](002-llm-integration.md) | OpenAI Java SDK + OpenRouter Responses API: image assessment, decision, chat streaming, prompts, guardrails |
 | [`003-frontend.md`](003-frontend.md) | Angular + Angular Material: project setup, screens, chat UI, streaming client, browser persistence, theming |
-| [`004-decisions-prescreening.md`](004-decisions-prescreening.md) | Photo pre-screening with `openai/gpt-6-luna-decisions` (OpenRouter Decisions API): confidence gate, shadow/gated modes, consistency signals |
+| [`004-decisions-prescreening.md`](004-decisions-prescreening.md) | Photo pre-screening with `typesafe/jev-1.14` (OpenRouter Decisions API): confidence gate, shadow/gated modes, consistency signals |
 
 ---
 
@@ -19,7 +19,7 @@ Area ADRs:
 
 The PoC is a self-service web application in which a customer of the fictional shop "ElektroDemo" submits a return (**Zwrot**) or a complaint (**Reklamacja**) with one photo. The system:
 
-0. pre-screens the photo with a decision model (`openai/gpt-6-luna-decisions`). The model answers typed questions about the photo with probabilities, and checks the form against the photo for consistency (ADR-004),
+0. pre-screens the photo with a decision model (`typesafe/jev-1.14`). The model answers typed questions about the photo with probabilities, and checks the form against the photo for consistency (ADR-004),
 1. assesses the photo with a multimodal model (structured JSON, no decision). In `gated` mode this step is skipped when every pre-screening answer has confidence ≥ 0.80,
 2. lets a reasoning model apply the matching policy (`docs/policies/*.md`) and write the preliminary decision in Polish,
 3. continues the conversation in a streamed chat that can update the decision.
@@ -38,7 +38,7 @@ Decisions confirmed with the user on 2026-11-25:
 | Frontend tests | Vitest (unit) + Playwright (E2E) |
 | Browser storage | `localStorage` with a small JPEG thumbnail |
 | Cost protection | In-memory rate limit per client IP |
-| Pre-screening | Luna Decisions before the vision LLM; it can replace only the vision LLM step; two requests (photo-only / photo+form) to keep AC-20; threshold 0.80 per question; modes `shadow` (default) / `gated` / `llm-only`; falls back to the LLM on any failure |
+| Pre-screening | Jev Decisions before the vision LLM; it can replace only the vision LLM step; two requests (photo-only / photo+form) to keep AC-20; threshold 0.80 per question; modes `shadow` (default) / `gated` / `llm-only`; falls back to the LLM on any failure |
 
 ---
 
@@ -51,7 +51,7 @@ Context7 IDs were resolved on 2026-11-25. Where the indexed docs lag behind the 
 | OpenAI Java SDK 4.113.0 | `/openai/openai-java` (indexed up to v4.105.0) · https://github.com/openai/openai-java | LLM client (Responses API, structured outputs, streaming) |
 | OpenAI API libraries page | https://developers.openai.com/api/docs/libraries?language=java | SDK install and usage overview |
 | OpenRouter | `/websites/openrouter_ai` · https://openrouter.ai/docs/api/reference/responses/overview | Responses endpoint, image input, structured outputs, SSE format |
-| OpenRouter Decisions API (alpha) | `/websites/openrouter_ai` · https://openrouter.ai/docs/guides/features/decisions | Pre-screening with `openai/gpt-6-luna-decisions` (ADR-004) |
+| OpenRouter Decisions API (alpha) | `/websites/openrouter_ai` · https://openrouter.ai/docs/guides/features/decisions | Pre-screening with `typesafe/jev-1.14` (ADR-004) |
 | OpenAI Decisions API (reference only) | `/websites/developers_openai_api` · https://developers.openai.com/api/docs/guides/decisions | Background on the native schema; not called |
 | Spring Boot 4.2.0 | `/spring-projects/spring-boot` (up to v4.1.0), `/websites/spring_io_spring-boot` · https://docs.spring.io/spring-boot/ | Backend framework |
 | Spring Initializr | https://start.spring.io (metadata: https://start.spring.io/metadata/client) | Backend project generation |
@@ -105,7 +105,7 @@ assets/example-images/         Synthetic photos for Manual QA and E2E
 | Build | Maven 3.9+ via Maven wrapper (`mvnw`), frontend-maven-plugin 2.0.2 | One command builds and tests both parts and produces one JAR |
 | LLM client | `com.openai:openai-java` 4.113.0, used directly (no starter) | Official SDK; `openai-java-spring-boot-starter` targets Boot 2.7 and is end-of-life since 2026-07-27 |
 | LLM provider | OpenRouter Responses API (`https://openrouter.ai/api/v1`) | Required by the course `.env.example`; Responses is OpenRouter's documented path for image input (ADR-002 Decision 6.1) |
-| Decision model | `openai/gpt-6-luna-decisions` via OpenRouter `POST /api/alpha/decisions`, called with Spring `RestClient` | Cheap (input-only pricing) probability answers for photo pre-screening; the OpenAI SDK `decisions()` targets a different schema (ADR-004 Decision 6.1) |
+| Decision model | `typesafe/jev-1.14` via OpenRouter `POST /api/alpha/decisions`, called with Spring `RestClient` | Cheap (input-only pricing) probability answers for photo pre-screening; the OpenAI SDK `decisions()` targets a different schema (ADR-004 Decision 6.1) |
 | Image processing | Thumbnailator 0.4.21 + TwelveMonkeys imageio-webp 3.15.3 | Downscaling with EXIF orientation; WebP decoding that plain ImageIO lacks |
 | Frontend | Angular 22.3 (standalone, zoneless, signals), Angular Material 22.3, ngx-markdown 22.1.1 | Course choice; Material provides accessible form controls; ngx-markdown renders and sanitizes agent Markdown |
 | Browser storage | `localStorage` (one case, versioned key) | PRD AC-38/AC-40; small enough with a 320 px thumbnail |
@@ -122,7 +122,7 @@ assets/example-images/         Synthetic photos for Manual QA and E2E
 | `frontend` (Angular SPA) | Form, progress and chat screens; validation; thumbnail; `localStorage`; SSE consumption | Backend `/api` HTTP contract only | End user (browser) |
 | `backend.web` | REST/SSE controllers, request validation, error mapping (ProblemDetail), rate limiting, SPA fallback | `backend.cases`, `backend.chat`, `backend.security` | Frontend |
 | `backend.cases` | Case use cases: photo assessment (orchestrating pre-screening modes) and first decision; deterministic policy rules (`PolicyRuleEngine`) | `backend.prescreen`, `backend.llm`, `backend.image`, `backend.policy`, `backend.security` | `backend.web` |
-| `backend.prescreen` | Luna Decisions client, question catalog, confidence gate, mapping to `ImageAssessment`, shadow comparison (ADR-004) | Spring `RestClient` | `backend.cases` |
+| `backend.prescreen` | Jev Decisions client, question catalog, confidence gate, mapping to `ImageAssessment`, shadow comparison (ADR-004) | Spring `RestClient` | `backend.cases` |
 | `backend.chat` | Chat use case: history assembly, first-line decision gate, stream relay | `backend.llm`, `backend.policy`, `backend.security` | `backend.web` |
 | `backend.llm` | Only place that uses the OpenAI SDK: client bean, request building, structured output, streaming, error translation | OpenAI Java SDK, `backend.prompts` | `backend.cases`, `backend.chat` |
 | `backend.prompts` | Loads instruction templates from classpath `prompts/` | — | `backend.llm` |
@@ -179,7 +179,7 @@ All endpoints are under `/api`, unauthenticated, rate limited per IP (Decision 8
 
 | Endpoint | Input | Output | Notes |
 |---|---|---|---|
-| `POST /api/cases/assessments` | `multipart/form-data`: part `form` (CaseForm JSON), part `photo` (≤ 10 MB, JPEG/PNG/WebP by content) | `200` JSON: `caseContext` (without decision), `signature` | Validates form + photo, downscales photo, runs Luna Decisions pre-screening (ADR-004) and/or LLM step 1 depending on `DECISIONS_MODE`. Timeout 26 s. |
+| `POST /api/cases/assessments` | `multipart/form-data`: part `form` (CaseForm JSON), part `photo` (≤ 10 MB, JPEG/PNG/WebP by content) | `200` JSON: `caseContext` (without decision), `signature` | Validates form + photo, downscales photo, runs Jev Decisions pre-screening (ADR-004) and/or LLM step 1 depending on `DECISIONS_MODE`. Timeout 26 s. |
 | `POST /api/cases/decisions` | JSON: `caseContext`, `signature` | `200` JSON: `decision` {`category`, `message` (Markdown)}, updated `caseContext`, `signature` | Verifies signature, applies rule engine, LLM step 2 (with pre-screen signals as hints), validates category. Timeout 34 s. |
 | `POST /api/chat/messages` | JSON: `caseContext`, `signature`, `messages` (full history incl. the new user message, max 100 messages) | `200` `text/event-stream`: events `delta`, `decision`, `done`, `error` | Streamed reply (AC-34); `decision` event when the reply starts with "Zaktualizowana decyzja:" (AC-36). |
 | `GET /actuator/health` | — | `200` `{"status":"UP"}` | Readiness for Playwright and Docker. Only `health` is exposed. |
@@ -200,7 +200,7 @@ Error codes (HTTP status → `code`): `400 VALIDATION_FAILED` (with `fieldErrors
 | `LLM_DECISION_REASONING_EFFORT` | Reasoning effort for the first decision | No | `medium` (default) |
 | `LLM_CHAT_REASONING_EFFORT` | Reasoning effort for chat replies | No | `low` (default) |
 | `DECISIONS_MODE` | Pre-screening mode: `shadow`, `gated`, `llm-only` | No | `shadow` (default) |
-| `DECISIONS_MODEL` | Decision model for pre-screening | No | `openai/gpt-6-luna-decisions` (default) |
+| `DECISIONS_MODEL` | Decision model for pre-screening (exact slug, no `~latest` alias; ADR-004 Decision 6.6) | No | `typesafe/jev-1.14` (default) |
 | `DECISIONS_URL` | OpenRouter Decisions endpoint | No | `https://openrouter.ai/api/alpha/decisions` (default) |
 | `DECISIONS_CONFIDENCE_THRESHOLD` | Minimum confidence per pre-screen question for a `CONFIDENT` gate | No | `0.80` (default) |
 | `CASE_SIGNING_KEY` | HMAC key (≥ 32 random bytes, Base64) for CaseContext signatures | No | Generated at startup when missing (logged as a warning); signatures then become invalid after restart |
@@ -325,7 +325,7 @@ flowchart LR
         SEC[security: HMAC,<br/>rate limiter]
         LLM[llm: OpenAI Java SDK<br/>client + prompts]
         POL[policy: classpath<br/>policies/*.md]
-        PRE[prescreen: Luna Decisions<br/>gate, mapper, shadow]
+        PRE[prescreen: Jev Decisions<br/>gate, mapper, shadow]
         CASES --> PRE
         WEB --> CASES
         WEB --> CHAT
@@ -351,8 +351,8 @@ flowchart LR
 flowchart TD
     F[Form data + photo<br/>browser] -->|multipart| V[Validate form<br/>detect image type]
     V --> D[Downscale to 1536 px<br/>JPEG q=0.85, EXIF stripped]
-    D -->|image + category label,<br/>no customer text AC-20| PA[Luna Decisions request A:<br/>photo questions + probabilities]
-    D -->|image + form| PB[Luna Decisions request B:<br/>consistency signals]
+    D -->|image + category label,<br/>no customer text AC-20| PA[Jev Decisions request A:<br/>photo questions + probabilities]
+    D -->|image + form| PB[Jev Decisions request B:<br/>consistency signals]
     PA --> GT{Gate: all ≥ 0.80<br/>and mode = gated?}
     GT -- yes --> MP[Map to ImageAssessment<br/>source=DECISIONS]
     GT -- "no / shadow / llm-only" --> A[LLM step 1:<br/>image assessment JSON]
@@ -518,7 +518,7 @@ TDD per `AGENTS.md`: for every acceptance criterion, write the failing test firs
 
 ### Captures (required before writing OpenRouter mocks)
 
-Before creating a WireMock stub, make one real request with synthetic data to OpenRouter and save the full response (status, headers, body; for streams the raw SSE text) under `app/backend/src/test/resources/captures/` with a sidecar `*.meta.md` stating date, endpoint, model, request summary and SDK version. Required captures: Luna Decisions requests A (return, complaint) and B (ADR-004 §8), return assessment, complaint assessment, insufficient-photo assessment, decision (non-streamed, structured), chat stream (success), chat stream with `response.failed` or `error` event if it can be provoked safely, `429` and `401` error bodies. If a capture cannot be obtained, report it instead of inventing the shape.
+Before creating a WireMock stub, make one real request with synthetic data to OpenRouter and save the full response (status, headers, body; for streams the raw SSE text) under `app/backend/src/test/resources/captures/` with a sidecar `*.meta.md` stating date, endpoint, model, request summary and SDK version. Required captures: Jev Decisions requests A (return, complaint) and B (ADR-004 §8), return assessment, complaint assessment, insufficient-photo assessment, decision (non-streamed, structured), chat stream (success), chat stream with `response.failed` or `error` event if it can be provoked safely, `429` and `401` error bodies. If a capture cannot be obtained, report it instead of inventing the shape.
 
 ### Key test scenarios
 

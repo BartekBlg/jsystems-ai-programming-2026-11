@@ -56,7 +56,7 @@ app:
     chat-per-hour: ${RATE_LIMIT_CHAT_PER_HOUR:60}
   decisions:
     mode: ${DECISIONS_MODE:shadow}
-    model: ${DECISIONS_MODEL:openai/gpt-6-luna-decisions}
+    model: ${DECISIONS_MODEL:typesafe/jev-1.14}
     url: ${DECISIONS_URL:https://openrouter.ai/api/alpha/decisions}
     confidence-threshold: ${DECISIONS_CONFIDENCE_THRESHOLD:0.80}
     timeout: 6s

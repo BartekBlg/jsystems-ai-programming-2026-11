@@ -67,7 +67,7 @@ Verify the generated project before adding code: `./mvnw -v` reports Java 25; `.
 | `…copilot.web` | `CaseController`, `ChatController`, `SpaFallbackController`, `ApiExceptionHandler` (`@RestControllerAdvice`), `RateLimitFilter` | HTTP mapping, Bean Validation, ProblemDetail errors, SSE emitter lifecycle |
 | `…copilot.cases` | `AssessmentService`, `DecisionService`, `PolicyRuleEngine`, `DecisionMessageValidator` | Use cases for step 1 and step 2; deterministic rules |
 | `…copilot.chat` | `ChatService`, `DecisionGate`, `ChatHistoryValidator` | History validation, streaming relay, decision update detection |
-| `…copilot.prescreen` | `DecisionsClient`, `PrescreenService`, `PrescreenQuestionCatalog`, `ConfidenceGate`, `PrescreenAssessmentMapper`, `ShadowComparator` | Luna Decisions pre-screening (ADR-004) |
+| `…copilot.prescreen` | `DecisionsClient`, `PrescreenService`, `PrescreenQuestionCatalog`, `ConfidenceGate`, `PrescreenAssessmentMapper`, `ShadowComparator` | Jev Decisions pre-screening (ADR-004) |
 | `…copilot.llm` | `OpenRouterClientConfig`, `LlmGateway` (interface), `OpenAiSdkLlmGateway`, `LlmProperties` | All SDK usage (ADR-002) |
 | `…copilot.prompts` | `PromptRepository` | Loads `classpath:prompts/*.md` once at startup; fails fast if missing |
 | `…copilot.policy` | `PolicyRepository` | Loads `classpath:policies/return-policy.md` and `complaint-policy.md`; fails fast if missing |
@@ -147,7 +147,7 @@ Key properties: `server.port=${SERVER_PORT:8080}`, multipart limits (§3.4), `sp
 - **Input:** `multipart/form-data`, parts `form` (`application/json`, `CaseFormDto`) and `photo` (binary).
 - **Output 200:** `AssessmentResponse`.
 - **Errors:** `400 VALIDATION_FAILED` (+ `fieldErrors`), `400 UNSUPPORTED_IMAGE` ("Nieobsługiwany format. Dodaj zdjęcie JPEG, PNG lub WebP."), `413 PHOTO_TOO_LARGE` ("Zdjęcie przekracza limit 10 MB."), `429 RATE_LIMITED` ("Wysłano zbyt wiele zgłoszeń. Spróbuj ponownie później."), `502 LLM_FAILED` / `504 LLM_TIMEOUT` ("Nie udało się przygotować decyzji. Spróbuj ponownie za chwilę.").
-- **Notes:** step budget 26 s (ADR-002 §3.5), including Luna Decisions pre-screening (ADR-004 §3.7; timeout 6 s, never surfaces an error itself); counts against `RATE_LIMIT_CASES_PER_HOUR`.
+- **Notes:** step budget 26 s (ADR-002 §3.5), including Jev Decisions pre-screening (ADR-004 §3.7; timeout 6 s, never surfaces an error itself); counts against `RATE_LIMIT_CASES_PER_HOUR`.
 
 ### 5.2 `POST /api/cases/decisions`
 

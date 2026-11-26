@@ -17,7 +17,7 @@ public record AppProperties(
 
     public record Decisions(
             @DefaultValue("shadow") String mode,
-            @DefaultValue("openai/gpt-6-luna-decisions") String model,
+            @DefaultValue("typesafe/jev-1.14") String model,
             @DefaultValue("https://openrouter.ai/api/alpha/decisions") String url,
             @DefaultValue("0.80") double confidenceThreshold,
             @DefaultValue("6s") Duration timeout) {
