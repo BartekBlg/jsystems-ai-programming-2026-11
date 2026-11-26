@@ -1,5 +1,6 @@
 package pl.elektrodemo.copilot.cases;
 
+import org.springframework.stereotype.Service;
 import pl.elektrodemo.copilot.llm.DecisionPrompt;
 import pl.elektrodemo.copilot.llm.LlmFailedException;
 import pl.elektrodemo.copilot.llm.LlmGateway;
@@ -14,6 +15,7 @@ import pl.elektrodemo.copilot.web.dto.DecisionRequest;
 import pl.elektrodemo.copilot.web.dto.DecisionResponse;
 
 /** ADR-001 5.2, ADR-002 3.5-3.6 and 6.4, ADR-005 D3/D5: step 2 (decision) of a case. */
+@Service
 public class DecisionService {
 
     static final String CORRECTIVE_PREFIX = "Poprzednia odpowiedź była niezgodna z wymaganiami: ";

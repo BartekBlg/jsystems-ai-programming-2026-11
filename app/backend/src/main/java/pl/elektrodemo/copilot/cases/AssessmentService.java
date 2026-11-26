@@ -1,5 +1,6 @@
 package pl.elektrodemo.copilot.cases;
 
+import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import pl.elektrodemo.copilot.web.dto.CaseFormDto;
 import pl.elektrodemo.copilot.web.validation.CaseFormNormalizer;
 
 /** ADR-001 5.1, ADR-002 3.5, ADR-005 D3: step 1 (image assessment) of a case. llm-only path in this phase. */
+@Service
 public class AssessmentService {
 
     private static final int SIGNATURE_CONTEXT_VERSION = 1;
