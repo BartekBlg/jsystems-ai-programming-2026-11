@@ -3,8 +3,9 @@ package pl.elektrodemo.copilot.web.dto;
 import pl.elektrodemo.copilot.cases.CaseType;
 import pl.elektrodemo.copilot.cases.EquipmentCategory;
 import java.time.LocalDate;
+import pl.elektrodemo.copilot.web.validation.ValidCaseForm;
 
-// T13: add @ValidCaseForm
+@ValidCaseForm
 public record CaseFormDto(
         CaseType caseType,
         EquipmentCategory category,
