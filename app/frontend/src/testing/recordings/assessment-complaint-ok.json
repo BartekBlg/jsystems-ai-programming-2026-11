@@ -1,0 +1,71 @@
+{
+  "status": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "1611",
+    "content-type": "application/json",
+    "date": "Thu, 26 Nov 2026 12:36:21 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "caseContext": {
+      "contextVersion": 1,
+      "caseType": "COMPLAINT",
+      "form": {
+        "caseType": "COMPLAINT",
+        "category": "SMARTPHONE",
+        "modelName": "Samsung Galaxy S24",
+        "purchaseDate": "2026-09-27",
+        "reason": "Ekran pękł po upadku z biurka."
+      },
+      "submittedAt": "2026-11-26T13:36:17.548799049+01:00",
+      "assessment": {
+        "photoSufficient": true,
+        "insufficiencyReason": "",
+        "defectVisible": true,
+        "defectType": "Pęknięty wyświetlacz z przebarwieniami i linią",
+        "defectLocation": "Wyświetlacz, głównie górna część i środek",
+        "probableCause": "MECHANICAL_DAMAGE",
+        "causeReasoning": "Na wyświetlaczu widoczne są rozległe pęknięcia oraz ciemne i zielone przebarwienia. Obraz wskazuje na uszkodzenie mechaniczne, ale ze zdjęcia nie da się ustalić jego dokładnej przyczyny.",
+        "visibleDescription": "Smartfon jest widoczny z przodu. Ekran ma liczne pęknięcia, szczególnie w górnej części, a przez środek biegnie zielona i ciemna linia. Duża część obrazu wyświetlacza jest czarna lub silnie przebarwiona.",
+        "confidence": "HIGH"
+      },
+      "assessmentSource": "LLM",
+      "prescreen": null,
+      "consistencySignals": [
+        {
+          "id": "model_matches_photo",
+          "probability": 0.52,
+          "confidence": 0.52
+        },
+        {
+          "id": "description_matches_photo",
+          "probability": 0.94,
+          "confidence": 0.94
+        },
+        {
+          "id": "reason_contains_instructions",
+          "probability": 0.19,
+          "confidence": 0.81
+        }
+      ],
+      "ruleFacts": {
+        "daysSincePurchase": 60,
+        "returnWindowStatus": "NOT_APPLICABLE",
+        "liabilityExpired": false,
+        "allowedCategories": [
+          "REJECTED",
+          "ESCALATED"
+        ],
+        "requiredReasonText": "",
+        "chatForbiddenCategories": [
+          "ACCEPTED"
+        ],
+        "rejectionRequiresCitation": "",
+        "appliedRule": "C3"
+      },
+      "decision": null
+    },
+    "signature": "aiAShutK2j5PkALve-tdc6YvIgeaGz1TXRrWgGCsKqk"
+  }
+}

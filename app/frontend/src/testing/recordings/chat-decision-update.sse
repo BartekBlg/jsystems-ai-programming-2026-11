@@ -1,0 +1,105 @@
+event:decision
+data: {"category":"ESCALATED"}
+
+event:delta
+data: {"text":"Zaktualizowana decyzja: Przekazane do specjalisty\n\n"}
+
+event:delta
+data: {"text":"D"}
+
+event:delta
+data: {"text":"ostawa"}
+
+event:delta
+data: {"text":" 3"}
+
+event:delta
+data: {"text":" dni temu"}
+
+event:delta
+data: {"text":" oznacza"}
+
+event:delta
+data: {"text":", że"}
+
+event:delta
+data: {"text":" zgłos"}
+
+event:delta
+data: {"text":"zenie mie"}
+
+event:delta
+data: {"text":"ści się w"}
+
+event:delta
+data: {"text":" 14-d"}
+
+event:delta
+data: {"text":"niowym termin"}
+
+event:delta
+data: {"text":"ie liczonym"}
+
+event:delta
+data: {"text":" od dostawy"}
+
+event:delta
+data: {"text":" (§2 ust"}
+
+event:delta
+data: {"text":". 1,"}
+
+event:delta
+data: {"text":" §3 ust."}
+
+event:delta
+data: {"text":" 1). Na"}
+
+event:delta
+data: {"text":" zdjęciu widać"}
+
+event:delta
+data: {"text":" ślady użytkowania,"}
+
+event:delta
+data: {"text":" które nie odbierają"}
+
+event:delta
+data: {"text":" prawa do zwrotu,"}
+
+event:delta
+data: {"text":" ale mogą wp"}
+
+event:delta
+data: {"text":"łynąć na ocenę"}
+
+event:delta
+data: {"text":" zmniejszenia wartości urządzenia (§"}
+
+event:delta
+data: {"text":"4"}
+
+event:delta
+data: {"text":" ust. 2–3)."}
+
+event:delta
+data: {"text":" Zgodnie z §7 ust"}
+
+event:delta
+data: {"text":". 2 sprawę z wid"}
+
+event:delta
+data: {"text":"oc"}
+
+event:delta
+data: {"text":"znymi śladami użytkowania przekaz"}
+
+event:delta
+data: {"text":"ujemy specjaliście do oc"}
+
+event:delta
+data: {"text":"eny."}
+
+event:done
+data: {"category":"ESCALATED"}
+

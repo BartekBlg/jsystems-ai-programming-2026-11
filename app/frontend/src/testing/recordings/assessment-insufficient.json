@@ -1,0 +1,58 @@
+{
+  "status": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "1047",
+    "content-type": "application/json",
+    "date": "Thu, 26 Nov 2026 12:36:33 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "caseContext": {
+      "contextVersion": 1,
+      "caseType": "RETURN",
+      "form": {
+        "caseType": "RETURN",
+        "category": "LAPTOP",
+        "modelName": "Lenovo ThinkPad T14 Gen 4",
+        "purchaseDate": "2026-11-21",
+        "reason": ""
+      },
+      "submittedAt": "2026-11-26T13:36:28.175408887+01:00",
+      "assessment": {
+        "photoSufficient": false,
+        "insufficiencyReason": "Na zdjęciu widać telefon, a nie laptop.",
+        "damageVisible": true,
+        "signsOfUse": [],
+        "resellableAsNew": false,
+        "visibleDescription": "Na podstawce stoi telefon z mocno popękanym ekranem; widoczne są rozległe pęknięcia oraz ciemne i zielone przebarwienia na wyświetlaczu.",
+        "confidence": "HIGH"
+      },
+      "assessmentSource": "LLM",
+      "prescreen": null,
+      "consistencySignals": [
+        {
+          "id": "model_matches_photo",
+          "probability": 0.01,
+          "confidence": 0.99
+        }
+      ],
+      "ruleFacts": {
+        "daysSincePurchase": 5,
+        "returnWindowStatus": "WITHIN_14_DAYS",
+        "liabilityExpired": false,
+        "allowedCategories": [
+          "MORE_INFO_NEEDED"
+        ],
+        "requiredReasonText": "",
+        "chatForbiddenCategories": [
+          "REJECTED"
+        ],
+        "rejectionRequiresCitation": "",
+        "appliedRule": "R2"
+      },
+      "decision": null
+    },
+    "signature": "PF_W0KJyhN_R_xlA_plzo9JP2ySIKv4whx8qTTphrCU"
+  }
+}

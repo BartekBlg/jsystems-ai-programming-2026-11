@@ -1,0 +1,18 @@
+{
+  "status": 401,
+  "headers": {
+    "connection": "keep-alive",
+    "content-type": "application/problem+json",
+    "date": "Thu, 26 Nov 2026 12:37:06 GMT",
+    "keep-alive": "timeout=60",
+    "transfer-encoding": "chunked"
+  },
+  "body": {
+    "type": "about:blank",
+    "title": "Unauthorized",
+    "status": 401,
+    "detail": "Nie udało się odczytać zgłoszenia. Rozpocznij nowe zgłoszenie.",
+    "code": "INVALID_CASE_SIGNATURE",
+    "instance": "/api/chat/messages"
+  }
+}

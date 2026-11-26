@@ -1,0 +1,23 @@
+{
+  "status": 400,
+  "headers": {
+    "connection": "close",
+    "content-type": "application/problem+json",
+    "date": "Thu, 26 Nov 2026 12:37:06 GMT",
+    "transfer-encoding": "chunked"
+  },
+  "body": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "Formularz zawiera błędy.",
+    "code": "VALIDATION_FAILED",
+    "instance": "/api/chat/messages",
+    "fieldErrors": [
+      {
+        "field": "messages",
+        "message": "Nieprawidłowa historia rozmowy."
+      }
+    ]
+  }
+}

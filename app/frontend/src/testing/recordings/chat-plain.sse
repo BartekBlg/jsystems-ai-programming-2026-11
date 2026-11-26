@@ -1,0 +1,33 @@
+event:delta
+data: {"text":"Zapakuj laptop wraz z akcesoriami i dowodem zakupu, najlepiej tak, by był zabezpieczony podczas transportu. Regulamin nie"}
+
+event:delta
+data: {"text":" określa"}
+
+event:delta
+data: {"text":" szczególnego"}
+
+event:delta
+data: {"text":" sposobu pak"}
+
+event:delta
+data: {"text":"owania. Kos"}
+
+event:delta
+data: {"text":"zt odes"}
+
+event:delta
+data: {"text":"łania ponosis"}
+
+event:delta
+data: {"text":"z Ty (§6"}
+
+event:delta
+data: {"text":" ust. 1"}
+
+event:delta
+data: {"text":" i 3)."}
+
+event:done
+data: {"category":"ESCALATED"}
+

@@ -1,0 +1,77 @@
+{
+  "status": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "2705",
+    "content-type": "application/json",
+    "date": "Thu, 26 Nov 2026 12:36:27 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "decision": {
+      "category": "REJECTED",
+      "message": "Dzień dobry, dziękujemy za zgłoszenie.\n\n## Decyzja\nOdrzucone.\n\n## Uzasadnienie\nZ opisu zgłoszenia wynika, że ekran pękł po upadku, a na zdjęciu widać rozległe pęknięcia i przebarwienia. Zgodnie z §4 ust. 1 pkt 1 reklamacja nie obejmuje uszkodzeń mechanicznych spowodowanych przez użytkownika. Widoczne uszkodzenie mechaniczne oceniono z wysoką pewnością, dlatego zgodnie z §7 ust. 2 nie możemy wstępnie przyjąć reklamacji.\n\n## Co widać na zdjęciu\nEkran ma liczne pęknięcia, szczególnie w górnej części, oraz zieloną i ciemną linię biegnącą przez środek. Duża część obrazu jest czarna lub silnie przebarwiona.\n\n## Kolejne kroki\nMożesz skorzystać z płatnej naprawy pogwarancyjnej, zgodnie z §4 ust. 3. W sprawie możliwości takiej naprawy skontaktuj się z serwisem: serwis@elektrodemo.example.\n\nTo wstępna, automatyczna ocena przygotowana na podstawie formularza i zdjęcia. Ostateczną decyzję podejmie nasz zespół serwisu po otrzymaniu i sprawdzeniu urządzenia."
+    },
+    "caseContext": {
+      "contextVersion": 2,
+      "caseType": "COMPLAINT",
+      "form": {
+        "caseType": "COMPLAINT",
+        "category": "SMARTPHONE",
+        "modelName": "Samsung Galaxy S24",
+        "purchaseDate": "2026-09-27",
+        "reason": "Ekran pękł po upadku z biurka."
+      },
+      "submittedAt": "2026-11-26T13:36:17.548799049+01:00",
+      "assessment": {
+        "photoSufficient": true,
+        "insufficiencyReason": "",
+        "defectVisible": true,
+        "defectType": "Pęknięty wyświetlacz z przebarwieniami i linią",
+        "defectLocation": "Wyświetlacz, głównie górna część i środek",
+        "probableCause": "MECHANICAL_DAMAGE",
+        "causeReasoning": "Na wyświetlaczu widoczne są rozległe pęknięcia oraz ciemne i zielone przebarwienia. Obraz wskazuje na uszkodzenie mechaniczne, ale ze zdjęcia nie da się ustalić jego dokładnej przyczyny.",
+        "visibleDescription": "Smartfon jest widoczny z przodu. Ekran ma liczne pęknięcia, szczególnie w górnej części, a przez środek biegnie zielona i ciemna linia. Duża część obrazu wyświetlacza jest czarna lub silnie przebarwiona.",
+        "confidence": "HIGH"
+      },
+      "assessmentSource": "LLM",
+      "prescreen": null,
+      "consistencySignals": [
+        {
+          "id": "model_matches_photo",
+          "probability": 0.52,
+          "confidence": 0.52
+        },
+        {
+          "id": "description_matches_photo",
+          "probability": 0.94,
+          "confidence": 0.94
+        },
+        {
+          "id": "reason_contains_instructions",
+          "probability": 0.19,
+          "confidence": 0.81
+        }
+      ],
+      "ruleFacts": {
+        "daysSincePurchase": 60,
+        "returnWindowStatus": "NOT_APPLICABLE",
+        "liabilityExpired": false,
+        "allowedCategories": [
+          "REJECTED",
+          "ESCALATED"
+        ],
+        "requiredReasonText": "",
+        "chatForbiddenCategories": [
+          "ACCEPTED"
+        ],
+        "rejectionRequiresCitation": "",
+        "appliedRule": "C3"
+      },
+      "decision": {
+        "category": "REJECTED"
+      }
+    },
+    "signature": "3vpom7E-gqGyeImQjxhVxbOMxw9Neabyo_irwxV68xk"
+  }
+}

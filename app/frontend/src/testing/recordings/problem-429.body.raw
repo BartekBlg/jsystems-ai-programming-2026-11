@@ -1,0 +1,1 @@
+{"type":"about:blank","title":"Too Many Requests","status":429,"detail":"Wysłano zbyt wiele zgłoszeń. Spróbuj ponownie później.","code":"RATE_LIMITED","instance":"/api/cases/assessments"}
