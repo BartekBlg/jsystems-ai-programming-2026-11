@@ -50,7 +50,7 @@ test.describe('Formularz zgłoszenia — walidacja (AC-01..AC-13)', () => {
     await expect(page.getByText(TEXT.errors.categoryRequired)).toBeVisible();
     await expect(page.getByText(TEXT.errors.modelName)).toBeVisible();
     await expect(page.getByText(TEXT.errors.purchaseDateRequired)).toBeVisible();
-    await expect(page.getByText(TEXT.errors.photoRequired)).toBeVisible();
+    await expect(page.getByText(TEXT.errors.photoRequired, { exact: true })).toBeVisible();
 
     await expect(page.getByRole('radio', { name: /Zwrot/ })).toBeFocused();
     expect(page.url()).toBe(urlBefore);

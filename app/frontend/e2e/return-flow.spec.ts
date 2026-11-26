@@ -25,7 +25,10 @@ test.describe('Flow 4.1 — zwrot, ścieżka szczęśliwa (AC-21, prawdziwy LLM)
 
     // 1. Wypełnienie formularza
     await page.getByRole('radio', { name: /Zwrot/ }).check();
-    await page.getByLabel(TEXT.form.category).click();
+    // The floating label overlays the middle of the select (Material); a real user opens it by clicking the arrow side.
+    const category = page.getByRole('combobox', { name: TEXT.form.category });
+    const categoryBox = (await category.boundingBox())!;
+    await category.click({ position: { x: categoryBox.width - 20, y: categoryBox.height / 2 } });
     await page.getByRole('option', { name: 'Laptop', exact: true }).click();
     await page.getByLabel(TEXT.form.modelName).fill(MODEL);
     await page.getByLabel(TEXT.form.purchaseDate).fill(purchaseDateFiveDaysAgo());
@@ -38,7 +41,13 @@ test.describe('Flow 4.1 — zwrot, ścieżka szczęśliwa (AC-21, prawdziwy LLM)
     await expect(page.getByText(TEXT.progress.note)).toBeVisible();
 
     // 3. Czat w ciągu 90 s: podsumowanie i odznaka decyzji
-    await expect(page.getByText(TEXT.chat.summaryTitle)).toBeVisible({ timeout: CHAT_TIMEOUT_MS });
+    // at 360 px the summary is a collapsed accordion: its title is rendered twice (panel header + hidden h2)
+    await expect(page.getByText(TEXT.chat.summaryTitle).first()).toBeVisible({ timeout: CHAT_TIMEOUT_MS });
+    // at 360 px the summary accordion starts collapsed; a user opens it to read the details
+    const summaryToggle = page.getByRole('button', { name: TEXT.chat.summaryTitle });
+    if ((await summaryToggle.count()) > 0 && (await summaryToggle.getAttribute('aria-expanded')) === 'false') {
+      await summaryToggle.click();
+    }
     await expect(page.getByText('Zwrot', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Laptop', { exact: true }).first()).toBeVisible();
     await expect(page.getByText(MODEL, { exact: true }).first()).toBeVisible();
@@ -47,8 +56,9 @@ test.describe('Flow 4.1 — zwrot, ścieżka szczęśliwa (AC-21, prawdziwy LLM)
     // 4. Pierwsza wiadomość agenta: nagłówki w kolejności, § + cyfra, zakończenie
     const headings = ['Decyzja', 'Uzasadnienie', 'Co widać na zdjęciu', 'Kolejne kroki'];
     const tops: number[] = [];
+    const agentMessage = page.locator('article.message--agent').first(); // the summary card has its own "Decyzja" heading
     for (const heading of headings) {
-      const box = await page.getByRole('heading', { name: heading, exact: true }).first().boundingBox();
+      const box = await agentMessage.getByRole('heading', { name: heading, exact: true }).first().boundingBox();
       expect(box, `brak nagłówka "${heading}" w wiadomości agenta`).not.toBeNull();
       tops.push(box!.y);
     }
