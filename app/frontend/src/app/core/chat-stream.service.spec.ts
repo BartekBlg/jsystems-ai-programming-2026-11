@@ -94,6 +94,44 @@ describe('ChatStreamService', () => {
     expect(events.at(-1)).toEqual({ type: 'done', category: 'ESCALATED' });
   });
 
+  it('errors with INTERNAL when a delta frame contains malformed JSON', async () => {
+    // Derived from chat-plain.sse (T26 recording): corrupt the JSON in exactly its first delta frame.
+    const recording = await loadSseRecording('chat-plain');
+    const corrupted = recording.text.replace(/^data: (\{"text":.*\})$/m, 'data: {"text":');
+    expect(corrupted).not.toBe(recording.text);
+    fetchMock.mockResolvedValue(sseResponseFromText(corrupted, recording.headers));
+
+    const outcome = await collect(send());
+
+    expect(outcome.completed).toBe(false);
+    expect(outcome.error).toBeInstanceOf(ApiError);
+    expect((outcome.error as ApiError).code).toBe('INTERNAL');
+  });
+
+  it.each([
+    ['decision', 'chat-decision-update'],
+    ['done', 'chat-decision-update'],
+    ['error', 'chat-error'],
+  ])('errors with INTERNAL when a %s frame contains malformed JSON', async (eventName, recordingName) => {
+    const recording = await loadSseRecording(recordingName);
+    let corruptedFrames = 0;
+    const corrupted = recording.text.replace(
+      new RegExp(`(^event:${eventName}\\ndata: ).*$`, 'm'),
+      (_frame, prefix: string) => {
+        corruptedFrames += 1;
+        return `${prefix}{`;
+      },
+    );
+    expect(corruptedFrames).toBe(1);
+    fetchMock.mockResolvedValue(sseResponseFromText(corrupted, recording.headers));
+
+    const outcome = await collect(send());
+
+    expect(outcome.completed).toBe(false);
+    expect(outcome.error).toBeInstanceOf(ApiError);
+    expect((outcome.error as ApiError).code).toBe('INTERNAL');
+  });
+
   it('chat-decision-update: the decision event comes first', async () => {
     fetchMock.mockResolvedValue(await sseResponseFromRecording('chat-decision-update'));
     const { events } = await collect(send());

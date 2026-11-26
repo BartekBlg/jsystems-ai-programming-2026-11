@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { loadSseRecording } from '../../testing/recording-loader';
 import { SseEvent, SseParser } from './sse-parser';
 
 function parseChunks(chunks: string[]): SseEvent[] {
@@ -10,21 +11,6 @@ function parseChunks(chunks: string[]): SseEvent[] {
   events.push(...parser.flush());
   return events;
 }
-
-// TODO(T26): replace this hand-written spec-grammar fixture with a recorded backend SSE stream.
-const FIXTURE =
-  ': heartbeat\n\n' +
-  'event: decision\ndata: {"category":"ESCALATED"}\n\n' +
-  'event: delta\ndata: {"text":"Zaktualizowana decyzja: Przekazane do specjalisty\\n"}\n\n' +
-  'event: delta\ndata: {"text":"Zażółć gęślą jaźń 😀"}\n\n' +
-  'event: done\ndata: {"category":"ESCALATED"}\n\n';
-
-const FIXTURE_EVENTS: SseEvent[] = [
-  { event: 'decision', data: '{"category":"ESCALATED"}' },
-  { event: 'delta', data: '{"text":"Zaktualizowana decyzja: Przekazane do specjalisty\\n"}' },
-  { event: 'delta', data: '{"text":"Zażółć gęślą jaźń 😀"}' },
-  { event: 'done', data: '{"category":"ESCALATED"}' },
-];
 
 describe('SseParser', () => {
   it('parses a single event', () => {
@@ -92,13 +78,20 @@ describe('SseParser', () => {
     expect(parseChunks(['id: 5\nretry: 1000\ndata: x\n\n'])).toEqual([{ event: 'message', data: 'x' }]);
   });
 
-  it('parses the fixture the same whole and one character at a time', () => {
-    expect(parseChunks([FIXTURE])).toEqual(FIXTURE_EVENTS);
-    expect(parseChunks(Array.from(FIXTURE))).toEqual(FIXTURE_EVENTS);
+  it('parses the recorded decision update the same whole and one character at a time', async () => {
+    const recording = await loadSseRecording('chat-decision-update');
+    const expected = parseChunks([recording.text]);
+
+    expect(expected).toHaveLength(35);
+    expect(expected[0]).toEqual({ event: 'decision', data: '{"category":"ESCALATED"}' });
+    expect(expected.at(-1)).toEqual({ event: 'done', data: '{"category":"ESCALATED"}' });
+    expect(parseChunks(Array.from(recording.text))).toEqual(expected);
   });
 
-  it('parses the fixture identically when UTF-8 bytes are split at every offset', () => {
-    const bytes = new TextEncoder().encode(FIXTURE);
+  it('parses the recorded decision update identically when UTF-8 bytes are split at every offset', async () => {
+    const recording = await loadSseRecording('chat-decision-update');
+    const expected = parseChunks([recording.text]);
+    const bytes = new TextEncoder().encode(recording.text);
     for (let cut = 1; cut < bytes.length; cut++) {
       const decoder = new TextDecoder('utf-8');
       const parser = new SseParser();
@@ -108,7 +101,7 @@ describe('SseParser', () => {
         ...parser.push(decoder.decode()),
         ...parser.flush(),
       ];
-      expect(events, `split at byte ${cut}`).toEqual(FIXTURE_EVENTS);
+      expect(events, `split at byte ${cut}`).toEqual(expected);
     }
   });
 

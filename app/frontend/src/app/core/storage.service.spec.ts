@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FORM_DRAFT_KEY, FormDraft, STORED_CASE_KEY, StoredCase } from './models';
+import { loadJsonRecording } from '../../testing/recording-loader';
+import { DecisionResponse, FORM_DRAFT_KEY, FormDraft, STORED_CASE_KEY, StoredCase } from './models';
 import { StorageService } from './storage.service';
 
 function syntheticCase(overrides: Partial<StoredCase> = {}): StoredCase {
@@ -93,6 +94,43 @@ describe('StorageService', () => {
       localStorage.setItem(STORED_CASE_KEY, JSON.stringify(withoutMessages));
       expect(service.loadCase()).toBeNull();
       expect(localStorage.getItem(STORED_CASE_KEY)).toBeNull();
+    });
+
+    it.each([
+      ['a null message', { ...syntheticCase(), messages: [null] }],
+      ['a message with an unsupported role', {
+        ...syntheticCase(),
+        messages: [{ ...syntheticCase().messages[0], role: 'system' }],
+      }],
+      ['an unknown current decision', { ...syntheticCase(), currentDecision: 'UNKNOWN' }],
+    ])('clears a schema-mismatched case containing %s', (_description, invalidCase) => {
+      localStorage.setItem(STORED_CASE_KEY, JSON.stringify(invalidCase));
+
+      expect(service.loadCase()).toBeNull();
+      expect(localStorage.getItem(STORED_CASE_KEY)).toBeNull();
+    });
+
+    it('loads a valid case based on the T26 decision recording', async () => {
+      const recording = await loadJsonRecording<DecisionResponse>('decision-return-ok');
+      const { body } = recording;
+      const recordedCase: StoredCase = {
+        version: 1,
+        caseContext: body.caseContext,
+        signature: body.signature,
+        thumbnailDataUrl: 'data:image/jpeg;base64,AAAA',
+        photoFileName: 'recorded-laptop.jpg',
+        messages: [{
+          id: 'recorded-decision',
+          role: 'assistant',
+          text: body.decision.message,
+          createdAt: body.caseContext.submittedAt,
+          decisionCategory: body.decision.category,
+        }],
+        currentDecision: body.decision.category,
+      };
+      localStorage.setItem(STORED_CASE_KEY, JSON.stringify(recordedCase));
+
+      expect(service.loadCase()).toEqual(recordedCase);
     });
 
     it('returns false instead of throwing when the quota is exceeded', () => {

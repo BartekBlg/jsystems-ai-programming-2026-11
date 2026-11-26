@@ -479,6 +479,26 @@ describe('CaseStore', () => {
       ]);
     });
 
+    it('a malformed recorded delta removes the partial reply and marks the user message failed', async () => {
+      // Derived from chat-plain.sse (T26 recording): corrupt only the JSON in its second delta frame.
+      const recording = await loadSseRecording('chat-plain');
+      const deltaFrames = [...recording.text.matchAll(/^event:delta\ndata: (\{"text":.*\})$/gm)];
+      expect(deltaFrames.length).toBeGreaterThan(1);
+      const secondFrame = deltaFrames[1][0];
+      const malformedFrame = secondFrame.replace(/\}$/, '');
+      const corrupted = recording.text.replace(secondFrame, malformedFrame);
+      expect(corrupted).not.toBe(recording.text);
+      fetchMock.mockResolvedValue(sseResponseFromText(corrupted, recording.headers));
+
+      await store.sendMessage('Pytanie testowe');
+      await sentStreamDone();
+
+      expect(store.messages().map((message) => [message.role, message.status])).toEqual([
+        ['assistant', undefined],
+        ['user', 'failed'],
+      ]);
+    });
+
     it('a pre-stream problem (401 signature) marks the user message failed', async () => {
       fetchMock.mockResolvedValue(await responseFromRecording('problem-401-chat-signature'));
       await store.sendMessage('Pytanie testowe');

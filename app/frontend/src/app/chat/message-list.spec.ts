@@ -57,6 +57,25 @@ describe('MessageListComponent', () => {
     expect(fixture.nativeElement.querySelector('.message--client')).toBeNull();
   });
 
+  it('sanitizes executable HTML in assistant message text', async () => {
+    Reflect.deleteProperty(window, '__xss');
+    store.messages.set([
+      ...store.messages(),
+      {
+        id: 'inline-sanitizer-input',
+        role: 'assistant',
+        text: '<img src=x onerror="window.__xss=1">\n\n<script>window.__xss=2</script>',
+        createdAt: '2026-11-26T12:02:00.000Z',
+      },
+    ]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('img[onerror]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('script')).toBeNull();
+    expect((window as Window & { __xss?: number }).__xss).toBeUndefined();
+  });
+
   it('shows a typing indicator with hidden text while the store is streaming', () => {
     store.streaming.set(true);
     fixture.detectChanges();

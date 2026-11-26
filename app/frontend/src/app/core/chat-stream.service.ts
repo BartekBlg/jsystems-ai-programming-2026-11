@@ -83,6 +83,11 @@ export class ChatStreamService {
         try {
           data = JSON.parse(event.data);
         } catch {
+          if (event.event === 'decision' || event.event === 'delta' || event.event === 'done' || event.event === 'error') {
+            fail(new ApiError(200, 'INTERNAL', ''));
+            void reader?.cancel().catch(() => undefined);
+            return true;
+          }
           return false;
         }
         const record = (typeof data === 'object' && data !== null ? data : {}) as Record<string, unknown>;

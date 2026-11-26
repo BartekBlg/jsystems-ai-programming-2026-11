@@ -93,11 +93,48 @@ function isStoredCase(value: unknown): value is StoredCase {
   return (
     isRecord(value) &&
     value['version'] === 1 &&
-    isRecord(value['caseContext']) &&
+    isStoredCaseContext(value['caseContext']) &&
     typeof value['signature'] === 'string' &&
+    typeof value['thumbnailDataUrl'] === 'string' &&
+    typeof value['photoFileName'] === 'string' &&
     Array.isArray(value['messages']) &&
-    typeof value['currentDecision'] === 'string'
+    value['messages'].every(isChatMessage) &&
+    isDecisionCategory(value['currentDecision'])
   );
+}
+
+function isStoredCaseContext(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    isCaseType(value['caseType']) &&
+    isRecord(value['form']) &&
+    isRecord(value['assessment']) &&
+    typeof value['contextVersion'] === 'number'
+  );
+}
+
+function isChatMessage(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    typeof value['id'] === 'string' &&
+    (value['role'] === 'user' || value['role'] === 'assistant') &&
+    typeof value['text'] === 'string' &&
+    typeof value['createdAt'] === 'string' &&
+    (value['status'] === undefined || isMessageStatus(value['status'])) &&
+    (value['decisionCategory'] === undefined || isDecisionCategory(value['decisionCategory']))
+  );
+}
+
+function isCaseType(value: unknown): boolean {
+  return value === 'RETURN' || value === 'COMPLAINT';
+}
+
+function isMessageStatus(value: unknown): boolean {
+  return value === 'pending' || value === 'sent' || value === 'failed';
+}
+
+function isDecisionCategory(value: unknown): boolean {
+  return value === 'ACCEPTED' || value === 'REJECTED' || value === 'MORE_INFO_NEEDED' || value === 'ESCALATED';
 }
 
 function isFormDraft(value: unknown): value is FormDraft {
