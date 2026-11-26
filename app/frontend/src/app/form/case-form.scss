@@ -1,0 +1,77 @@
+:host {
+  display: block;
+}
+
+.case-form {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.intro {
+  margin: 0 0 16px;
+}
+
+.notice {
+  border: 3px solid #101820;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #fff9eb;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.full {
+  width: 100%;
+}
+
+.case-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.case-card {
+  display: block;
+  border: 3px solid #101820;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  box-sizing: border-box;
+  width: 100%;
+
+  &.selected {
+    background: #fff9eb;
+    box-shadow: 4px 4px 0 #101820;
+  }
+}
+
+.card-title {
+  display: block;
+  font-weight: 600;
+}
+
+.card-desc {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.field-error {
+  color: #b3261e;
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+}
+
+.submit {
+  width: 100%;
+}

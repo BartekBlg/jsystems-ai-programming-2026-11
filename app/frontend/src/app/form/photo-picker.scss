@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+.drop-zone {
+  border: 3px dashed #101820;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.drop-text {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.drop-hint {
+  font-size: 0.9rem;
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.preview {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  border: 3px solid #101820;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff9eb;
+  box-shadow: 4px 4px 0 #101820;
+
+  img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 120px;
+  overflow-wrap: anywhere;
+}

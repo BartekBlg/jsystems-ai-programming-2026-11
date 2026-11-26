@@ -1,0 +1,31 @@
+<div
+  class="drop-zone"
+  role="group"
+  aria-labelledby="photo-label"
+  (dragover)="onDragOver($event)"
+  (drop)="onDrop($event)"
+>
+  <span id="photo-label" class="label">{{ labels.photo }}</span>
+  <p class="drop-text">
+    <button type="button" mat-stroked-button (click)="openFileDialog()">
+      {{ labels.choosePhoto }}
+    </button>
+    <span class="drop-hint">{{ labels.dropHint }}</span>
+  </p>
+  <input #fileInput type="file" hidden [accept]="acceptTypes" (change)="onInputChange($event)" />
+</div>
+
+@if (hint(); as text) {
+  <p class="hint">{{ text }}</p>
+}
+
+@if (previewUrl(); as url) {
+  <div class="preview">
+    <img [src]="url" [alt]="labels.photo" />
+    <div class="meta">
+      <span class="file-name">{{ file()?.name }}</span>
+      <span class="file-size">{{ sizeLabel() }}</span>
+    </div>
+    <button type="button" mat-stroked-button (click)="remove()">{{ labels.removePhoto }}</button>
+  </div>
+}
