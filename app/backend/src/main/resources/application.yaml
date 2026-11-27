@@ -1,6 +1,11 @@
 # ADR-001 §3.7. Secrets come only from environment variables (ADR-000 §7).
 server:
   port: ${SERVER_PORT:8080}
+  tomcat:
+    # Tomcat swallows (reads and discards) at most this much of a rejected request body before it closes the
+    # connection without delivering the response. The 2 MB default is below the overshoot of a ~12-13 MB upload,
+    # so the client would see a connection reset instead of 413 PHOTO_TOO_LARGE.
+    max-swallow-size: 16MB
   compression:
     enabled: false
   error:
