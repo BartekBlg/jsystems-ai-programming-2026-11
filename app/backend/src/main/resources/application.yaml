@@ -26,7 +26,7 @@ spring:
       max-request-size: 11MB
   mvc:
     async:
-      request-timeout: 90s
+      request-timeout: 95s
     problemdetails:
       enabled: true
 
@@ -59,6 +59,7 @@ app:
   rate-limit:
     cases-per-hour: ${RATE_LIMIT_CASES_PER_HOUR:10}
     chat-per-hour: ${RATE_LIMIT_CHAT_PER_HOUR:60}
+    decisions-per-hour: ${RATE_LIMIT_DECISIONS_PER_HOUR:30}
   decisions:
     mode: ${DECISIONS_MODE:shadow}
     model: ${DECISIONS_MODEL:typesafe/jev-1.14}

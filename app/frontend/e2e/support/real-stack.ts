@@ -77,6 +77,7 @@ export async function startInstance(opts: InstanceOptions): Promise<RealInstance
       SERVER_PORT: String(opts.port),
       RATE_LIMIT_CASES_PER_HOUR: '1000',
       RATE_LIMIT_CHAT_PER_HOUR: '1000',
+      RATE_LIMIT_DECISIONS_PER_HOUR: '1000',
       CASE_SIGNING_KEY,
       OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY ?? '',
       ...(opts.env ?? {}),

@@ -84,11 +84,11 @@ public final class DecisionGate {
 
     private GateOutcome decide(String head) {
         decided = true;
-        if (!head.startsWith(UPDATE_PREFIX)) {
+        Optional<String> rest = announcementRest(head);
+        if (rest.isEmpty()) {
             return new GateOutcome.PassThrough();
         }
-        String label = head.substring(UPDATE_PREFIX.length()).strip().replaceAll("\\p{Punct}+$", "").strip();
-        Optional<DecisionCategory> category = DecisionCategory.fromPolishLabel(label);
+        Optional<DecisionCategory> category = longestLabelPrefix(rest.get());
         if (category.isEmpty()) {
             log.warn("GATE_UNKNOWN_LABEL");
             return new GateOutcome.PassThrough();
@@ -98,6 +98,29 @@ public final class DecisionGate {
             return new GateOutcome.Forbidden(category.get());
         }
         return new GateOutcome.Decision(category.get());
+    }
+
+    /** Text after the announcement prefix with Markdown emphasis removed; empty if the line is no announcement. */
+    private static Optional<String> announcementRest(String head) {
+        String plain = head.replaceAll("[*_`]", "").strip();
+        if (!plain.regionMatches(true, 0, UPDATE_PREFIX, 0, UPDATE_PREFIX.length())) {
+            return Optional.empty();
+        }
+        return Optional.of(plain.substring(UPDATE_PREFIX.length()).replaceAll("^[\\s\"'\u201E\u201C\u201D\u00AB\u00BB]+", ""));
+    }
+
+    /** Longest known label that the text starts with (case-insensitive, not followed by a letter). */
+    private static Optional<DecisionCategory> longestLabelPrefix(String text) {
+        DecisionCategory best = null;
+        for (DecisionCategory c : DecisionCategory.values()) {
+            String label = c.polishLabel();
+            boolean matches = text.regionMatches(true, 0, label, 0, label.length())
+                    && (text.length() == label.length() || !Character.isLetter(text.charAt(label.length())));
+            if (matches && (best == null || label.length() > best.polishLabel().length())) {
+                best = c;
+            }
+        }
+        return Optional.ofNullable(best);
     }
 
     public sealed interface GateOutcome {

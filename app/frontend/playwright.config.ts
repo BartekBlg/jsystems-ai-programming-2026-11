@@ -28,12 +28,13 @@ export default defineConfig({
     command:
       'mkdir -p test-results/real-stack && exec java -jar ../backend/target/service-copilot-0.0.1-SNAPSHOT.jar > test-results/real-stack/main-' + PORT + '.log 2>&1',
     url: `http://localhost:${PORT}/actuator/health`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 60_000,
     env: {
       SERVER_PORT: String(PORT),
       RATE_LIMIT_CASES_PER_HOUR: '1000',
       RATE_LIMIT_CHAT_PER_HOUR: '1000',
+      RATE_LIMIT_DECISIONS_PER_HOUR: '1000',
       CASE_SIGNING_KEY: 'ZTJlLWZpeGVkLXNpZ25pbmcta2V5LTMyLWJ5dGVzISE=',
       OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY ?? '',
     },

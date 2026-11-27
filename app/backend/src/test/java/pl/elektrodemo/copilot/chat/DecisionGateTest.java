@@ -130,6 +130,41 @@ class DecisionGateTest {
         assertThat(gate.push("Dalsza treść")).isEqualTo(new Suppressed());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"**Zaktualizowana decyzja: Odrzucone**\n", "Zaktualizowana decyzja: Odrzucone (bo dostawa minęła)\n",
+            "Zaktualizowana decyzja: *Odrzucone*.\n", "Zaktualizowana decyzja: \"Odrzucone\" - z powodu X\n",
+            "__Zaktualizowana decyzja:__ `odrzucone`\n", "Zaktualizowana decyzja: ODRZUCONE, ponieważ...\n"})
+    void decoratedForbiddenLabelsAreStillForbidden(String line) {
+        for (int i = 0; i <= line.length(); i++) {
+            DecisionGate gate = gate();
+            GateOutcome outcome = new Buffering();
+            for (String part : new String[] {line.substring(0, i), line.substring(i)}) {
+                if (part.isEmpty()) {
+                    continue;
+                }
+                outcome = outcome instanceof Buffering ? gate.push(part) : outcome;
+            }
+            if (outcome instanceof Buffering) {
+                outcome = gate.finish();
+            }
+            assertThat(outcome).as("split at %d of %s", i, line).isEqualTo(new Forbidden(DecisionCategory.REJECTED));
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"**Zaktualizowana decyzja: Przyjęte**\n", "Zaktualizowana decyzja: Przyjęte (bo dostawa…)\n",
+            "Zaktualizowana decyzja: *Przekazane do specjalisty*.\n"})
+    void decoratedAllowedLabelsAreDecisions(String line) {
+        DecisionCategory expected = line.contains("specjalisty") ? DecisionCategory.ESCALATED : DecisionCategory.ACCEPTED;
+
+        assertThat(gate().push(line)).isEqualTo(new Decision(expected));
+    }
+
+    @Test
+    void unknownDecoratedLabelStillPassesThrough() {
+        assertThat(gate().push("**Zaktualizowana decyzja: Coś innego**\n")).isEqualTo(new PassThrough());
+    }
+
     @Test
     void trailingPunctuationIsStripped() {
         DecisionGate gate = gate();

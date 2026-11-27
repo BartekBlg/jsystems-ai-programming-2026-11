@@ -26,6 +26,7 @@ import pl.elektrodemo.copilot.cases.DecisionCategory;
 import pl.elektrodemo.copilot.chat.ChatEvents;
 import pl.elektrodemo.copilot.chat.ChatHistoryValidator;
 import pl.elektrodemo.copilot.chat.ChatService;
+import pl.elektrodemo.copilot.llm.LlmProperties;
 import pl.elektrodemo.copilot.web.dto.ChatRequest;
 import pl.elektrodemo.copilot.web.dto.FieldErrorDto;
 
@@ -39,7 +40,7 @@ import pl.elektrodemo.copilot.web.dto.FieldErrorDto;
 public class ChatController {
 
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
-    private static final long EMITTER_TIMEOUT_MS = 90_000L;
+    private static final Duration EMITTER_MARGIN = Duration.ofSeconds(5);
     private static final String HISTORY_INVALID = "Nieprawidłowa historia rozmowy.";
     private static final ScheduledExecutorService HEARTBEATS = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread t = new Thread(r, "chat-heartbeat");
@@ -50,13 +51,21 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatHistoryValidator historyValidator;
     private final Duration heartbeatInterval;
+    private final long emitterTimeoutMs;
     private final AtomicInteger activeStreams = new AtomicInteger();
 
     public ChatController(ChatService chatService, ChatHistoryValidator historyValidator,
-            @Value("${app.chat.heartbeat-interval:15s}") Duration heartbeatInterval) {
+            @Value("${app.chat.heartbeat-interval:15s}") Duration heartbeatInterval,
+            LlmProperties llmProperties) {
         this.chatService = chatService;
         this.historyValidator = historyValidator;
         this.heartbeatInterval = heartbeatInterval;
+        this.emitterTimeoutMs = emitterTimeoutMs(llmProperties.timeouts().chatTotal());
+    }
+
+    /** Emitter timeout: chat total budget plus a margin, so the budget error event is delivered before the emitter expires. */
+    static long emitterTimeoutMs(Duration chatTotal) {
+        return chatTotal.plus(EMITTER_MARGIN).toMillis();
     }
 
     /** Number of relay threads that have not finished yet (observability for disconnect handling). */
@@ -85,7 +94,7 @@ public class ChatController {
             throw new CaseController.RequestValidationException(List.of(new FieldErrorDto("messages", HISTORY_INVALID)));
         }
 
-        SseEmitter emitter = new SseEmitter(EMITTER_TIMEOUT_MS);
+        SseEmitter emitter = new SseEmitter(emitterTimeoutMs);
         Relay relay = new Relay(emitter);
         emitter.onCompletion(relay::clientGoneOrFinished);
         emitter.onError(t -> relay.cancel());

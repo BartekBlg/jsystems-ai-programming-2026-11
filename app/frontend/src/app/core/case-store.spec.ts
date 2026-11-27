@@ -455,6 +455,27 @@ describe('CaseStore', () => {
       expect(stored().currentDecision).toBe('ESCALATED');
     });
 
+    it('a stream that fails after a decision event restores the pre-send decision (badge and persisted case)', async () => {
+      // Derived from chat-decision-update.sse: keep the events before `done` (decision + deltas), then the body errors.
+      localStorage.clear();
+      store = createStore();
+      await submitOk('assessment-complaint-ok', 'decision-complaint-ok');
+      expect(store.currentDecision()).toBe('REJECTED');
+      const rec = await loadSseRecording('chat-decision-update');
+      const frames = rec.text.split('\n\n').filter((f) => f.length > 0);
+      const doneIndex = frames.findIndex((f) => f.startsWith('event:done'));
+      expect(doneIndex).toBeGreaterThan(1);
+      const truncated = frames.slice(0, doneIndex).join('\n\n') + '\n\n';
+      fetchMock.mockResolvedValue(sseResponseFromText(truncated, rec.headers, 'whole', undefined, true));
+
+      await store.sendMessage('Czy mogę prosić o ponowną ocenę?');
+      await sentStreamDone();
+
+      expect(store.messages().at(-1)).toMatchObject({ role: 'user', status: 'failed' });
+      expect(store.currentDecision()).toBe('REJECTED');
+      expect(stored().currentDecision).toBe('REJECTED');
+    });
+
     it('an error event removes the partial reply and marks the user message failed', async () => {
       fetchMock.mockResolvedValue(await sseResponseFromRecording('chat-error'));
       await store.sendMessage('Pytanie testowe');

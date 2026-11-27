@@ -294,6 +294,8 @@ export class CaseStore {
     const controller = new AbortController();
     this.streamController = controller;
     let assistantId: string | null = null;
+    // A failed send must not leave a badge from a reply that was removed again.
+    const decisionBeforeSend = this.currentDecision();
 
     const ensureAssistant = (): string => {
       if (assistantId === null) {
@@ -338,6 +340,7 @@ export class CaseStore {
             if (partial !== null) {
               this.messages.update((m) => m.filter((x) => x.id !== partial));
             }
+            this.currentDecision.set(decisionBeforeSend);
             this.updateMessage(userMessageId, { status: 'failed' });
             this.streaming.set(false);
             this.persistNow();

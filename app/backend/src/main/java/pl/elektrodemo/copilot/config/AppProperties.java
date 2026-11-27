@@ -12,7 +12,8 @@ public record AppProperties(
 
     public record RateLimit(
             @DefaultValue("10") int casesPerHour,
-            @DefaultValue("60") int chatPerHour) {
+            @DefaultValue("60") int chatPerHour,
+            @DefaultValue("30") int decisionsPerHour) {
     }
 
     public record Decisions(

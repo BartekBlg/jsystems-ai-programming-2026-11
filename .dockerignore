@@ -7,9 +7,10 @@
 **/dist
 
 # Secrets and local env files (.env.example stays for reference)
-.env
-.env.*
+**/.env
+**/.env.*
 !.env.example
+!**/.env.example
 
 # VCS, agent and tool state
 .git
