@@ -206,6 +206,7 @@ Error codes (HTTP status → `code`): `400 VALIDATION_FAILED` (with `fieldErrors
 | `CASE_SIGNING_KEY` | HMAC key (≥ 32 random bytes, Base64) for CaseContext signatures | No | Generated at startup when missing (logged as a warning); signatures then become invalid after restart |
 | `RATE_LIMIT_CASES_PER_HOUR` | Assessments per IP per hour | No | `10` |
 | `RATE_LIMIT_CHAT_PER_HOUR` | Chat messages per IP per hour | No | `60` |
+| `RATE_LIMIT_DECISIONS_PER_HOUR` | Decision requests per IP per hour (ADR-000 Decision 8.6, amended) | No | `30` |
 | `SERVER_PORT` | HTTP port | No | `8080` |
 
 `.env.example` is updated during implementation with the new variables (values left empty or defaulted). Spring Boot reads OS environment variables; for local runs the developer exports them or uses an untracked `.env` loaded by the shell. Secrets are never written to `application.yaml`, logs or error responses.
@@ -283,7 +284,7 @@ Error codes (HTTP status → `code`): `400 VALIDATION_FAILED` (with `fieldErrors
 **Status:** Accepted
 **Date:** 2026-11-25
 **Context:** The public demo spends real OpenRouter credit; a loop or bot could exhaust it.
-**Decision:** A servlet filter limits `POST /api/cases/assessments` to `RATE_LIMIT_CASES_PER_HOUR` and `POST /api/chat/messages` to `RATE_LIMIT_CHAT_PER_HOUR` per client IP with a fixed one-hour window in a `ConcurrentHashMap` (entries expire after the window). `POST /api/cases/decisions` is not limited separately because it requires a signature that only an assessment produces. The client IP is taken from the socket address; `X-Forwarded-For` is honored only when `server.forward-headers-strategy=native` is configured behind a trusted proxy. Additionally set a spending limit on the OpenRouter key in the OpenRouter dashboard.
+**Decision:** A servlet filter limits `POST /api/cases/assessments` to `RATE_LIMIT_CASES_PER_HOUR` and `POST /api/chat/messages` to `RATE_LIMIT_CHAT_PER_HOUR` per client IP with a fixed one-hour window in a `ConcurrentHashMap` (entries expire after the window). `POST /api/cases/decisions` is limited by `RATE_LIMIT_DECISIONS_PER_HOUR` (default 30). *Amended 2026-11-27 (final review T50c): the original rationale — a signature that only an assessment produces — did not stop replaying one undecided context, so each replay cost LLM calls.* Paths are matched after normalization (decoded, without `;` path parameters), so variants such as `/api/cases/assessments;x=1` cannot bypass the filter. The client IP is taken from the socket address; `X-Forwarded-For` is honored only when `server.forward-headers-strategy=native` is configured behind a trusted proxy. Additionally set a spending limit on the OpenRouter key in the OpenRouter dashboard.
 **Rejected alternatives:**
 - Bucket4j/Redis: more dependencies than a PoC needs.
 - No limit: risk of uncontrolled spending.
