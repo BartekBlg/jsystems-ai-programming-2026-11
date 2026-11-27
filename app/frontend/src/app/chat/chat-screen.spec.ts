@@ -64,6 +64,10 @@ describe('ChatScreenComponent', () => {
     expect(fixture.nativeElement.querySelector('app-composer')).not.toBeNull();
   });
 
+  it('contains no file input, so the chat accepts no uploads (AC-37)', () => {
+    expect(fixture.nativeElement.querySelector('input[type="file"]')).toBeNull();
+  });
+
   it('announces the recorded agent reply politely after streaming completes', async () => {
     const stream = await loadSseRecording('chat-plain');
     const reply = stream.text

@@ -85,4 +85,16 @@ test.describe('Czat (prawdziwy LLM)', () => {
     await expect(page.getByText('Nie wysłano')).toHaveCount(0);
     await expect(page.getByText('Czy mogę wymienić sprzęt na inny model?')).toHaveCount(1);
   });
+
+  test('AC-37: asking to send a new photo points to Nowe zgłoszenie', async ({ page }) => {
+    await submitCase(page, RETURN_LAPTOP);
+    await sendChat(page, 'Czy mogę przesłać w czacie nowe zdjęcie urządzenia?');
+    await expect(page.locator(AGENT_REPLY)).toHaveCount(2, { timeout: CHAT_REPLY_TIMEOUT_MS });
+    await expect(page.locator('.typing-indicator')).toHaveCount(0, { timeout: CHAT_REPLY_TIMEOUT_MS });
+    // The chat accepts no uploads: no file input anywhere on the chat screen.
+    await expect(page.locator('input[type="file"]')).toHaveCount(0);
+    // Case-insensitive: the model may inflect or quote the label.
+    const reply = await page.locator(AGENT_REPLY).last().locator('.message-content').innerText();
+    expect(reply).toMatch(/nowe zgłoszenie/i);
+  });
 });

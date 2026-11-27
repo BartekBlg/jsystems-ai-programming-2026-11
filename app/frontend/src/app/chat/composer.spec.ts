@@ -71,6 +71,16 @@ describe('ComposerComponent', () => {
     expect(sendButton().disabled).toBe(true);
   });
 
+  it('offers no file upload, drop zone or attach control (AC-37)', () => {
+    const root: HTMLElement = fixture.nativeElement;
+    expect(root.querySelector('input[type="file"]')).toBeNull();
+    expect(root.querySelector('[class*="drop" i], [data-drop], [ondrop]')).toBeNull();
+    const attachButton = Array.from(root.querySelectorAll('button')).find((button) =>
+      /załącz|dodaj zdjęcie|zdjęcie|attach|upload|photo|image/i.test(button.textContent ?? button.getAttribute('aria-label') ?? ''),
+    );
+    expect(attachButton).toBeUndefined();
+  });
+
   it('does not allow 2001 characters and displays the counter from 1800 characters', () => {
     input('x'.repeat(1800));
     expect(fixture.nativeElement.textContent).toContain('1800');
