@@ -1,0 +1,129 @@
+{
+  "status" : 200,
+  "headers" : {
+    ":status" : [ "200" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a608752d5cd35b17-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 11:12:23 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=111,cfOrigin;dur=0,cfWorker;dur=360" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-dec-1795691542-o0yMSRrT3eQQ53E6xZfU" ],
+    "x-provider-name" : [ "TypeSafe" ]
+  },
+  "body" : {
+    "model" : "typesafe/jev-1.14-20261014",
+    "answers" : {
+      "photo_usable" : {
+        "type" : "noul",
+        "noul" : 0.77
+      },
+      "shows_declared_category" : {
+        "type" : "noul",
+        "noul" : 0.97
+      },
+      "device_category" : {
+        "type" : "choice",
+        "choice" : "laptop",
+        "probabilities" : {
+          "laptop" : 1,
+          "smartphone" : 0,
+          "tablet" : 0,
+          "monitor" : 0,
+          "headphones" : 0,
+          "smartwatch" : 0,
+          "game_console" : 0,
+          "camera" : 0,
+          "other_device" : 0,
+          "no_device" : 0
+        },
+        "confidence" : 1
+      },
+      "visible_damage" : {
+        "type" : "noul",
+        "noul" : 0.99
+      },
+      "condition" : {
+        "type" : "score",
+        "score" : 3.95,
+        "legend" : {
+          "0" : "new, unused",
+          "1" : "like new",
+          "2" : "light signs of use",
+          "3" : "clear wear",
+          "4" : "damaged"
+        },
+        "probabilities" : {
+          "0" : 0,
+          "1" : 0,
+          "2" : 0.01,
+          "3" : 0.02,
+          "4" : 0.97
+        },
+        "confidence" : 0.97
+      },
+      "damage_cause" : {
+        "type" : "choice",
+        "choice" : "mechanical_damage",
+        "probabilities" : {
+          "manufacturing_defect" : 0,
+          "normal_wear" : 0,
+          "mechanical_damage" : 1,
+          "liquid_damage" : 0,
+          "unknown" : 0,
+          "no_damage_visible" : 0
+        },
+        "confidence" : 1
+      },
+      "damage_type" : {
+        "type" : "choice",
+        "choice" : "screen_crack",
+        "probabilities" : {
+          "screen_crack" : 1,
+          "housing_crack_or_dent" : 0,
+          "scratches" : 0,
+          "liquid_marks" : 0,
+          "burn_or_swelling" : 0,
+          "missing_or_broken_part" : 0,
+          "display_defect" : 0,
+          "none_visible" : 0,
+          "other" : 0
+        },
+        "confidence" : 1
+      },
+      "damage_location" : {
+        "type" : "choice",
+        "choice" : "screen",
+        "probabilities" : {
+          "screen" : 1,
+          "housing" : 0,
+          "keyboard_or_buttons" : 0,
+          "ports" : 0,
+          "back_cover" : 0,
+          "camera_or_lens" : 0,
+          "other" : 0,
+          "none" : 0
+        },
+        "confidence" : 1
+      }
+    },
+    "usage" : {
+      "input_tokens" : 6874,
+      "output_tokens" : 423,
+      "cost" : 0,
+      "is_byok" : true,
+      "cost_details" : {
+        "upstream_inference_cost" : 2.88708E-4,
+        "upstream_inference_prompt_cost" : 2.88708E-4,
+        "upstream_inference_completions_cost" : 0
+      }
+    },
+    "id" : "gen-dec-1795691542-o0yMSRrT3eQQ53E6xZfU",
+    "provider" : "TypeSafe"
+  }
+}

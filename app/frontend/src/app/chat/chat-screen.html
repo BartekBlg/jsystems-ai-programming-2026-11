@@ -1,0 +1,24 @@
+<section class="chat-layout" [class.chat-layout--wide]="wideLayout()">
+  @if (wideLayout()) {
+    <aside class="desktop-summary">
+      <app-case-summary />
+    </aside>
+  } @else {
+    <mat-accordion class="mobile-summary">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ labels.summaryTitle }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-case-summary />
+      </mat-expansion-panel>
+    </mat-accordion>
+  }
+
+  <div class="conversation">
+    <app-message-list (newCaseRequested)="openNewCaseDialog()" />
+    <app-composer />
+  </div>
+</section>
+<p class="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+  {{ replyAnnouncement() }}
+</p>

@@ -1,0 +1,103 @@
+<section class="case-form">
+  <h1>{{ labels.title }}</h1>
+  <p class="intro">{{ labels.intro }}</p>
+
+  @if (interruptedNotice()) {
+    <div class="notice" role="status">{{ labels.interrupted }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <span id="case-type-label" class="field-label">{{ labels.caseType }}</span>
+      <mat-radio-group
+        formControlName="caseType"
+        class="case-cards"
+        aria-labelledby="case-type-label"
+      >
+        @for (type of caseTypes; track type) {
+          <mat-radio-button
+            class="case-card"
+            [value]="type"
+            [class.selected]="form.controls.caseType.value === type"
+          >
+            <span class="card-title">{{ caseTypeLabels[type] }}</span>
+            <span class="card-desc">{{ caseTypeDescriptions[type] }}</span>
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+      @if (visibleError('caseType'); as message) {
+        <p class="field-error" role="alert">{{ message }}</p>
+      }
+    </div>
+
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
+      <mat-label>{{ labels.category }}</mat-label>
+      <mat-select formControlName="category">
+        @for (key of categories; track key) {
+          <mat-option [value]="key">{{ categoryLabels[key] }}</mat-option>
+        }
+      </mat-select>
+      @if (visibleError('category'); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
+      <mat-label>{{ labels.modelName }}</mat-label>
+      <input
+        matInput
+        formControlName="modelName"
+        autocomplete="off"
+        [placeholder]="labels.modelNamePlaceholder"
+      />
+      @if (visibleError('modelName'); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
+      <mat-label>{{ labels.purchaseDate }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="purchasePicker"
+        [max]="today"
+        formControlName="purchaseDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="purchasePicker" />
+      <mat-datepicker #purchasePicker />
+      @if (visibleError('purchaseDate'); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full" subscriptSizing="dynamic">
+      <mat-label>{{ reasonLabel() }}</mat-label>
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        formControlName="reason"
+        maxlength="2000"
+        [required]="isComplaint()"
+      ></textarea>
+      <mat-hint align="end">{{ reasonLength() }} / {{ maxReasonLength }}</mat-hint>
+      @if (visibleError('reason'); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="field">
+      <app-photo-picker
+        formControlName="photo"
+        [hint]="photoHint()"
+        (fileError)="onPhotoError($event)"
+      />
+      @if (visibleError('photo'); as message) {
+        <p class="field-error" role="alert">{{ message }}</p>
+      }
+    </div>
+
+    <button mat-flat-button type="submit" class="submit" [disabled]="submitting()">
+      {{ labels.submit }}
+    </button>
+  </form>
+</section>

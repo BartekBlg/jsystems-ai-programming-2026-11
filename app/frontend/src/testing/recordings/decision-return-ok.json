@@ -1,0 +1,66 @@
+{
+  "status": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "2513",
+    "content-type": "application/json",
+    "date": "Thu, 26 Nov 2026 12:36:16 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "decision": {
+      "category": "ESCALATED",
+      "message": "Dzień dobry, dziękujemy za zgłoszenie.\n\n## Decyzja\nPrzekazane do specjalisty. Widoczne ślady zużycia wymagają oceny urządzenia przez zespół serwisu.\n\n## Uzasadnienie\nZgłoszenie zostało złożone 5 dni po zakupie. Zgodnie z §2 ust. 1 termin zwrotu wynosi 14 dni od dostawy, a §3 ust. 1 wskazuje, że termin liczy się od dnia dostawy. Ślady używania nie odbierają prawa do zwrotu (§4 ust. 2), ale mogą skutkować pomniejszeniem zwracanej kwoty o zmniejszenie wartości towaru. Oceni je specjalista po otrzymaniu i sprawdzeniu urządzenia (§4 ust. 3). Zgodnie z §7 ust. 2 sprawy z widocznymi śladami używania przekazuje się do specjalisty.\n\n## Co widać na zdjęciu\nNa zdjęciu widać otwarty, włączony laptop. Na touchpadzie widoczne są ślady zużycia; nie widać wyraźnych pęknięć ani innych uszkodzeń.\n\n## Kolejne kroki\nSpakuj laptop wraz z akcesoriami i dowodem zakupu, a następnie odeślij go na adres: ElektroDemo, ul. Przykładowa 1, 00-000 Warszawa. Wyślij towar w ciągu 14 dni od złożenia oświadczenia o odstąpieniu; bezpośredni koszt odesłania ponosisz Ty (§6 ust. 1–3).\n\nTo wstępna, automatyczna ocena przygotowana na podstawie formularza i zdjęcia. Ostateczną decyzję podejmie nasz zespół serwisu po otrzymaniu i sprawdzeniu urządzenia. Nie ogranicza to Twojego ustawowego prawa do odstąpienia od umowy."
+    },
+    "caseContext": {
+      "contextVersion": 2,
+      "caseType": "RETURN",
+      "form": {
+        "caseType": "RETURN",
+        "category": "LAPTOP",
+        "modelName": "Lenovo ThinkPad T14 Gen 4",
+        "purchaseDate": "2026-11-21",
+        "reason": ""
+      },
+      "submittedAt": "2026-11-26T13:35:57.632164075+01:00",
+      "assessment": {
+        "photoSufficient": true,
+        "insufficiencyReason": "",
+        "damageVisible": false,
+        "signsOfUse": [
+          "WEAR"
+        ],
+        "resellableAsNew": false,
+        "visibleDescription": "Na zdjęciu widać otwarty laptop Lenovo z włączonym ekranem, klawiaturą i touchpadem. Na powierzchni touchpada widoczne są ślady zużycia. Nie widać wyraźnych pęknięć ani innych uszkodzeń.",
+        "confidence": "MEDIUM"
+      },
+      "assessmentSource": "LLM",
+      "prescreen": null,
+      "consistencySignals": [
+        {
+          "id": "model_matches_photo",
+          "probability": 0.73,
+          "confidence": 0.73
+        }
+      ],
+      "ruleFacts": {
+        "daysSincePurchase": 5,
+        "returnWindowStatus": "WITHIN_14_DAYS",
+        "liabilityExpired": false,
+        "allowedCategories": [
+          "ESCALATED"
+        ],
+        "requiredReasonText": "",
+        "chatForbiddenCategories": [
+          "REJECTED"
+        ],
+        "rejectionRequiresCitation": "",
+        "appliedRule": "R4"
+      },
+      "decision": {
+        "category": "ESCALATED"
+      }
+    },
+    "signature": "BaAtcdR5DOH47LfRTsU4Kt0J8wgF7OXy6fzh-sc0Lhc"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "status" : 200,
+  "headers" : {
+    ":status" : [ "200" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a6087545f9a25b17-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 11:12:26 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=9,cfOrigin;dur=0,cfWorker;dur=295" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-dec-1795691546-PvJen1PfimgyYyfkt9Qi" ],
+    "x-provider-name" : [ "TypeSafe" ]
+  },
+  "body" : {
+    "model" : "typesafe/jev-1.14-20261014",
+    "answers" : {
+      "photo_usable" : {
+        "type" : "noul",
+        "noul" : 0.7
+      },
+      "shows_declared_category" : {
+        "type" : "noul",
+        "noul" : 0.97
+      },
+      "device_category" : {
+        "type" : "choice",
+        "choice" : "smartphone",
+        "probabilities" : {
+          "laptop" : 0,
+          "smartphone" : 1,
+          "tablet" : 0,
+          "monitor" : 0,
+          "headphones" : 0,
+          "smartwatch" : 0,
+          "game_console" : 0,
+          "camera" : 0,
+          "other_device" : 0,
+          "no_device" : 0
+        },
+        "confidence" : 1
+      },
+      "visible_damage" : {
+        "type" : "noul",
+        "noul" : 0.54
+      },
+      "condition" : {
+        "type" : "score",
+        "score" : 2.94,
+        "legend" : {
+          "0" : "new, unused",
+          "1" : "like new",
+          "2" : "light signs of use",
+          "3" : "clear wear",
+          "4" : "damaged"
+        },
+        "probabilities" : {
+          "0" : 0.01,
+          "1" : 0.12,
+          "2" : 0.19,
+          "3" : 0.27,
+          "4" : 0.41
+        },
+        "confidence" : 0.12
+      },
+      "damage_cause" : {
+        "type" : "choice",
+        "choice" : "mechanical_damage",
+        "probabilities" : {
+          "manufacturing_defect" : 0.15,
+          "normal_wear" : 0.1,
+          "mechanical_damage" : 0.55,
+          "liquid_damage" : 0.07,
+          "unknown" : 0.05,
+          "no_damage_visible" : 0.08
+        },
+        "confidence" : 0.46
+      },
+      "damage_type" : {
+        "type" : "choice",
+        "choice" : "missing_or_broken_part",
+        "probabilities" : {
+          "screen_crack" : 0,
+          "housing_crack_or_dent" : 0.19,
+          "scratches" : 0.04,
+          "liquid_marks" : 0.01,
+          "burn_or_swelling" : 0.06,
+          "missing_or_broken_part" : 0.55,
+          "display_defect" : 0,
+          "none_visible" : 0.09,
+          "other" : 0.06
+        },
+        "confidence" : 0.49
+      },
+      "damage_location" : {
+        "type" : "choice",
+        "choice" : "back_cover",
+        "probabilities" : {
+          "screen" : 0.01,
+          "housing" : 0.17,
+          "keyboard_or_buttons" : 0,
+          "ports" : 0,
+          "back_cover" : 0.72,
+          "camera_or_lens" : 0.02,
+          "other" : 0.07,
+          "none" : 0.01
+        },
+        "confidence" : 0.68
+      }
+    },
+    "usage" : {
+      "input_tokens" : 1577,
+      "output_tokens" : 427,
+      "cost" : 0,
+      "is_byok" : true,
+      "cost_details" : {
+        "upstream_inference_cost" : 6.6234E-5,
+        "upstream_inference_prompt_cost" : 6.6234E-5,
+        "upstream_inference_completions_cost" : 0
+      }
+    },
+    "id" : "gen-dec-1795691546-PvJen1PfimgyYyfkt9Qi",
+    "provider" : "TypeSafe"
+  }
+}

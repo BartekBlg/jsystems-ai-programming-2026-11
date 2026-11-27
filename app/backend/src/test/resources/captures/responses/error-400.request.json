@@ -1,0 +1,16 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 21 chars, sha256 1d16eccebf6fe56b>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "Cześć"
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "ultra-invalid-effort"
+  },
+  "max_output_tokens" : 4000
+}

@@ -1,0 +1,142 @@
+@use '@angular/material' as mat;
+@use './theme-colors' as colors;
+
+// Material 3 base theme: brand primary (#d30f10) and tertiary (#004581) palettes.
+@mixin base() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: colors.$primary-palette,
+        tertiary: colors.$tertiary-palette,
+      ),
+      typography: (
+        plain-family: 'Atkinson Hyperlegible, sans-serif',
+        brand-family: 'Bangers, sans-serif',
+        bold-weight: 700,
+        medium-weight: 400,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
+}
+
+// Brand overrides (hard ink borders are added in _brand.scss; Material only exposes shape/colour/font tokens).
+@mixin brand-overrides() {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--accent),
+      filled-label-text-color: var(--on-accent),
+      filled-container-shape: var(--radius-button),
+      filled-label-text-font: 'Bangers, sans-serif',
+      filled-label-text-size: 20px,
+      filled-label-text-tracking: 0.02em,
+      filled-label-text-weight: 400,
+      outlined-container-shape: var(--radius-button),
+      outlined-label-text-color: var(--on-surface),
+      outlined-outline-color: var(--hairline),
+      outlined-outline-width: 3px,
+      outlined-label-text-font: 'Bangers, sans-serif',
+      outlined-label-text-size: 20px,
+      outlined-label-text-tracking: 0.02em,
+      outlined-label-text-weight: 400,
+      text-container-shape: var(--radius-button),
+      text-label-text-color: var(--on-surface),
+      text-label-text-font: 'Bangers, sans-serif',
+      text-label-text-size: 20px,
+      text-label-text-tracking: 0.02em,
+      text-label-text-weight: 400,
+      tonal-container-shape: var(--radius-button),
+      tonal-label-text-font: 'Bangers, sans-serif',
+    )
+  );
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: var(--radius-input),
+      outlined-outline-color: var(--hairline),
+      outlined-hover-outline-color: var(--hairline),
+      outlined-focus-outline-color: var(--hairline),
+      outlined-outline-width: 3px,
+      outlined-focus-outline-width: 3px,
+      outlined-input-text-color: var(--on-surface),
+      outlined-label-text-color: var(--muted),
+      outlined-focus-label-text-color: var(--on-surface),
+      outlined-caret-color: var(--accent),
+      outlined-error-outline-color: var(--accent),
+      outlined-error-label-text-color: var(--accent),
+      outlined-error-hover-label-text-color: var(--accent),
+      outlined-error-focus-label-text-color: var(--accent),
+      filled-container-color: var(--surface-raised),
+      filled-container-shape: var(--radius-input),
+      error-text-color: var(--accent),
+    )
+  );
+  @include mat.card-overrides(
+    (
+      elevated-container-color: var(--surface-raised),
+      elevated-container-shape: var(--radius-panel),
+      elevated-container-elevation: var(--shadow-panel),
+      outlined-container-color: var(--surface-raised),
+      outlined-container-shape: var(--radius-panel),
+      outlined-outline-color: var(--hairline),
+      outlined-outline-width: 3px,
+      filled-container-color: var(--surface-raised),
+      filled-container-shape: var(--radius-panel),
+    )
+  );
+  @include mat.dialog-overrides(
+    (
+      container-color: var(--surface-raised),
+      container-shape: var(--radius-panel),
+      container-elevation-shadow: var(--shadow-panel),
+      subhead-color: var(--on-surface),
+      supporting-text-color: var(--on-surface),
+      subhead-font: 'Bangers, sans-serif',
+      subhead-weight: 400,
+      subhead-tracking: 0.02em,
+    )
+  );
+  @include mat.select-overrides(
+    (
+      panel-background-color: var(--surface-raised),
+      enabled-trigger-text-color: var(--on-surface),
+      placeholder-text-color: var(--muted),
+      enabled-arrow-color: var(--on-surface),
+      focused-arrow-color: var(--on-surface),
+      invalid-arrow-color: var(--accent),
+    )
+  );
+  @include mat.datepicker-overrides(
+    (
+      calendar-container-background-color: var(--surface-raised),
+      calendar-container-text-color: var(--on-surface),
+      calendar-container-shape: var(--radius-panel),
+      calendar-date-selected-state-background-color: var(--accent),
+      calendar-date-selected-state-text-color: var(--on-accent),
+      calendar-date-today-outline-color: var(--hairline),
+      calendar-date-text-color: var(--on-surface),
+      calendar-header-text-color: var(--muted),
+    )
+  );
+  @include mat.expansion-overrides(
+    (
+      container-background-color: var(--surface-raised),
+      container-text-color: var(--on-surface),
+      container-shape: var(--radius-panel),
+      header-text-color: var(--on-surface),
+      header-text-font: 'Bangers, sans-serif',
+      header-text-weight: 400,
+      header-text-tracking: 0.02em,
+      header-indicator-color: var(--on-surface),
+    )
+  );
+  @include mat.snack-bar-overrides(
+    (
+      container-color: var(--surface-strong),
+      supporting-text-color: var(--on-surface-strong),
+      button-color: var(--accent-warm),
+      container-shape: var(--radius-panel),
+    )
+  );
+}

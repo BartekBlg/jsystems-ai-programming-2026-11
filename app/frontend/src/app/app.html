@@ -1,0 +1,46 @@
+<header class="app-header">
+  <div class="app-header__inner">
+    <div class="brand">
+      <span class="wordmark">{{ labels.brandWordmark }}</span>
+      <span class="product-name">{{ labels.productName }}</span>
+    </div>
+    @if (store.screen() === 'chat') {
+      <button mat-flat-button type="button" class="new-case" (click)="openNewCaseDialog()">
+        {{ labels.newCase }}
+      </button>
+    }
+  </div>
+</header>
+<p class="demo-note" role="note">{{ labels.demoNote }}</p>
+<main class="app-main">
+  @switch (store.screen()) {
+    @case ('form') {
+      @defer (when store.screen() === 'form') {
+        <app-case-form
+          [initialDraft]="store.formDraft()"
+          [initialPhoto]="store.photo()"
+          [submitting]="store.screen() === 'progress'"
+          [interruptedNotice]="store.interruptedNotice()"
+          [serverFieldErrors]="store.fieldErrors()"
+          (submitted)="submit($event)"
+        />
+      } @placeholder {
+        <p class="screen-loading" role="status">{{ labels.loading }}</p>
+      }
+    }
+    @case ('progress') {
+      @defer (when store.screen() === 'progress') {
+        <app-progress-screen />
+      } @placeholder {
+        <p class="screen-loading" role="status">{{ labels.loading }}</p>
+      }
+    }
+    @case ('chat') {
+      @defer (when store.screen() === 'chat') {
+        <app-chat-screen />
+      } @placeholder {
+        <p class="screen-loading" role="status">{{ labels.loading }}</p>
+      }
+    }
+  }
+</main>

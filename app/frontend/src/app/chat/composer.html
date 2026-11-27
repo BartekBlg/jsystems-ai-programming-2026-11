@@ -1,0 +1,22 @@
+<form class="composer" (submit)="$event.preventDefault(); send()">
+  <label for="chat-composer">{{ labels.composerLabel }}</label>
+  <textarea
+    id="chat-composer"
+    [value]="draft()"
+    (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
+    cdkTextareaAutosize
+    [cdkAutosizeMaxRows]="5"
+    [attr.aria-describedby]="draft().length >= 1800 ? 'chat-counter' : null"
+  ></textarea>
+  <div class="composer-actions">
+    @if (draft().length >= 1800) {
+      <p id="chat-counter" class="character-counter" aria-live="polite">
+        <span>{{ draft().length }}</span><span aria-hidden="true">/</span><span>{{ maxLength }}</span>
+      </p>
+    }
+    <button mat-flat-button type="submit" class="send-button" [disabled]="!canSend">
+      {{ labels.send }}
+    </button>
+  </div>
+</form>

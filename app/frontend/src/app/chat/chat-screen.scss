@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+  min-width: 0;
+}
+
+.mobile-summary,
+.conversation,
+.desktop-summary {
+  min-width: 0;
+}
+
+.conversation {
+  display: grid;
+  gap: 16px;
+}
+
+.chat-layout--wide {
+  grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.4fr);
+  gap: 24px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .chat-layout {
+    gap: 12px;
+  }
+
+  .conversation {
+    gap: 12px;
+  }
+}

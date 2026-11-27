@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+.progress-screen {
+  box-sizing: border-box;
+  max-width: 640px;
+  margin: 24px auto;
+  padding: 24px;
+  background: var(--surface-raised, #fff);
+  border: 3px solid var(--on-surface, #101820);
+  border-radius: 10px;
+  box-shadow: 6px 6px 0 var(--on-surface, #101820);
+}
+
+.progress-steps {
+  display: grid;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.step-icon {
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  color: var(--muted, #4c5b66);
+}
+
+.progress-step--done .step-icon,
+.check {
+  color: var(--positive, #167a3e);
+}
+
+.step-label {
+  overflow-wrap: anywhere;
+}
+
+.progress-note {
+  margin: 24px 0 0;
+  color: var(--muted, #4c5b66);
+}
+
+.progress-error p {
+  margin: 0 0 20px;
+  color: var(--accent, #d30f10);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primary {
+  --mdc-filled-button-container-color: var(--accent, #d30f10);
+  --mdc-filled-button-label-text-color: var(--on-accent, #fff);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 480px) {
+  .progress-screen {
+    margin: 12px 0;
+    padding: 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

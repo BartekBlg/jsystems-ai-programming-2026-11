@@ -1,0 +1,92 @@
+{
+  "status" : 200,
+  "headers" : {
+    ":status" : [ "200" ],
+    "access-control-allow-origin" : [ "*" ],
+    "access-control-expose-headers" : [ "WWW-Authenticate,PAYMENT-REQUIRED,Payment-Receipt,PAYMENT-RESPONSE,Location,X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,x-openrouter-subscription-passthrough,anthropic-ratelimit-unified-status,Retry-After,cf-ray" ],
+    "alt-svc" : [ "h3=\":443\"; ma=86400" ],
+    "cf-ray" : [ "a60817a6dd6e3350-WAW" ],
+    "content-type" : [ "application/json" ],
+    "date" : [ "Thu, 26 Nov 2026 10:08:33 GMT" ],
+    "permissions-policy" : [ "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")" ],
+    "referrer-policy" : [ "no-referrer, strict-origin-when-cross-origin" ],
+    "server" : [ "cloudflare" ],
+    "server-timing" : [ "cfEdge;dur=7,cfOrigin;dur=0,cfWorker;dur=1635" ],
+    "x-content-type-options" : [ "nosniff" ],
+    "x-generation-id" : [ "gen-1795687711-3Iw3afO7v1qpYkyjYqbV" ],
+    "x-openrouter-release" : [ "api;6974da3e-2d30-4253-9b9d-763143ceef81" ]
+  },
+  "body" : {
+    "id" : "gen-1795687711-3Iw3afO7v1qpYkyjYqbV",
+    "object" : "response",
+    "created_at" : 1795687711,
+    "model" : "openai/gpt-6-luna",
+    "status" : "completed",
+    "completed_at" : 1795687713,
+    "output" : [ {
+      "id" : "msg_tmp_8ruevqkleqh",
+      "type" : "message",
+      "role" : "assistant",
+      "status" : "completed",
+      "content" : [ {
+        "type" : "output_text",
+        "text" : "KONTROLA, mam się dobrze, dziękuję!",
+        "annotations" : [ ],
+        "logprobs" : [ ]
+      } ],
+      "phase" : "final_answer"
+    } ],
+    "error" : null,
+    "incomplete_details" : null,
+    "access_programs" : null,
+    "tools" : [ ],
+    "tool_choice" : "auto",
+    "parallel_tool_calls" : true,
+    "max_output_tokens" : 4000,
+    "temperature" : 1,
+    "top_p" : 1,
+    "presence_penalty" : 0,
+    "frequency_penalty" : 0,
+    "top_logprobs" : 0,
+    "max_tool_calls" : null,
+    "metadata" : { },
+    "background" : false,
+    "previous_response_id" : null,
+    "service_tier" : "default",
+    "truncation" : "disabled",
+    "store" : false,
+    "instructions" : "Zacznij odpowiedź od słowa KONTROLA. Odpowiadaj po polsku.",
+    "text" : {
+      "format" : {
+        "type" : "text"
+      }
+    },
+    "reasoning" : {
+      "effort" : "low",
+      "context" : "all_turns",
+      "mode" : "standard",
+      "summary" : null
+    },
+    "safety_identifier" : null,
+    "prompt_cache_key" : null,
+    "prompt_cache_options" : null,
+    "usage" : {
+      "input_tokens" : 45,
+      "input_tokens_details" : {
+        "cached_tokens" : 0
+      },
+      "output_tokens" : 18,
+      "output_tokens_details" : {
+        "reasoning_tokens" : 0
+      },
+      "total_tokens" : 63,
+      "cost" : 0,
+      "is_byok" : true,
+      "cost_details" : {
+        "upstream_inference_cost" : 1.35E-5,
+        "upstream_inference_input_cost" : 4.5E-6,
+        "upstream_inference_output_cost" : 9.0E-6
+      }
+    }
+  }
+}

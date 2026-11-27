@@ -1,0 +1,17 @@
+{
+  "status": 400,
+  "headers": {
+    "connection": "close",
+    "content-type": "application/problem+json",
+    "date": "Thu, 26 Nov 2026 12:37:05 GMT",
+    "transfer-encoding": "chunked"
+  },
+  "body": {
+    "type": "about:blank",
+    "title": "Bad Request",
+    "status": 400,
+    "detail": "Nieobsługiwany format. Dodaj zdjęcie JPEG, PNG lub WebP.",
+    "code": "UNSUPPORTED_IMAGE",
+    "instance": "/api/cases/assessments"
+  }
+}

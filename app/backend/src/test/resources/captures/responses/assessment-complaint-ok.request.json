@@ -1,0 +1,62 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 2233 chars, sha256 5fc8f1d67fd9ab32>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "Oceń zdjęcie zgodnie z instrukcją. Kategoria sprzętu: Smartfon."
+    }, {
+      "type" : "input_image",
+      "image_url" : "<data:image/jpeg;base64 omitted, 130627 chars>"
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "low"
+  },
+  "max_output_tokens" : 4000,
+  "text" : {
+    "format" : {
+      "type" : "json_schema",
+      "name" : "complaint_image_assessment",
+      "strict" : true,
+      "schema" : {
+        "type" : "object",
+        "properties" : {
+          "photoSufficient" : {
+            "type" : "boolean"
+          },
+          "insufficiencyReason" : {
+            "type" : "string"
+          },
+          "defectVisible" : {
+            "type" : "boolean"
+          },
+          "defectType" : {
+            "type" : "string"
+          },
+          "defectLocation" : {
+            "type" : "string"
+          },
+          "probableCause" : {
+            "type" : "string",
+            "enum" : [ "MANUFACTURING_DEFECT", "NORMAL_WEAR", "MECHANICAL_DAMAGE", "LIQUID_DAMAGE", "UNKNOWN" ]
+          },
+          "causeReasoning" : {
+            "type" : "string"
+          },
+          "visibleDescription" : {
+            "type" : "string"
+          },
+          "confidence" : {
+            "type" : "string",
+            "enum" : [ "HIGH", "MEDIUM", "LOW" ]
+          }
+        },
+        "required" : [ "photoSufficient", "insufficiencyReason", "defectVisible", "defectType", "defectLocation", "probableCause", "causeReasoning", "visibleDescription", "confidence" ],
+        "additionalProperties" : false
+      }
+    }
+  }
+}

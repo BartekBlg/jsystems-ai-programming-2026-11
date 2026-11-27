@@ -1,0 +1,64 @@
+{
+  "status": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "2298",
+    "content-type": "application/json",
+    "date": "Thu, 26 Nov 2026 12:36:43 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "decision": {
+      "category": "MORE_INFO_NEEDED",
+      "message": "Dzień dobry, dziękujemy za zgłoszenie.\n\n## Decyzja\nPotrzebne dodatkowe informacje — prześlij nowe zgłoszenie z właściwym zdjęciem laptopa.\n\n## Uzasadnienie\nNa podstawie obecnego zdjęcia nie można ocenić zwracanego laptopa, ponieważ przedstawia ono telefon. Zgodnie z §7 ust. 1 ocena na podstawie formularza i zdjęcia jest wstępna, dlatego potrzebujemy zdjęcia właściwego urządzenia, by ocenić zgłoszenie.\n\n## Co widać na zdjęciu\nWidać telefon z mocno popękanym ekranem i przebarwieniami. Zdjęcie nie przedstawia laptopa.\n\n## Kolejne kroki\nZłóż **Nowe zgłoszenie** i dołącz wyraźne zdjęcie całego laptopa, tak aby można było ocenić, czy jest uszkodzony lub nosi ślady użytkowania. Przy zwrocie odeślij urządzenie wraz z akcesoriami i dowodem zakupu w ciągu 14 dni od złożenia oświadczenia o odstąpieniu; bezpośredni koszt odesłania ponosisz Ty (§6 ust. 1–3).\n\nTo wstępna, automatyczna ocena przygotowana na podstawie formularza i zdjęcia. Ostateczną decyzję podejmie nasz zespół serwisu po otrzymaniu i sprawdzeniu urządzenia. Nie ogranicza to Twojego ustawowego prawa do odstąpienia od umowy."
+    },
+    "caseContext": {
+      "contextVersion": 2,
+      "caseType": "RETURN",
+      "form": {
+        "caseType": "RETURN",
+        "category": "LAPTOP",
+        "modelName": "Lenovo ThinkPad T14 Gen 4",
+        "purchaseDate": "2026-11-21",
+        "reason": ""
+      },
+      "submittedAt": "2026-11-26T13:36:28.175408887+01:00",
+      "assessment": {
+        "photoSufficient": false,
+        "insufficiencyReason": "Na zdjęciu widać telefon, a nie laptop.",
+        "damageVisible": true,
+        "signsOfUse": [],
+        "resellableAsNew": false,
+        "visibleDescription": "Na podstawce stoi telefon z mocno popękanym ekranem; widoczne są rozległe pęknięcia oraz ciemne i zielone przebarwienia na wyświetlaczu.",
+        "confidence": "HIGH"
+      },
+      "assessmentSource": "LLM",
+      "prescreen": null,
+      "consistencySignals": [
+        {
+          "id": "model_matches_photo",
+          "probability": 0.01,
+          "confidence": 0.99
+        }
+      ],
+      "ruleFacts": {
+        "daysSincePurchase": 5,
+        "returnWindowStatus": "WITHIN_14_DAYS",
+        "liabilityExpired": false,
+        "allowedCategories": [
+          "MORE_INFO_NEEDED"
+        ],
+        "requiredReasonText": "",
+        "chatForbiddenCategories": [
+          "REJECTED"
+        ],
+        "rejectionRequiresCitation": "",
+        "appliedRule": "R2"
+      },
+      "decision": {
+        "category": "MORE_INFO_NEEDED"
+      }
+    },
+    "signature": "2ij1JHILDjxA2sXmdUqF0GAcOGKPyj4NvtE-HupGWWg"
+  }
+}

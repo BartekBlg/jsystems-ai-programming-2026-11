@@ -1,0 +1,18 @@
+{
+  "status": 429,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "193",
+    "content-type": "application/problem+json;charset=UTF-8",
+    "date": "Thu, 26 Nov 2026 12:37:41 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "type": "about:blank",
+    "title": "Too Many Requests",
+    "status": 429,
+    "detail": "Wysłano zbyt wiele zgłoszeń. Spróbuj ponownie później.",
+    "code": "RATE_LIMITED",
+    "instance": "/api/cases/assessments"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "model" : "openai/gpt-6-luna",
+  "store" : false,
+  "instructions" : "<omitted: 58 chars, sha256 5fcb42df8e35951b>",
+  "input" : [ {
+    "role" : "user",
+    "content" : [ {
+      "type" : "input_text",
+      "text" : "Jak się masz? Odpowiedz jednym zdaniem."
+    } ]
+  } ],
+  "reasoning" : {
+    "effort" : "low"
+  },
+  "max_output_tokens" : 4000
+}

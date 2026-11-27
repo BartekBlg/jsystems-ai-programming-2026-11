@@ -1,0 +1,52 @@
+@if (store.caseContext(); as context) {
+  <section class="summary-panel" aria-labelledby="summary-title">
+    <h2 id="summary-title">{{ labels.summaryTitle }}</h2>
+    <dl class="summary-fields">
+      <div><dt>{{ labels.caseType }}</dt><dd>{{ caseTypeLabels[context.caseType] }}</dd></div>
+      <div><dt>{{ labels.category }}</dt><dd>{{ categoryLabels[context.form.category] }}</dd></div>
+      <div><dt>{{ labels.model }}</dt><dd>{{ context.form.modelName }}</dd></div>
+      <div><dt>{{ labels.purchaseDate }}</dt><dd>{{ formatDate(context.form.purchaseDate) }}</dd></div>
+      <div class="summary-reason">
+        <dt>{{ labels.reason }}</dt>
+        <dd>
+          @if (context.form.reason) {
+            <p [class.reason--truncated]="!reasonExpanded() && context.form.reason.length > 120">
+              {{ context.form.reason }}
+            </p>
+            @if (context.form.reason.length > 120) {
+              <button mat-button type="button" class="reason-toggle" (click)="toggleReason()">
+                {{ reasonExpanded() ? labels.showLess : labels.showMore }}
+              </button>
+            }
+          } @else {
+            {{ labels.noReason }}
+          }
+        </dd>
+      </div>
+    </dl>
+
+    @if (store.thumbnailDataUrl(); as thumbnail) {
+      <div class="photo-section">
+        <h3>{{ labels.photo }}</h3>
+        <button
+          mat-button
+          type="button"
+          class="photo-button"
+          [attr.aria-label]="labels.openPhoto"
+          (click)="openPhoto()"
+        >
+          <img [src]="thumbnail" [alt]="labels.photo" />
+        </button>
+      </div>
+    }
+
+    @if (decision(); as category) {
+      <div class="decision-section">
+        <h3>{{ labels.decision }}</h3>
+        <span class="decision-badge" [class]="'decision-badge ' + decisionClass()">
+          {{ decisionLabels[category] }}
+        </span>
+      </div>
+    }
+  </section>
+}

@@ -1,0 +1,31 @@
+<div #viewport class="message-list" role="log" aria-live="off" (scroll)="onScroll($event)">
+  @for (message of store.messages(); track message.id; let first = $first) {
+    <article class="message" [class.message--agent]="message.role === 'assistant'" [class.message--client]="message.role === 'user'">
+      <span class="message-speaker">{{ message.role === 'assistant' ? labels.agent : labels.you }}</span>
+      @if (message.role === 'assistant') {
+        <markdown class="message-content" [data]="message.text" />
+      } @else {
+        <p class="message-content">{{ message.text }}</p>
+      }
+      @if (message.role === 'user' && message.status === 'failed') {
+        <div class="failed-message">
+          <span>{{ labels.notSent }}</span>
+          <button mat-button type="button" [disabled]="isRetrying(message) || store.streaming()" (click)="resend(message)">
+            {{ labels.retry }}
+          </button>
+        </div>
+      }
+    </article>
+    @if (first && message.role === 'assistant' && store.caseContext()?.assessment?.photoSufficient === false) {
+      <div class="inline-new-case">
+        <button mat-flat-button type="button" class="new-case-button" (click)="newCaseRequested.emit()">
+          {{ newCaseLabel }}
+        </button>
+      </div>
+    }
+  }
+  @if (store.streaming()) {
+    <div class="typing-indicator" aria-hidden="true"><span></span><span></span><span></span></div>
+    <span class="visually-hidden">{{ labels.typing }}</span>
+  }
+</div>

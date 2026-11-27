@@ -1,0 +1,60 @@
+{
+  "status": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "1086",
+    "content-type": "application/json",
+    "date": "Thu, 26 Nov 2026 12:39:51 GMT",
+    "keep-alive": "timeout=60"
+  },
+  "body": {
+    "caseContext": {
+      "contextVersion": 1,
+      "caseType": "RETURN",
+      "form": {
+        "caseType": "RETURN",
+        "category": "LAPTOP",
+        "modelName": "Lenovo ThinkPad T14 Gen 4",
+        "purchaseDate": "2026-11-21",
+        "reason": ""
+      },
+      "submittedAt": "2026-11-26T13:39:39.454536469+01:00",
+      "assessment": {
+        "photoSufficient": true,
+        "insufficiencyReason": "",
+        "damageVisible": false,
+        "signsOfUse": [
+          "WEAR"
+        ],
+        "resellableAsNew": false,
+        "visibleDescription": "Na zdjęciu widać otwarty, włączony laptop Lenovo z widoczną klawiaturą, gładzikiem i ekranem. Na powierzchni obudowy i klawiaturze widać oznaki użytkowania. Nie widać wyraźnych pęknięć ani innych uszkodzeń.",
+        "confidence": "MEDIUM"
+      },
+      "assessmentSource": "LLM",
+      "prescreen": null,
+      "consistencySignals": [
+        {
+          "id": "model_matches_photo",
+          "probability": 0.84,
+          "confidence": 0.84
+        }
+      ],
+      "ruleFacts": {
+        "daysSincePurchase": 5,
+        "returnWindowStatus": "WITHIN_14_DAYS",
+        "liabilityExpired": false,
+        "allowedCategories": [
+          "ESCALATED"
+        ],
+        "requiredReasonText": "",
+        "chatForbiddenCategories": [
+          "REJECTED"
+        ],
+        "rejectionRequiresCitation": "",
+        "appliedRule": "R4"
+      },
+      "decision": null
+    },
+    "signature": "z5V0OGnO0V6MCZAsIQbjy94Q1SOjYtFkuKsJpHuCMnw"
+  }
+}
