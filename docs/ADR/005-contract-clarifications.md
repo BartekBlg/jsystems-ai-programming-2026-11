@@ -1,7 +1,7 @@
 # ADR-005: Contract Clarifications Found During Implementation Planning
 
 **Date:** 2026-11-26
-**Status:** Proposed (awaiting review together with [`docs/plans/hsdc-poc-implementation-plan.md`](../plans/hsdc-poc-implementation-plan.md))
+**Status:** Accepted (2026-11-27, by the user; amends the referenced sections of ADR-000…ADR-003)
 **Relates to:** [`000-main-architecture.md`](000-main-architecture.md), [`001-backend-api.md`](001-backend-api.md), [`002-llm-integration.md`](002-llm-integration.md), [`003-frontend.md`](003-frontend.md), [`004-decisions-prescreening.md`](004-decisions-prescreening.md)
 
 ---
